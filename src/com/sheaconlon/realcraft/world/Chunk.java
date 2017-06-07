@@ -52,6 +52,10 @@ public class Chunk {
      */
     private final List<Entity>[][][] entities;
 
+    static int blockToChunkCoordinate(final int blockCoordinate) {
+        return (int)Math.floor((double)blockCoordinate / (double)Chunk.SIZE);
+    }
+
     /**
      * Construct a chunk.
      *
@@ -84,5 +88,16 @@ public class Chunk {
      */
     void setBlock(final int x, final int y, final int z, final Block block) {
         this.blocks[x - this.x][y - this.y][z - this.z] = block;
+    }
+
+    /**
+     * Get the block at position (x, y, z).
+     * @param x The x-coordinate of the desired block.
+     * @param y The y-coordinate of the desired block.
+     * @param z The z-coordinate of the desired block.
+     * @return The desired block.
+     */
+    Block getBlock(final int x, final int y, final int z) {
+        return this.blocks[x - this.x][y - this.y][z - this.z];
     }
 }
