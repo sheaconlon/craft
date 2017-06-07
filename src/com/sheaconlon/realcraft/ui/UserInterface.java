@@ -52,6 +52,14 @@ public class UserInterface {
     }
 
     /**
+     * Return whether the user interface might be visible.
+     * @return Whether the user interface might be visible.
+     */
+    public boolean mightBeVisible() {
+        return !this.window.isIconified();
+    }
+
+    /**
      * Respond to input.
      */
     public void respond() {

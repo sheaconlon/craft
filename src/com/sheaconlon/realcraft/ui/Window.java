@@ -1,10 +1,7 @@
 package com.sheaconlon.realcraft.ui;
 
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWFramebufferSizeCallbackI;
+import org.lwjgl.glfw.*;
 import org.lwjgl.system.MemoryUtil;
-import org.lwjgl.glfw.GLFWWindowCloseCallbackI;
-import org.lwjgl.glfw.Callbacks;
 
 /**
  * A wrapper for a GLFW window object.
@@ -47,6 +44,7 @@ public class Window {
             throw new RuntimeException("GLFW#glfwCreateWindow(...) returned MemoryUtil#NULL");
         }
         // TODO: Restrict aspect ratio so that the player cannot cheat by making their window very wide.
+        // TODO: Set window icon.
     }
 
     /**
@@ -63,6 +61,14 @@ public class Window {
      */
     void setFramebufferSizeCallback(final GLFWFramebufferSizeCallbackI callback) {
         GLFW.glfwSetFramebufferSizeCallback(this.handle, callback);
+    }
+
+    /**
+     * Return whether the window is iconified (minimized).
+     * @return Whether the window is iconified (minimized).
+     */
+    public boolean isIconified() {
+        return GLFW.glfwGetWindowAttrib(this.handle, GLFW.GLFW_ICONIFIED) == GLFW.GLFW_TRUE;
     }
 
     /**
