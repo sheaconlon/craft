@@ -7,7 +7,15 @@ import org.lwjgl.system.MemoryUtil;
  * A wrapper for a GLFW window object.
  */
 public class Window {
+    /**
+     * The window's callback for GLFW error events.
+     */
     private class ErrorCallback implements GLFWErrorCallbackI {
+        /**
+         * Respond to a GLFW error event.
+         * @param errorCode The error code.
+         * @param descriptionHandle A handle for a human-readable string describing the error.
+         */
         public void invoke(final int errorCode, final long descriptionHandle) {
             throw new RuntimeException("GLFW error, code " + Integer.toString(errorCode) + " occurred");
         }
@@ -33,7 +41,7 @@ public class Window {
 
 
     /**
-     * The window's GLFW error callback.
+     * The window's callback for GLFW error events.
      *
      * This instance attribute exists to maintain a strong reference to the callback so that it is not garbage
      * collected.

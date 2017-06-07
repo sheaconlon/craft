@@ -6,7 +6,14 @@ import org.lwjgl.glfw.GLFWWindowCloseCallbackI;
  * A user interface for Realcraft.
  */
 public class UserInterface {
+    /**
+     * The user interface's callback for window close events.
+     */
     private class WindowCloseCallback implements GLFWWindowCloseCallbackI {
+        /**
+         * Respond to a window close event.
+         * @param windowHandle The handle of the GLFW window in which the event occured.
+         */
         public void invoke(final long windowHandle) {
             UserInterface.this.shouldClose = true;
         }
