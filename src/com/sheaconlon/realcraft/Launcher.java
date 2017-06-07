@@ -1,11 +1,18 @@
 package com.sheaconlon.realcraft;
 
 import com.sheaconlon.realcraft.ui.UserInterface;
+import com.sheaconlon.realcraft.world.ChunkGenerator;
+import com.sheaconlon.realcraft.world.World;
 
 /**
  * A launcher of Realcraft.
  */
 public class Launcher {
+    /**
+     * The world.
+     */
+    private World world;
+
     /**
      * The user interface.
      */
@@ -15,6 +22,7 @@ public class Launcher {
      * Launch Realcraft.
      */
     private void launch() {
+        this.world = new World(new ChunkGenerator());
         this.ui = new UserInterface();
         this.ui.show();
     }
