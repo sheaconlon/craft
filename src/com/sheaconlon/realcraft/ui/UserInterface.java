@@ -1,7 +1,6 @@
 package com.sheaconlon.realcraft.ui;
 
 import org.lwjgl.glfw.GLFWWindowCloseCallbackI;
-import org.lwjgl.glfw.GLFW;
 
 /**
  * A user interface for Realcraft.
