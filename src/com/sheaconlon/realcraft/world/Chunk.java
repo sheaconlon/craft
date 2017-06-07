@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * A cubical subset of the world.
  */
-public abstract class Chunk {
+public class Chunk {
     // TODO: Tune chunk size.
     /**
      * The side length of chunks, in meters.
