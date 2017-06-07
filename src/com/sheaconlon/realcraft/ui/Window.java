@@ -72,6 +72,14 @@ public class Window {
     }
 
     /**
+     * Return whether the window is focused.
+     * @return Whether the window is focused.
+     */
+    public boolean isFocused() {
+        return GLFW.glfwGetWindowAttrib(this.handle, GLFW.GLFW_FOCUSED) == GLFW.GLFW_TRUE;
+    }
+
+    /**
      * Show the window.
      */
     void show() {

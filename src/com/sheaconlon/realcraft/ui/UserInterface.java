@@ -60,6 +60,14 @@ public class UserInterface {
     }
 
     /**
+     * Return whether the user interface is focused.
+     * @return Whether the user interface is focused.
+     */
+    public boolean isFocused() {
+        return this.window.isFocused();
+    }
+
+    /**
      * Respond to input.
      */
     public void respond() {
