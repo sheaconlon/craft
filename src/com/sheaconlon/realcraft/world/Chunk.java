@@ -14,7 +14,7 @@ public class Chunk {
     /**
      * The side length of chunks, in meters.
      */
-    private static final int SIZE = 100;
+    public static final int SIZE = 100;
 
     /**
      * The x-coordinate of this chunk.
