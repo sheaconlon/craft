@@ -50,8 +50,6 @@ public class Window {
 
     /**
      * Set the callback for window close request events.
-     *
-     * {@code callback#invoke(...)} is called during calls of {@link #respond}.
      * @param callback The callback.
      */
     void setWindowCloseCallback(final GLFWWindowCloseCallbackI callback) {
@@ -60,8 +58,6 @@ public class Window {
 
     /**
      * Set the callback for framebuffer size change events.
-     *
-     * {@code callback#invoke(...)} is called during calls of {@link #respond}.
      * @param callback The callback.
      */
     void setFramebufferSizeCallback(final GLFWFramebufferSizeCallbackI callback) {
@@ -73,6 +69,13 @@ public class Window {
      */
     void show() {
         GLFW.glfwShowWindow(this.handle);
+    }
+
+    /**
+     * Run callbacks for events.
+     */
+    void runCallbacks() {
+        GLFW.glfwPollEvents();
     }
 
     /**

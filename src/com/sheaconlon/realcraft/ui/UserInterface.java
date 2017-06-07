@@ -56,7 +56,7 @@ public class UserInterface {
      * Respond to input.
      */
     public void respond() {
-        GLFW.glfwPollEvents();
+        window.runCallbacks();
     }
 
     /**
