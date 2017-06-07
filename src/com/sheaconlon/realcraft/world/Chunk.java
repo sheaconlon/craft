@@ -74,4 +74,15 @@ public class Chunk {
             }
         }
     }
+
+    /**
+     * Set the block at position (x, y, z).
+     * @param x The x-coordinate to place the block at.
+     * @param y The y-coordinate to place the block at.
+     * @param z The z-coordinate to place the block at.
+     * @param block The block.
+     */
+    void setBlock(final int x, final int y, final int z, final Block block) {
+        this.blocks[x - this.x][y - this.y][z - this.z] = block;
+    }
 }
