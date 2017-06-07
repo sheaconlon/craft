@@ -59,7 +59,7 @@ public abstract class Chunk {
      * @param y See {@link #y}.
      * @param z See {@link #z}.
      */
-    public Chunk(final int x, final int y, final int z) {
+    Chunk(final int x, final int y, final int z) {
         this.x = x;
         this.y = y;
         this.z = z;

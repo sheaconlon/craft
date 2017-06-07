@@ -53,7 +53,7 @@ public class Window {
      *
      * The window will not be visible, but can be made visible by a call to {@link #show()}.
      */
-    public Window() {
+    Window() {
         final boolean initSuccess = GLFW.glfwInit();
         if (!initSuccess) {
             throw new RuntimeException("GLFW#glfwInit() returned false");
