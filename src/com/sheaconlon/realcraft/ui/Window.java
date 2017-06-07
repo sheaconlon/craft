@@ -46,6 +46,7 @@ public class Window {
         if (this.handle == MemoryUtil.NULL) {
             throw new RuntimeException("GLFW#glfwCreateWindow(...) returned MemoryUtil#NULL");
         }
+        // TODO: Restrict aspect ratio so that the player cannot cheat by making their window very wide.
     }
 
     /**
