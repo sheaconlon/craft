@@ -70,8 +70,6 @@ public class Window {
         }
         // TODO: Restrict aspect ratio so that the player cannot cheat by making their window very wide.
         // TODO: Set window icon.
-        // Swap buffers immediately upon calls to GLFW#glfwSwapBuffers. Do not use v-sync.
-        GLFW.glfwSwapInterval(0);
     }
 
     /**
