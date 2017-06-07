@@ -1,6 +1,7 @@
 package com.sheaconlon.realcraft.ui;
 
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWFramebufferSizeCallbackI;
 import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.glfw.GLFWWindowCloseCallbackI;
 import org.lwjgl.glfw.Callbacks;
@@ -39,17 +40,32 @@ public class Window {
         }
         GLFW.glfwDefaultWindowHints();
         GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE);
-        // TODO: Support resizing.
-        GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_FALSE);
-        GLFW.glfwWindowHint(GLFW.GLFW_MAXIMIZED , GLFW.GLFW_TRUE);
+        GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_TRUE);
+        GLFW.glfwWindowHint(GLFW.GLFW_MAXIMIZED, GLFW.GLFW_TRUE);
         this.handle = GLFW.glfwCreateWindow(Window.WIDTH, Window.HEIGHT, Window.TITLE, MemoryUtil.NULL, MemoryUtil.NULL);
         if (this.handle == MemoryUtil.NULL) {
             throw new RuntimeException("GLFW#glfwCreateWindow(...) returned MemoryUtil#NULL");
         }
     }
 
+    /**
+     * Set the callback for window close request events.
+     *
+     * {@code callback#invoke(...)} is called during calls of {@link #respond}.
+     * @param callback The callback.
+     */
     void setWindowCloseCallback(final GLFWWindowCloseCallbackI callback) {
         GLFW.glfwSetWindowCloseCallback(this.handle, callback);
+    }
+
+    /**
+     * Set the callback for framebuffer size change events.
+     *
+     * {@code callback#invoke(...)} is called during calls of {@link #respond}.
+     * @param callback The callback.
+     */
+    void setFramebufferSizeCallback(final GLFWFramebufferSizeCallbackI callback) {
+        GLFW.glfwSetFramebufferSizeCallback(this.handle, callback);
     }
 
     /**
