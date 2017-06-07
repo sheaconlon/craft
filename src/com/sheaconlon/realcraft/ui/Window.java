@@ -7,6 +7,12 @@ import org.lwjgl.system.MemoryUtil;
  * A wrapper for a GLFW window object.
  */
 public class Window {
+    private class ErrorCallback implements GLFWErrorCallbackI {
+        public void invoke(final int errorCode, final long descriptionHandle) {
+            throw new RuntimeException("GLFW error, code " + Integer.toString(errorCode) + " occurred");
+        }
+    }
+
     /**
      * The width of windows.
      */
@@ -25,6 +31,15 @@ public class Window {
      */
     private final long handle;
 
+
+    /**
+     * The window's GLFW error callback.
+     *
+     * This instance attribute exists to maintain a strong reference to the callback so that it is not garbage
+     * collected.
+     */
+    private final Window.ErrorCallback errorCallback;
+
     /**
      * Construct a window.
      *
@@ -35,6 +50,8 @@ public class Window {
         if (!initSuccess) {
             throw new RuntimeException("GLFW#glfwInit() returned false");
         }
+        this.errorCallback = new ErrorCallback();
+        GLFW.glfwSetErrorCallback(this.errorCallback);
         GLFW.glfwDefaultWindowHints();
         GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE);
         GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_TRUE);
@@ -103,7 +120,7 @@ public class Window {
         GLFW.glfwDestroyWindow(this.handle);
         // Close GLFW.
         GLFW.glfwTerminate();
-        // Set the GLFW-wide error callback to MemoryUtil#NULL and free the old callback.
+        // Set the GLFW-wide error callback to null and free the old callback.
         GLFW.glfwSetErrorCallback(null).free();
     }
 }

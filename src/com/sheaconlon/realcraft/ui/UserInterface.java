@@ -18,12 +18,12 @@ public class UserInterface {
     private final Window window;
 
     /**
-     * This user interface's callback for window close events.
+     * The user interface's callback for window close events.
      *
      * This instance attribute exists to maintain a strong reference to the callback so that it is not garbage
      * collected.
      */
-    private final WindowCloseCallback windowCloseCallback;
+    private final UserInterface.WindowCloseCallback windowCloseCallback;
 
 
     /**

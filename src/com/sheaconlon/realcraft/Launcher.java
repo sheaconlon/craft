@@ -7,14 +7,36 @@ import com.sheaconlon.realcraft.ui.UserInterface;
  */
 public class Launcher {
     /**
+     * The user interface.
+     */
+    private UserInterface ui;
+
+    /**
      * Launch Realcraft.
      */
     private void launch() {
-        final UserInterface ui = new UserInterface();
-        ui.show();
+        this.ui = new UserInterface();
+        this.ui.show();
+    }
+
+    /**
+     * Run Realcraft.
+     *
+     * Runs until close is requested. Should be called after {@link #launch()}.
+     */
+    private void run() {
         while (!ui.shouldClose()) {
             ui.respond();
         }
+    }
+
+    /**
+     * Close Realcraft.
+     *
+     * Cleans up. Should be called after {@link #run()}.
+     */
+    private void close() {
+        ui.close();
     }
 
     /**
@@ -24,5 +46,7 @@ public class Launcher {
     public static void main(final String[] args) {
         final Launcher launcher = new Launcher();
         launcher.launch();
+        launcher.run();
+        launcher.close();
     }
 }
