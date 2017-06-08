@@ -1,6 +1,5 @@
 package com.sheaconlon.realcraft.blocks;
 
-import com.sheaconlon.realcraft.renderer.Face;
 import com.sheaconlon.realcraft.renderer.Quad;
 
 import java.util.LinkedList;

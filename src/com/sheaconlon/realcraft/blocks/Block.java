@@ -1,9 +1,7 @@
 package com.sheaconlon.realcraft.blocks;
 
 import com.sheaconlon.realcraft.renderer.Renderable;
-import com.sheaconlon.realcraft.renderer.Face;
 import com.sheaconlon.realcraft.renderer.Vertex;
-import com.sheaconlon.realcraft.renderer.Quad;
 
 /**
  * A block, a cubical, grid-aligned object in the world.
