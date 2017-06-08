@@ -2,6 +2,8 @@ package com.sheaconlon.realcraft.blocks;
 
 import com.sheaconlon.realcraft.renderer.Face;
 
+import java.util.LinkedList;
+
 /**
  * A block of air.
  */
@@ -10,7 +12,7 @@ public class AirBlock extends Block {
     /**
      * The faces of an air block.
      */
-    private static final Face[] FACES = new Face[]{};
+    private static final Iterable<Face> FACES = new LinkedList<>();
 
     /**
      * Construct an air block.
@@ -26,7 +28,7 @@ public class AirBlock extends Block {
      * {@inheritDoc}
      */
     @Override
-    public Face[] getFaces() {
+    public Iterable<Face> getFaces() {
         return AirBlock.FACES;
     }
 }

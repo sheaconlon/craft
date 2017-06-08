@@ -3,6 +3,9 @@ package com.sheaconlon.realcraft.blocks;
 import com.sheaconlon.realcraft.renderer.Face;
 import com.sheaconlon.realcraft.renderer.Quad;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * A block of dirt.
  */
@@ -15,14 +18,15 @@ public class DirtBlock extends Block {
     /**
      * The faces of a dirt block.
      */
-    private static final Face[] FACES = new Face[]{
-            new Quad(Block.FRONT_VERTICES, DirtBlock.BROWN),
-            new Quad(Block.LEFT_VERTICES, DirtBlock.BROWN),
-            new Quad(Block.BACK_VERTICES, DirtBlock.BROWN),
-            new Quad(Block.RIGHT_VERTICES, DirtBlock.BROWN),
-            new Quad(Block.TOP_VERTICES, DirtBlock.BROWN),
-            new Quad(Block.BOTTOM_VERTICES, DirtBlock.BROWN)
-    };
+    private static final List<Face> FACES = new LinkedList<>();
+    static {
+            DirtBlock.FACES.add(new Quad(Block.FRONT_VERTICES, DirtBlock.BROWN));
+            DirtBlock.FACES.add(new Quad(Block.LEFT_VERTICES, DirtBlock.BROWN));
+            DirtBlock.FACES.add(new Quad(Block.BACK_VERTICES, DirtBlock.BROWN));
+            DirtBlock.FACES.add(new Quad(Block.RIGHT_VERTICES, DirtBlock.BROWN));
+            DirtBlock.FACES.add(new Quad(Block.TOP_VERTICES, DirtBlock.BROWN));
+            DirtBlock.FACES.add(new Quad(Block.BOTTOM_VERTICES, DirtBlock.BROWN));
+    }
 
     // TODO: Rewrite Javadocs for constructors since they are not inherited.
     /**
@@ -39,7 +43,7 @@ public class DirtBlock extends Block {
      * {@inheritDoc}
      */
     @Override
-    public Face[] getFaces() {
+    public Iterable<Face> getFaces() {
         return DirtBlock.FACES;
     }
 }

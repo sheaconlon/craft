@@ -26,5 +26,5 @@ public interface Renderable {
      * Get the faces that make up this renderable.
      * @return The faces that make up this renderable.
      */
-    public Face[] getFaces();
+    public Iterable<Face> getFaces();
 }
