@@ -30,9 +30,9 @@ public class ChunkGenerator {
                     // Place dirt up to blockY = GROUND_LEVEL - 1 so that the highest dirt blocks extend to
                     // GROUND_LEVEL. For blockY <= GROUND_LEVEL - 1, place dirt blocks at every "even" position.
                     if (blockY <= GROUND_LEVEL - 1 && (blockX + blockY + blockZ) % 2 == 0) {
-                        block = new DirtBlock();
+                        block = new DirtBlock(blockX, blockY, blockZ);
                     } else {
-                        block = new AirBlock();
+                        block = new AirBlock(blockX, blockY, blockZ);
                     }
                     chunk.setBlock(blockX, blockY, blockZ, block);
                 }
