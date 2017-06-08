@@ -1,6 +1,7 @@
 package com.sheaconlon.realcraft.blocks;
 
 import com.sheaconlon.realcraft.renderer.Face;
+import com.sheaconlon.realcraft.renderer.Quad;
 
 import java.util.LinkedList;
 
@@ -10,9 +11,9 @@ import java.util.LinkedList;
 public class AirBlock extends Block {
     // TODO: Optimize rendering by rendering only those blocks touching air/a translucent block.
     /**
-     * The faces of an air block.
+     * The quads of an air block.
      */
-    private static final Iterable<Face> FACES = new LinkedList<>();
+    private static final Iterable<Quad> QUADS = new LinkedList<>();
 
     /**
      * Construct an air block.
@@ -28,7 +29,7 @@ public class AirBlock extends Block {
      * {@inheritDoc}
      */
     @Override
-    public Iterable<Face> getFaces() {
-        return AirBlock.FACES;
+    public Iterable<Quad> getQuads() {
+        return AirBlock.QUADS;
     }
 }

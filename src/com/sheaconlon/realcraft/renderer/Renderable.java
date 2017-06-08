@@ -23,8 +23,8 @@ public interface Renderable {
     public int getZ();
 
     /**
-     * Get the faces that make up this renderable.
-     * @return The faces that make up this renderable.
+     * Get the quads that make up this renderable.
+     * @return The quads that make up this renderable.
      */
-    public Iterable<Face> getFaces();
+    public Iterable<Quad> getQuads();
 }

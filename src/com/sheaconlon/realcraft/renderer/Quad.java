@@ -1,22 +1,45 @@
 package com.sheaconlon.realcraft.renderer;
 
 /**
- * A quadrilateral face.
+ * A quadrilateral, or quad for short.
  */
-public class Quad extends Face {
-    private final static int VERTEX_COUNT = 4;
+public class Quad {
+    /**
+     * The vertices of this quad, in the order they occur going counterclockwise around the front face of this
+     * quad.
+     */
+    private final Vertex[] vertices;
 
     /**
-     * Construct a quad. See {@link Face()}.
+     * The color of this quad, in RGB format.
+     */
+    private final double[] color;
+
+    /**
+     * Construct a quad.
+     * @param vertices See {@link #vertices}.
      */
     public Quad(final Vertex[] vertices, final double[] color) {
-        super(vertices, color);
+        if (vertices.length != 4) {
+            throw new RuntimeException("incorrect number of vertices supplied to Quad constructor");
+        }
+        this.vertices = vertices;
+        this.color = color;
     }
 
     /**
-     * See {@link Face#getVertexCount()}.
+     * Get the vertices of this quad.
+     * @return See {@link #vertices}.
      */
-    int getVertexCount() {
-        return Quad.VERTEX_COUNT;
+    Vertex[] getVertices() {
+        return this.vertices;
+    }
+
+    /**
+     * Get the color of this quad.
+     * @return See {@link #color}.
+     */
+    double[] getColor() {
+        return this.color;
     }
 }

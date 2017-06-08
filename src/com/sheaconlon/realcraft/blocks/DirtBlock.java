@@ -16,16 +16,16 @@ public class DirtBlock extends Block {
     private static final double[] BROWN = new double[]{132/255, 81/255, 10/255};
 
     /**
-     * The faces of a dirt block.
+     * The quads of a dirt block.
      */
-    private static final List<Face> FACES = new LinkedList<>();
+    private static final List<Quad> QUADS = new LinkedList<>();
     static {
-            DirtBlock.FACES.add(new Quad(Block.FRONT_VERTICES, DirtBlock.BROWN));
-            DirtBlock.FACES.add(new Quad(Block.LEFT_VERTICES, DirtBlock.BROWN));
-            DirtBlock.FACES.add(new Quad(Block.BACK_VERTICES, DirtBlock.BROWN));
-            DirtBlock.FACES.add(new Quad(Block.RIGHT_VERTICES, DirtBlock.BROWN));
-            DirtBlock.FACES.add(new Quad(Block.TOP_VERTICES, DirtBlock.BROWN));
-            DirtBlock.FACES.add(new Quad(Block.BOTTOM_VERTICES, DirtBlock.BROWN));
+            DirtBlock.QUADS.add(new Quad(Block.FRONT_VERTICES, DirtBlock.BROWN));
+            DirtBlock.QUADS.add(new Quad(Block.LEFT_VERTICES, DirtBlock.BROWN));
+            DirtBlock.QUADS.add(new Quad(Block.BACK_VERTICES, DirtBlock.BROWN));
+            DirtBlock.QUADS.add(new Quad(Block.RIGHT_VERTICES, DirtBlock.BROWN));
+            DirtBlock.QUADS.add(new Quad(Block.TOP_VERTICES, DirtBlock.BROWN));
+            DirtBlock.QUADS.add(new Quad(Block.BOTTOM_VERTICES, DirtBlock.BROWN));
     }
 
     // TODO: Rewrite Javadocs for constructors since they are not inherited.
@@ -43,7 +43,7 @@ public class DirtBlock extends Block {
      * {@inheritDoc}
      */
     @Override
-    public Iterable<Face> getFaces() {
-        return DirtBlock.FACES;
+    public Iterable<Quad> getQuads() {
+        return DirtBlock.QUADS;
     }
 }
