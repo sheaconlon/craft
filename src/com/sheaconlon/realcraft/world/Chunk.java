@@ -2,6 +2,8 @@ package com.sheaconlon.realcraft.world;
 
 import com.sheaconlon.realcraft.blocks.Block;
 import com.sheaconlon.realcraft.entities.Entity;
+import com.sheaconlon.realcraft.renderer.Renderable;
+import com.sheaconlon.realcraft.renderer.Quad;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -9,7 +11,7 @@ import java.util.List;
 /**
  * A cubical subset of the world.
  */
-public class Chunk {
+public class Chunk implements Renderable {
     // TODO: Tune chunk size.
     /**
      * The side length of chunks, in meters.
@@ -99,5 +101,47 @@ public class Chunk {
      */
     Block getBlock(final int x, final int y, final int z) {
         return this.blocks[x - this.x][y - this.y][z - this.z];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getX() {
+        return this.x;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getY() {
+        return this.y;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getZ() {
+        return this.z;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Iterable<Quad> getQuads() {
+        final List<Quad> quads = new LinkedList<>();
+        for (int bx = this.x; bx < this.x + Chunk.SIZE; bx++) {
+            for (int by = this.y; by < this.y + Chunk.SIZE; by++) {
+                for (int bz = this.z; bz < this.z + Chunk.SIZE; bz++) {
+                    for (final Quad quad : this.getBlock(bx, by, bz).getQuads()) {
+                        quads.add(quad);
+                    }
+                }
+            }
+        }
+        return quads;
     }
 }
