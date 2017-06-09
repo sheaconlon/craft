@@ -1,7 +1,10 @@
 package com.sheaconlon.realcraft.ui;
 
 import org.lwjgl.glfw.*;
+import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
+
+import java.nio.IntBuffer;
 
 /**
  * A wrapper for a GLFW window object.
@@ -102,6 +105,19 @@ public class Window {
      */
     public boolean isFocused() {
         return GLFW.glfwGetWindowAttrib(this.handle, GLFW.GLFW_FOCUSED) == GLFW.GLFW_TRUE;
+    }
+
+    /**
+     * Get the dimensions of this window.
+     * @return The dimensions of this window in screen coordinates, as a array containing the width and height.
+     */
+    public int[] getDimensions() {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            IntBuffer widthBuffer = stack.mallocInt(1);
+            IntBuffer heightBuffer = stack.mallocInt(1);
+            GLFW.glfwGetWindowSize(handle, widthBuffer, heightBuffer);
+            return new int[]{widthBuffer.get(), heightBuffer.get()};
+        }
     }
 
     /**
