@@ -107,7 +107,7 @@ public class Chunk implements Renderable {
      * {@inheritDoc}
      */
     @Override
-    public int getX() {
+    public double getX() {
         return this.x;
     }
 
@@ -115,7 +115,7 @@ public class Chunk implements Renderable {
      * {@inheritDoc}
      */
     @Override
-    public int getY() {
+    public double getY() {
         return this.y;
     }
 
@@ -123,7 +123,7 @@ public class Chunk implements Renderable {
      * {@inheritDoc}
      */
     @Override
-    public int getZ() {
+    public double getZ() {
         return this.z;
     }
 

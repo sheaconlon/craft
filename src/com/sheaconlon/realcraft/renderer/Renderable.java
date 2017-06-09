@@ -8,19 +8,19 @@ public interface Renderable {
      * Return the x-coordinate of the anchor point of this renderable.
      * @return The x-coordinate of the anchor point of this renderable
      */
-    public int getX();
+    public double getX();
 
     /**
      * Return the y-coordinate of the anchor point of this renderable.
      * @return The y-coordinate of the anchor point of this renderable
      */
-    public int getY();
+    public double getY();
 
     /**
      * Return the z-coordinate of the anchor point of this renderable.
      * @return The z-coordinate of the anchor point of this renderable
      */
-    public int getZ();
+    public double getZ();
 
     /**
      * Get the quads that make up this renderable.

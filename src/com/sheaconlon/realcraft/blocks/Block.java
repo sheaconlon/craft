@@ -133,7 +133,7 @@ public abstract class Block implements Renderable {
      * See {@link Renderable#getX()}.
      */
     @Override
-    public int getX() {
+    public double getX() {
         return this.x;
     }
 
@@ -141,7 +141,7 @@ public abstract class Block implements Renderable {
      * See {@link Renderable#getY()}.
      */
     @Override
-    public int getY() {
+    public double getY() {
         return this.y;
     }
 
@@ -149,7 +149,7 @@ public abstract class Block implements Renderable {
      * See {@link Renderable#getZ()}.
      */
     @Override
-    public int getZ() {
+    public double getZ() {
         return this.z;
     };
 }
