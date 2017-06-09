@@ -75,6 +75,23 @@ public class UserInterface {
     }
 
     /**
+     * Get the dimensions of this user interface.
+     * @return The dimensions of this user interface in screen coordinates, as a array containing the width and
+     * height.
+     */
+    public int[] getDimensions() {
+        return this.window.getDimensions();
+    }
+
+    /**
+     * Get the handle of the window for this user interface.
+     * @return The handle of the window for this user interface.
+     */
+    public long getWindowHandle() {
+        return this.window.getHandle();
+    }
+
+    /**
      * Respond to input.
      */
     public void respond() {

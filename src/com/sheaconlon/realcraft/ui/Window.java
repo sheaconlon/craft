@@ -121,6 +121,14 @@ public class Window {
     }
 
     /**
+     * Get the handle of this window.
+     * @return The handle of this window.
+     */
+    public long getHandle() {
+        return this.handle;
+    }
+
+    /**
      * Show the window.
      */
     void show() {
