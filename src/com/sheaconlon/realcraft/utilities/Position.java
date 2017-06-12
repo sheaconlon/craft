@@ -1,5 +1,7 @@
 package com.sheaconlon.realcraft.utilities;
 
+import java.util.Arrays;
+
 /**
  * A position in 3D space.
  */
@@ -110,5 +112,30 @@ public abstract class Position {
      */
     static long floorCoordinate(final double coordinate) {
         return (long)Math.floor(coordinate);
+    }
+
+    /**
+     * Get the hash code of this position.
+     * @return The hash code of this position.
+     */
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(new double[]{this.getX(), this.getY(), this.getZ()});
+    }
+
+    /**
+     * Return whether this position equals some other position.
+     * @param other The other position.
+     * @return Whether this position equals the other position.
+     */
+    @Override
+    public boolean equals(final Object other) {
+        if (!(other instanceof Position)) {
+            return false;
+        }
+        final Position otherPosition = (Position)other;
+        return this.getX() == otherPosition.getX()
+                && this.getY() == otherPosition.getY()
+                && this.getZ() == otherPosition.getZ();
     }
 }

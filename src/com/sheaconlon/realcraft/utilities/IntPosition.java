@@ -1,5 +1,7 @@
 package com.sheaconlon.realcraft.utilities;
 
+import java.util.Arrays;
+
 /**
  * A position on the 3D integer lattice.
  */
@@ -101,5 +103,30 @@ public abstract class IntPosition {
      */
     public void changeZ(final long delta) {
         this.setZ(this.getZ() + delta);
+    }
+
+    /**
+     * Get the hash code of this position.
+     * @return The hash code of this position.
+     */
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(new long[]{this.getX(), this.getY(), this.getZ()});
+    }
+
+    /**
+     * Return whether this position equals some other position.
+     * @param other The other position.
+     * @return Whether this position equals the other position.
+     */
+    @Override
+    public boolean equals(final Object other) {
+        if (!(other instanceof IntPosition)) {
+            return false;
+        }
+        final IntPosition otherPosition = (IntPosition)other;
+        return this.getX() == otherPosition.getX()
+                && this.getY() == otherPosition.getY()
+                && this.getZ() == otherPosition.getZ();
     }
 }
