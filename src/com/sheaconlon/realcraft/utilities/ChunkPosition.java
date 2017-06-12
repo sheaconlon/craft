@@ -14,6 +14,14 @@ public class ChunkPosition extends IntPosition {
     }
 
     /**
+     * Construct a chunk position which is the same as some other chunk position.
+     * @param pos The other chunk position
+     */
+    public ChunkPosition(final ChunkPosition pos) {
+        this(pos.getX(), pos.getY(), pos.getZ());
+    }
+
+    /**
      * Return the entity position at the low-x, low-y, low-z corner of this chunk position.
      * @return The entity position at the low-x, low-y, low-z corner of this chunk position.
      */

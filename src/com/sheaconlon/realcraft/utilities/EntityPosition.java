@@ -14,6 +14,14 @@ public class EntityPosition extends Position {
     }
 
     /**
+     * Construct an entity position which is the same as some other entity position.
+     * @param pos The other entity position
+     */
+    public EntityPosition(final EntityPosition pos) {
+        this(pos.getX(), pos.getY(), pos.getZ());
+    }
+
+    /**
      * Return the block position of the block containing this position.
      * @return The block position of the block containing this position.
      */

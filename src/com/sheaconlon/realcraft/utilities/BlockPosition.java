@@ -14,6 +14,14 @@ public class BlockPosition extends IntPosition {
     }
 
     /**
+     * Construct a block position which is the same as some other block position.
+     * @param pos The other block position
+     */
+    public BlockPosition(final BlockPosition pos) {
+        this(pos.getX(), pos.getY(), pos.getZ());
+    }
+
+    /**
      * Return the entity position at the low-x, low-y, low-z corner of this block position.
      * @return The entity position at the low-x, low-y, low-z corner of this block position.
      */
