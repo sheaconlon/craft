@@ -10,7 +10,7 @@ import com.sheaconlon.realcraft.positioning.BlockPosition;
 /**
  * A block, a cubical, grid-aligned object in the world.
  */
-public abstract class Block implements Renderable, Physical {
+public abstract class Block extends Physical implements Renderable {
     /**
      * The bounding box of a block.
      */

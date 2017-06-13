@@ -5,7 +5,7 @@ import com.sheaconlon.realcraft.positioning.Position;
 /**
  * An world object which affected by physical simulation.
  */
-public interface Physical {
+public abstract class Physical {
     /**
      * Get the bounding box of this physical.
      * @return The bounding box of this physical.
@@ -16,5 +16,5 @@ public interface Physical {
      * Get the position of this physical.
      * @return The position of this physical.
      */
-    public Position getPosition();
+    public abstract Position getPosition();
 }

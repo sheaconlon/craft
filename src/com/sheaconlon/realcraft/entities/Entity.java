@@ -9,7 +9,7 @@ import com.sheaconlon.realcraft.renderer.Renderable;
 /**
  * An entity, any object in the world which is not a {@link Block}.
  */
-public abstract class Entity implements Renderable, Physical {
+public abstract class Entity extends Physical implements Renderable {
     /**
      * The position of the anchor point of this entity.
      */
