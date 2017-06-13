@@ -129,4 +129,6 @@ public abstract class IntPosition {
                 && this.getY() == otherPosition.getY()
                 && this.getZ() == otherPosition.getZ();
     }
+
+
 }

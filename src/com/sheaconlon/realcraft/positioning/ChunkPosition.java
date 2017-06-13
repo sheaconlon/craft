@@ -22,11 +22,11 @@ public class ChunkPosition extends IntPosition {
     }
 
     /**
-     * Return the entity position at the low-x, low-y, low-z corner of this chunk position.
-     * @return The entity position at the low-x, low-y, low-z corner of this chunk position.
+     * Return the position at the low-x, low-y, low-z corner of this chunk position.
+     * @return The position at the low-x, low-y, low-z corner of this chunk position.
      */
-    public EntityPosition toEntityPosition() {
-        return new EntityPosition(
+    public Position toPosition() {
+        return new Position(
                 this.getX() * Chunk.SIZE,
                 this.getY() * Chunk.SIZE,
                 this.getZ() * Chunk.SIZE

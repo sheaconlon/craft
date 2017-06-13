@@ -2,11 +2,11 @@ package com.sheaconlon.realcraft.world;
 
 import com.sheaconlon.realcraft.blocks.Block;
 import com.sheaconlon.realcraft.entities.Entity;
+import com.sheaconlon.realcraft.positioning.Position;
 import com.sheaconlon.realcraft.renderer.Renderable;
 import com.sheaconlon.realcraft.renderer.Quad;
 import com.sheaconlon.realcraft.positioning.BlockPosition;
 import com.sheaconlon.realcraft.positioning.ChunkPosition;
-import com.sheaconlon.realcraft.positioning.EntityPosition;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -88,8 +88,8 @@ public class Chunk implements Renderable {
      * {@inheritDoc}
      */
     @Override
-    public EntityPosition getPosition() {
-        return this.pos.toEntityPosition();
+    public Position getPosition() {
+        return this.pos.toPosition();
     }
 
     /**

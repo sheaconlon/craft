@@ -1,11 +1,13 @@
 package com.sheaconlon.realcraft.positioning;
 
+import com.sheaconlon.realcraft.world.Chunk;
+
 import java.util.Arrays;
 
 /**
  * A position in 3D space.
  */
-public abstract class Position {
+public class Position {
     /**
      * The x-coordinate of this position.
      */
@@ -27,10 +29,42 @@ public abstract class Position {
      * @param y The y-coordinate of the position.
      * @param z The z-coordinate of the position.
      */
-    protected Position(final double x, final double y, final double z) {
+    public Position(final double x, final double y, final double z) {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+
+    /**
+     * Construct an entity position which is the same as some other entity position.
+     * @param pos The other entity position
+     */
+    public Position(final Position pos) {
+        this(pos.getX(), pos.getY(), pos.getZ());
+    }
+
+    /**
+     * Return the block position of the block containing this position.
+     * @return The block position of the block containing this position.
+     */
+    public BlockPosition toBlockPosition() {
+        return new BlockPosition(
+                Position.floorCoordinate(this.getX()),
+                Position.floorCoordinate(this.getY()),
+                Position.floorCoordinate(this.getZ())
+        );
+    }
+
+    /**
+     * Return the chunk position of the chunk containing this position.
+     * @return The chunk position of the chunk containing this position.
+     */
+    public ChunkPosition toChunkPosition() {
+        return new ChunkPosition(
+                Position.floorCoordinate(this.getX() / Chunk.SIZE),
+                Position.floorCoordinate(this.getY() / Chunk.SIZE),
+                Position.floorCoordinate(this.getZ() / Chunk.SIZE)
+        );
     }
 
     /**

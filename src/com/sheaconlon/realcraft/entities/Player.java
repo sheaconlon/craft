@@ -1,7 +1,7 @@
 package com.sheaconlon.realcraft.entities;
 
+import com.sheaconlon.realcraft.positioning.Position;
 import com.sheaconlon.realcraft.renderer.Quad;
-import com.sheaconlon.realcraft.positioning.EntityPosition;
 
 import java.util.LinkedList;
 
@@ -20,7 +20,7 @@ public class Player extends CompositeEntity {
          * @param yAngle See {@link Entity#xAngle}.
          * @param zAngle See {@link Entity#xAngle}.
          */
-        PlayerHead(final EntityPosition pos, final double xAngle, final double yAngle, final double zAngle) {
+        PlayerHead(final Position pos, final double xAngle, final double yAngle, final double zAngle) {
             super(pos, xAngle, yAngle, zAngle);
         }
 
@@ -43,7 +43,7 @@ public class Player extends CompositeEntity {
          * @param yAngle See {@link Entity#xAngle}.
          * @param zAngle See {@link Entity#xAngle}.
          */
-        PlayerBody(final EntityPosition pos,
+        PlayerBody(final Position pos,
                    final double xAngle, final double yAngle, final double zAngle) {
             super(pos, xAngle, yAngle, zAngle);
         }
@@ -81,7 +81,7 @@ public class Player extends CompositeEntity {
      * @param headYAngle The {@code yAngle} of the player's head relative to the {@code yAngle} of the player.
      * @param headZAngle The {@code zAngle} of the player's head relative to the {@code zAngle} of the player.
      */
-    public Player(final EntityPosition pos,  final double xAngle, final double yAngle, final double zAngle,
+    public Player(final Position pos, final double xAngle, final double yAngle, final double zAngle,
                   final double headXAngle, final double headYAngle, final double headZAngle) {
         super(pos, xAngle, yAngle, zAngle);
         this.body = new PlayerBody(pos, xAngle, yAngle, zAngle);

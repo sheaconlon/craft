@@ -1,7 +1,7 @@
 package com.sheaconlon.realcraft.entities;
 
+import com.sheaconlon.realcraft.positioning.Position;
 import com.sheaconlon.realcraft.renderer.Quad;
-import com.sheaconlon.realcraft.positioning.EntityPosition;
 
 import java.util.List;
 import java.util.LinkedList;
@@ -22,7 +22,7 @@ public abstract class CompositeEntity extends Entity {
      * @param yAngle See {@link Entity#xAngle}.
      * @param zAngle See {@link Entity#xAngle}.
      */
-    protected CompositeEntity(final EntityPosition pos, final double xAngle, final double yAngle,
+    protected CompositeEntity(final Position pos, final double xAngle, final double yAngle,
                               final double zAngle) {
         super(pos, xAngle, yAngle, zAngle);
         this.entities = new LinkedList<>();

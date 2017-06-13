@@ -1,9 +1,9 @@
 package com.sheaconlon.realcraft.blocks;
 
+import com.sheaconlon.realcraft.positioning.Position;
 import com.sheaconlon.realcraft.renderer.Renderable;
 import com.sheaconlon.realcraft.renderer.Vertex;
 import com.sheaconlon.realcraft.positioning.BlockPosition;
-import com.sheaconlon.realcraft.positioning.EntityPosition;
 
 /**
  * A block, a cubical, grid-aligned object in the world.
@@ -18,10 +18,10 @@ public abstract class Block implements Renderable {
      * The vertices of the front face of a block.
      */
     protected static final Vertex[] FRONT_VERTICES = new Vertex[]{
-            new Vertex(new EntityPosition(0, 0, 0), Block.FRONT_NORMAL),
-            new Vertex(new EntityPosition(1, 0, 0), Block.FRONT_NORMAL),
-            new Vertex(new EntityPosition(1, 1, 0), Block.FRONT_NORMAL),
-            new Vertex(new EntityPosition(0, 1, 0), Block.FRONT_NORMAL)
+            new Vertex(new Position(0, 0, 0), Block.FRONT_NORMAL),
+            new Vertex(new Position(1, 0, 0), Block.FRONT_NORMAL),
+            new Vertex(new Position(1, 1, 0), Block.FRONT_NORMAL),
+            new Vertex(new Position(0, 1, 0), Block.FRONT_NORMAL)
     };
 
     /**
@@ -35,10 +35,10 @@ public abstract class Block implements Renderable {
      * The vertices of the left face of a block.
      */
     protected static final Vertex[] LEFT_VERTICES = new Vertex[]{
-            new Vertex(new EntityPosition(0, 0, -1), Block.LEFT_NORMAL),
-            new Vertex(new EntityPosition(0, 0, 0), Block.LEFT_NORMAL),
-            new Vertex(new EntityPosition(0, 1, 0), Block.LEFT_NORMAL),
-            new Vertex(new EntityPosition(0, 1, -1), Block.LEFT_NORMAL)
+            new Vertex(new Position(0, 0, -1), Block.LEFT_NORMAL),
+            new Vertex(new Position(0, 0, 0), Block.LEFT_NORMAL),
+            new Vertex(new Position(0, 1, 0), Block.LEFT_NORMAL),
+            new Vertex(new Position(0, 1, -1), Block.LEFT_NORMAL)
     };
 
     /**
@@ -50,10 +50,10 @@ public abstract class Block implements Renderable {
      * The vertices of the back face of a block.
      */
     protected static final Vertex[] BACK_VERTICES = new Vertex[]{
-            new Vertex(new EntityPosition(1, 0, -1), Block.BACK_NORMAL),
-            new Vertex(new EntityPosition(0, 0, -1), Block.BACK_NORMAL),
-            new Vertex(new EntityPosition(0, 1, -1), Block.BACK_NORMAL),
-            new Vertex(new EntityPosition(1, 1, -1), Block.BACK_NORMAL)
+            new Vertex(new Position(1, 0, -1), Block.BACK_NORMAL),
+            new Vertex(new Position(0, 0, -1), Block.BACK_NORMAL),
+            new Vertex(new Position(0, 1, -1), Block.BACK_NORMAL),
+            new Vertex(new Position(1, 1, -1), Block.BACK_NORMAL)
     };
 
     /**
@@ -65,10 +65,10 @@ public abstract class Block implements Renderable {
      * The vertices of the right face of a block.
      */
     protected static final Vertex[] RIGHT_VERTICES = new Vertex[]{
-            new Vertex(new EntityPosition(1, 0, 0), Block.RIGHT_NORMAL),
-            new Vertex(new EntityPosition(1, 0, -1), Block.RIGHT_NORMAL),
-            new Vertex(new EntityPosition(1, 1, -1), Block.RIGHT_NORMAL),
-            new Vertex(new EntityPosition(1, 1, 0), Block.RIGHT_NORMAL)
+            new Vertex(new Position(1, 0, 0), Block.RIGHT_NORMAL),
+            new Vertex(new Position(1, 0, -1), Block.RIGHT_NORMAL),
+            new Vertex(new Position(1, 1, -1), Block.RIGHT_NORMAL),
+            new Vertex(new Position(1, 1, 0), Block.RIGHT_NORMAL)
     };
 
     /**
@@ -80,10 +80,10 @@ public abstract class Block implements Renderable {
      * The vertices of the top face of a block.
      */
     protected static final Vertex[] TOP_VERTICES = new Vertex[]{
-            new Vertex(new EntityPosition(0, 1, 0), Block.TOP_NORMAL),
-            new Vertex(new EntityPosition(1, 1, 0), Block.TOP_NORMAL),
-            new Vertex(new EntityPosition(1, 1, -1), Block.TOP_NORMAL),
-            new Vertex(new EntityPosition(0, 1, -1), Block.TOP_NORMAL)
+            new Vertex(new Position(0, 1, 0), Block.TOP_NORMAL),
+            new Vertex(new Position(1, 1, 0), Block.TOP_NORMAL),
+            new Vertex(new Position(1, 1, -1), Block.TOP_NORMAL),
+            new Vertex(new Position(0, 1, -1), Block.TOP_NORMAL)
     };
 
     /**
@@ -95,10 +95,10 @@ public abstract class Block implements Renderable {
      * The vertices of the bottom face of a block.
      */
     protected static final Vertex[] BOTTOM_VERTICES = new Vertex[]{
-            new Vertex(new EntityPosition(0, 0, -1), Block.BOTTOM_NORMAL),
-            new Vertex(new EntityPosition(1, 0, -1), Block.BOTTOM_NORMAL),
-            new Vertex(new EntityPosition(1, 0, 0), Block.BOTTOM_NORMAL),
-            new Vertex(new EntityPosition(0, 0, 0), Block.BOTTOM_NORMAL)
+            new Vertex(new Position(0, 0, -1), Block.BOTTOM_NORMAL),
+            new Vertex(new Position(1, 0, -1), Block.BOTTOM_NORMAL),
+            new Vertex(new Position(1, 0, 0), Block.BOTTOM_NORMAL),
+            new Vertex(new Position(0, 0, 0), Block.BOTTOM_NORMAL)
     };
 
     /**
@@ -121,7 +121,7 @@ public abstract class Block implements Renderable {
      * See {@link Renderable#getPosition()}.
      */
     @Override
-    public EntityPosition getPosition() {
-        return this.pos.toEntityPosition();
+    public Position getPosition() {
+        return this.pos.toPosition();
     }
 }

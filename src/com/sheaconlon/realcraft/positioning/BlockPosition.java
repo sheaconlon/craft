@@ -22,11 +22,11 @@ public class BlockPosition extends IntPosition {
     }
 
     /**
-     * Return the entity position at the low-x, low-y, low-z corner of this block position.
-     * @return The entity position at the low-x, low-y, low-z corner of this block position.
+     * Return the position at the low-x, low-y, low-z corner of this block position.
+     * @return The position at the low-x, low-y, low-z corner of this block position.
      */
-    public EntityPosition toEntityPosition() {
-        return new EntityPosition(
+    public Position toPosition() {
+        return new Position(
                 this.getX(),
                 this.getY(),
                 this.getZ()
