@@ -1,26 +1,16 @@
 package com.sheaconlon.realcraft.renderer;
 
+import com.sheaconlon.realcraft.utilities.EntityPosition;
+
 /**
  * Something which can be rendered.
  */
 public interface Renderable {
     /**
-     * Return the x-coordinate of the anchor point of this renderable.
-     * @return The x-coordinate of the anchor point of this renderable
+     * Return the position of the anchor point of this renderable.
+     * @return The position of the anchor point of this renderable
      */
-    public double getX();
-
-    /**
-     * Return the y-coordinate of the anchor point of this renderable.
-     * @return The y-coordinate of the anchor point of this renderable
-     */
-    public double getY();
-
-    /**
-     * Return the z-coordinate of the anchor point of this renderable.
-     * @return The z-coordinate of the anchor point of this renderable
-     */
-    public double getZ();
+    public EntityPosition getPosition();
 
     /**
      * Get the quads that make up this renderable.

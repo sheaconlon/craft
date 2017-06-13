@@ -3,6 +3,9 @@ package com.sheaconlon.realcraft.world;
 import com.sheaconlon.realcraft.blocks.AirBlock;
 import com.sheaconlon.realcraft.blocks.Block;
 import com.sheaconlon.realcraft.blocks.DirtBlock;
+import com.sheaconlon.realcraft.utilities.BlockPosition;
+import com.sheaconlon.realcraft.utilities.ChunkPosition;
+import com.sheaconlon.realcraft.utilities.EntityPosition;
 
 /**
  * A chunk generator. Creates the initial state of the world.
@@ -14,27 +17,26 @@ public class ChunkGenerator {
     private static final int GROUND_LEVEL = Chunk.SIZE / 2;
 
     /**
-     * Generate a chunk.
+     * Generate the chunk at some position.
      *
-     * @param x The x-coordinate of the desired chunk. See {@link Chunk#x}.
-     * @param y The y-coordinate of the desired chunk. See {@link Chunk#y}.
-     * @param z The z-coordinate of the desired chunk. See {@link Chunk#z}.
-     * @return The desired chunk.
+     * @param chunkPos The position.
+     * @return The chunk at {@code pos}.
      */
-    Chunk getChunk(final int x, final int y, final int z) {
-        final Chunk chunk = new Chunk(x, y, z);
-        for (int blockX = x; blockX < x + Chunk.SIZE; blockX++) {
-            for (int blockZ = z; blockZ < z + Chunk.SIZE; blockZ++) {
-                for (int blockY = y; blockY < y + Chunk.SIZE; blockY++) {
+    Chunk getChunk(final ChunkPosition chunkPos) {
+        final Chunk chunk = new Chunk(chunkPos);
+        for (long bx = chunkPos.getX(); bx < chunkPos.getX() + Chunk.SIZE; bx++) {
+            for (long bz = chunkPos.getZ(); bz < chunkPos.getZ() + Chunk.SIZE; bz++) {
+                for (long by = chunkPos.getY(); by < chunkPos.getY() + Chunk.SIZE; by++) {
+                    final BlockPosition blockPos = new BlockPosition(bx, by, bz);
                     Block block;
                     // Place dirt up to blockY = GROUND_LEVEL - 1 so that the highest dirt blocks extend to
                     // GROUND_LEVEL. For blockY <= GROUND_LEVEL - 1, place dirt blocks at every "even" position.
-                    if (blockY <= GROUND_LEVEL - 1 && (blockX + blockY + blockZ) % 2 == 0) {
-                        block = new DirtBlock(blockX, blockY, blockZ);
+                    if (blockPos.getY() <= GROUND_LEVEL - 1 && blockPos.hashCode() % 2 == 0) {
+                        block = new DirtBlock(blockPos);
                     } else {
-                        block = new AirBlock(blockX, blockY, blockZ);
+                        block = new AirBlock(blockPos);
                     }
-                    chunk.setBlock(blockX, blockY, blockZ, block);
+                    chunk.setBlock(blockPos, block);
                 }
             }
         }

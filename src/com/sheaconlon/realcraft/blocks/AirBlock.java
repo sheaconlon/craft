@@ -1,6 +1,8 @@
 package com.sheaconlon.realcraft.blocks;
 
 import com.sheaconlon.realcraft.renderer.Quad;
+import com.sheaconlon.realcraft.utilities.BlockPosition;
+import com.sheaconlon.realcraft.utilities.EntityPosition;
 
 import java.util.LinkedList;
 
@@ -16,12 +18,10 @@ public class AirBlock extends Block {
 
     /**
      * Construct an air block.
-     * @param x See {@link Block#x}.
-     * @param y See {@link Block#y}.
-     * @param z See {@link Block#z}.
+     * @param pos See {@link Block#pos}.
      */
-    public AirBlock(final int x, final int y, final int z) {
-        super(x, y, z);
+    public AirBlock(final BlockPosition pos) {
+        super(pos);
     }
 
     /**

@@ -1,5 +1,7 @@
 package com.sheaconlon.realcraft.renderer;
 
+import com.sheaconlon.realcraft.utilities.EntityPosition;
+
 /**
  * A vertex of a face.
  */
@@ -7,7 +9,7 @@ public class Vertex {
     /**
      * The position of this vertex.
      */
-    private final double[] position;
+    private final EntityPosition position;
 
     /**
      * The normal vector of this vertex.
@@ -19,7 +21,7 @@ public class Vertex {
      * @param position See {@link #position}.
      * @param normal See {@link #normal}.
      */
-    public Vertex(final double[] position, final double[] normal) {
+    public Vertex(final EntityPosition position, final double[] normal) {
         this.position = position;
         this.normal = normal;
     }
@@ -28,7 +30,7 @@ public class Vertex {
      * Get the position of this vertex.
      * @return See {@link #position}.
      */
-    double[] getPosition() {
+    EntityPosition getPosition() {
         return this.position;
     }
 

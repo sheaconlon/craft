@@ -1,6 +1,7 @@
 package com.sheaconlon.realcraft.entities;
 
 import com.sheaconlon.realcraft.renderer.Quad;
+import com.sheaconlon.realcraft.utilities.EntityPosition;
 
 import java.util.LinkedList;
 
@@ -14,16 +15,13 @@ public class Player extends CompositeEntity {
     private class PlayerHead extends Entity {
         /**
          * Construct a player head.
-         * @param x See {@link Entity#x}.
-         * @param y See {@link Entity#y}.
-         * @param z See {@link Entity#z}.
+         * @param pos See {@link Entity#pos}.
          * @param xAngle See {@link Entity#xAngle}.
          * @param yAngle See {@link Entity#xAngle}.
          * @param zAngle See {@link Entity#xAngle}.
          */
-        PlayerHead(final double x, final double y, final double z,
-                   final double xAngle, final double yAngle, final double zAngle) {
-            super(x, y, z, xAngle, yAngle, zAngle);
+        PlayerHead(final EntityPosition pos, final double xAngle, final double yAngle, final double zAngle) {
+            super(pos, xAngle, yAngle, zAngle);
         }
 
         /**
@@ -40,16 +38,14 @@ public class Player extends CompositeEntity {
     private class PlayerBody extends Entity {
         /**
          * Construct a player body.
-         * @param x See {@link Entity#x}.
-         * @param y See {@link Entity#y}.
-         * @param z See {@link Entity#z}.
+         * @param pos See {@link Entity#pos}.
          * @param xAngle See {@link Entity#xAngle}.
          * @param yAngle See {@link Entity#xAngle}.
          * @param zAngle See {@link Entity#xAngle}.
          */
-        PlayerBody(final double x, final double y, final double z,
+        PlayerBody(final EntityPosition pos,
                    final double xAngle, final double yAngle, final double zAngle) {
-            super(x, y, z, xAngle, yAngle, zAngle);
+            super(pos, xAngle, yAngle, zAngle);
         }
 
         /**
@@ -77,9 +73,7 @@ public class Player extends CompositeEntity {
 
     /**
      * Construct a player.
-     * @param x See {@link Entity#x}.
-     * @param y See {@link Entity#y}.
-     * @param z See {@link Entity#z}.
+     * @param pos See {@link Entity#pos}.
      * @param xAngle See {@link Entity#xAngle}.
      * @param yAngle See {@link Entity#xAngle}.
      * @param zAngle See {@link Entity#xAngle}.
@@ -87,13 +81,14 @@ public class Player extends CompositeEntity {
      * @param headYAngle The {@code yAngle} of the player's head relative to the {@code yAngle} of the player.
      * @param headZAngle The {@code zAngle} of the player's head relative to the {@code zAngle} of the player.
      */
-    public Player(final double x, final double y, final double z,
-                  final double xAngle, final double yAngle, final double zAngle,
+    public Player(final EntityPosition pos,  final double xAngle, final double yAngle, final double zAngle,
                   final double headXAngle, final double headYAngle, final double headZAngle) {
-        super(x, y, z, xAngle, yAngle, zAngle);
-        this.head = new PlayerHead(x, y, z, xAngle + headXAngle, yAngle + headYAngle, zAngle + headZAngle);
-        this.addConstituent(this.head);
-        this.body = new PlayerBody(x, y, z, xAngle, yAngle, zAngle);
+        super(pos, xAngle, yAngle, zAngle);
+        this.body = new PlayerBody(pos, xAngle, yAngle, zAngle);
         this.addConstituent(this.body);
+        pos.changeY(Player.HEAD_DELTA_Y);
+        this.head = new PlayerHead(pos, xAngle + headXAngle, yAngle + headYAngle,
+                zAngle + headZAngle);
+        this.addConstituent(this.head);
     }
 }

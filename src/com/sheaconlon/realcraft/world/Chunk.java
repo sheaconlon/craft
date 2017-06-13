@@ -4,6 +4,10 @@ import com.sheaconlon.realcraft.blocks.Block;
 import com.sheaconlon.realcraft.entities.Entity;
 import com.sheaconlon.realcraft.renderer.Renderable;
 import com.sheaconlon.realcraft.renderer.Quad;
+import com.sheaconlon.realcraft.utilities.BlockPosition;
+import com.sheaconlon.realcraft.utilities.ChunkPosition;
+import com.sheaconlon.realcraft.utilities.EntityPosition;
+import com.sun.javaws.exceptions.InvalidArgumentException;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -21,23 +25,11 @@ public class Chunk implements Renderable {
     /**
      * The x-coordinate of this chunk.
      *
-     * This chunk represents the components of the world with x coordinate such that this.x &lt;= x &lt; this.x + Chunk.SIZE.
+     * This chunk represents the components of the world with x coordinate such that this.x &lt;= x &lt; this.x +
+     * Chunk.SIZE, y coordinate such that this.y &lt;= y &lt; this.y + Chunk.SIZE, and z coordinate such that
+     * this.z &lt;= z &lt; this.z + Chunk.SIZE.
      */
-    private final int x;
-
-    /**
-     * The y-coordinate of this chunk.
-     *
-     * This chunk represents the components of the world with y coordinate such that this.y &lt;= y &lt; this.y + Chunk.SIZE.
-     */
-    private final int y;
-
-    /**
-     * The z-coordinate of this chunk.
-     *
-     * This chunk represents the components of the world with z coordinate such that this.z &lt;= z &lt; this.z + Chunk.SIZE.
-     */
-    private final int z;
+    private final ChunkPosition pos;
 
     /**
      * The blocks in this chunk.
@@ -54,21 +46,13 @@ public class Chunk implements Renderable {
      */
     private final List<Entity>[][][] entities;
 
-    static int blockToChunkCoordinate(final int blockCoordinate) {
-        return (int)Math.floor((double)blockCoordinate / (double)Chunk.SIZE);
-    }
-
     /**
      * Construct a chunk.
      *
-     * @param x See {@link #x}.
-     * @param y See {@link #y}.
-     * @param z See {@link #z}.
+     * @param pos See {@link #pos}.
      */
-    Chunk(final int x, final int y, final int z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+    Chunk(final ChunkPosition pos) {
+        this.pos = new ChunkPosition(pos);
         this.blocks = new Block[Chunk.SIZE][Chunk.SIZE][Chunk.SIZE];
         // TODO: Reevaluate choice of LinkedList over ArrayList.
         this.entities = new LinkedList[Chunk.SIZE][Chunk.SIZE][Chunk.SIZE];
@@ -82,49 +66,31 @@ public class Chunk implements Renderable {
     }
 
     /**
-     * Set the block at position (x, y, z).
-     * @param x The x-coordinate to place the block at.
-     * @param y The y-coordinate to place the block at.
-     * @param z The z-coordinate to place the block at.
+     * Put a block at some position.
+     * @param pos The position.
      * @param block The block.
      */
-    void setBlock(final int x, final int y, final int z, final Block block) {
-        this.blocks[x - this.x][y - this.y][z - this.z] = block;
+    void setBlock(final BlockPosition pos, final Block block) {
+        final BlockPosition relativePos = this.makeRelative(pos);
+        this.blocks[(int)relativePos.getX()][(int)relativePos.getY()][(int)relativePos.getZ()] = block;
     }
 
     /**
-     * Get the block at position (x, y, z).
-     * @param x The x-coordinate of the desired block.
-     * @param y The y-coordinate of the desired block.
-     * @param z The z-coordinate of the desired block.
-     * @return The desired block.
+     * Get the block at some position.
+     * @param pos The position.
+     * @return The block.
      */
-    Block getBlock(final int x, final int y, final int z) {
-        return this.blocks[x - this.x][y - this.y][z - this.z];
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public double getX() {
-        return this.x;
+    Block getBlock(final BlockPosition pos) {
+        final BlockPosition relativePos = this.makeRelative(pos);
+        return this.blocks[(int)relativePos.getX()][(int)relativePos.getY()][(int)relativePos.getZ()];
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public double getY() {
-        return this.y;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public double getZ() {
-        return this.z;
+    public EntityPosition getPosition() {
+        return this.pos.toEntityPosition();
     }
 
     /**
@@ -133,15 +99,34 @@ public class Chunk implements Renderable {
     @Override
     public Iterable<Quad> getQuads() {
         final List<Quad> quads = new LinkedList<>();
-        for (int bx = this.x; bx < this.x + Chunk.SIZE; bx++) {
-            for (int by = this.y; by < this.y + Chunk.SIZE; by++) {
-                for (int bz = this.z; bz < this.z + Chunk.SIZE; bz++) {
-                    for (final Quad quad : this.getBlock(bx, by, bz).getQuads()) {
+        for (long bx = this.pos.getX(); bx < this.pos.getX() + Chunk.SIZE; bx++) {
+            for (long by = this.pos.getY(); by < this.pos.getY() + Chunk.SIZE; by++) {
+                for (long bz = this.pos.getZ(); bz < this.pos.getZ() + Chunk.SIZE; bz++) {
+                    final BlockPosition blockPos = new BlockPosition(bx, by, bz);
+                    for (final Quad quad : this.getBlock(blockPos).getQuads()) {
                         quads.add(quad);
                     }
                 }
             }
         }
         return quads;
+    }
+
+    private BlockPosition makeRelative(final BlockPosition pos) {
+        final BlockPosition result = new BlockPosition(
+                pos.getX() - this.pos.getX(),
+                pos.getY() - this.pos.getY(),
+                pos.getZ() - this.pos.getZ()
+        );
+        if (result.getX() < 0 || result.getX() >= Chunk.SIZE) {
+            throw new IllegalArgumentException("position is not within this chunk");
+        }
+        if (result.getY() < 0 || result.getY() >= Chunk.SIZE) {
+            throw new IllegalArgumentException("position is not within this chunk");
+        }
+        if (result.getZ() < 0 || result.getZ() >= Chunk.SIZE) {
+            throw new IllegalArgumentException("position is not within this chunk");
+        }
+        return result;
     }
 }

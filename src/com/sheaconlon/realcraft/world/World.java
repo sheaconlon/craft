@@ -3,6 +3,8 @@ package com.sheaconlon.realcraft.world;
 import java.util.HashMap;
 import java.util.Map;
 import com.sheaconlon.realcraft.blocks.Block;
+import com.sheaconlon.realcraft.utilities.BlockPosition;
+import com.sheaconlon.realcraft.utilities.ChunkPosition;
 
 /**
  * The world.
@@ -11,9 +13,10 @@ public class World {
     /**
      * The chunks of the world.
      *
-     * If loaded, the chunk at (x, y, z) is the value of the entry with key {@code new int[]{x, y, z}}.
+     * If loaded, the chunk at block position (x, y, z) is the value of the entry with key
+     * {@code new BlockPosition(x, y, z)}.
      */
-    private final Map<int[], Chunk> chunks;
+    private final Map<ChunkPosition, Chunk> chunks;
 
     /**
      * The chunk generator for the world.
@@ -29,34 +32,25 @@ public class World {
     }
 
     /**
-     * Get the block at position (x, y, z).
-     * @param x The x-coordinate of the desired block.
-     * @param y The y-coordinate of the desired block.
-     * @param z The z-coordinate of the desired block.
-     * @return The desired block.
+     * Get the block at some position.
+     * @param pos The position.
+     * @return The block at {@code pos}.
      */
-    Block getBlock(final int x, final int y, final int z) {
-        final int chunkX = Chunk.blockToChunkCoordinate(x);
-        final int chunkY = Chunk.blockToChunkCoordinate(y);
-        final int chunkZ = Chunk.blockToChunkCoordinate(z);
-        this.ensureChunkLoaded(chunkX, chunkY, chunkZ);
-        final int[] chunkCoordinates = new int[]{chunkX, chunkY, chunkZ};
-        return this.chunks.get(chunkCoordinates).getBlock(x, y, z);
+    Block getBlock(final BlockPosition pos) {
+        this.ensureChunkLoaded(pos.toChunkPosition());
+        return this.chunks.get(pos.toChunkPosition()).getBlock(pos);
     }
 
     /**
-     * Ensure that a desired chunk is loaded into {@link #chunks}.
+     * Ensure that a chunk at some position is loaded into {@link #chunks}.
      *
-     * If not already loaded, uses {@link #chunkGenerator} to generate the desired chunk.
-     * @param x The x-coordinate of the desired chunk. See {@link Chunk#x}.
-     * @param y The y-coordinate of the desired chunk. See {@link Chunk#y}.
-     * @param z The z-coordinate of the desired chunk. See {@link Chunk#z}.
+     * If the chunk is not already loaded, uses {@link #chunkGenerator} to generate it.
+     * @param pos The position.
      */
-    private void ensureChunkLoaded(final int x, final int y, final int z) {
-        final int[] chunkCoordinates = new int[]{y, y, z};
-        if (!this.chunks.containsKey(chunkCoordinates)) {
-            final Chunk chunk = this.chunkGenerator.getChunk(x, y, z);
-            this.chunks.put(chunkCoordinates, chunk);
+    private void ensureChunkLoaded(final ChunkPosition pos) {
+        if (!this.chunks.containsKey(pos)) {
+            final Chunk chunk = this.chunkGenerator.getChunk(pos);
+            this.chunks.put(pos, chunk);
         }
     }
 }

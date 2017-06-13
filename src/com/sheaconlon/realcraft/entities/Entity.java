@@ -2,25 +2,16 @@ package com.sheaconlon.realcraft.entities;
 
 import com.sheaconlon.realcraft.blocks.Block;
 import com.sheaconlon.realcraft.renderer.Renderable;
+import com.sheaconlon.realcraft.utilities.EntityPosition;
 
 /**
  * An entity, any object in the world which is not a {@link Block}.
  */
 public abstract class Entity implements Renderable {
     /**
-     * The x-coordinate of the position of the anchor point of this entity.
+     * The position of the anchor point of this entity.
      */
-    private double x;
-
-    /**
-     * The y-coordinate of the position of the anchor point of this entity.
-     */
-    private double y;
-
-    /**
-     * The z-coordinate of the position of the anchor point of this entity.
-     */
-    private double z;
+    private EntityPosition pos;
 
     /**
      * The component counterclockwise from the positive x-axis of the orientation of this entity.
@@ -39,42 +30,23 @@ public abstract class Entity implements Renderable {
 
     /**
      * Construct an entity with a given initial position and orientation.
-     * @param x See {@link #x}.
-     * @param y See {@link #y}.
-     * @param z See {@link #z}.
+     * @param pos See {@link #pos}.
      * @param xAngle See {@link #xAngle}.
      * @param yAngle See {@link #xAngle}.
      * @param zAngle See {@link #xAngle}.
      */
-    protected Entity(final double x, final double y, final double z,
-                  final double xAngle, final double yAngle, final double zAngle) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+    protected Entity(final EntityPosition pos, final double xAngle, final double yAngle, final double zAngle) {
+        this.pos = new EntityPosition(pos);
         this.xAngle = xAngle;
         this.yAngle = yAngle;
         this.zAngle = zAngle;
     }
 
     /**
-     * Getter for {@link #x}.
+     * Getter for {@link #pos}.
      */
-    public double getX() {
-        return this.x;
-    }
-
-    /**
-     * Getter for {@link #y}.
-     */
-    public double getY() {
-        return this.y;
-    }
-
-    /**
-     * Getter for {@link #z}.
-     */
-    public double getZ() {
-        return this.z;
+    public EntityPosition getPosition() {
+        return this.pos;
     }
 
     /**
