@@ -1,5 +1,6 @@
 package com.sheaconlon.realcraft.entities;
 
+import com.sheaconlon.realcraft.physics.BoundingBox;
 import com.sheaconlon.realcraft.positioning.Position;
 import com.sheaconlon.realcraft.renderer.Quad;
 
@@ -47,5 +48,23 @@ public abstract class CompositeEntity extends Entity {
             }
         }
         return quads;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public BoundingBox getBoundingBox() {
+        long xLength = 0;
+        long yLength = 0;
+        long zLength = 0;
+        for (final Entity e : this.entities) {
+            final Position ePosition = e.getPosition();
+            final BoundingBox eBoundingBox = e.getBoundingBox();
+            xLength = (long)Math.max(xLength, ePosition.getX() + eBoundingBox.getXLength());
+            yLength = (long)Math.max(yLength, ePosition.getY() + eBoundingBox.getYLength());
+            zLength = (long)Math.max(zLength, ePosition.getZ() + eBoundingBox.getZLength());
+        }
+        return new BoundingBox(xLength, yLength, zLength);
     }
 }

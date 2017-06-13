@@ -1,13 +1,15 @@
 package com.sheaconlon.realcraft.entities;
 
 import com.sheaconlon.realcraft.blocks.Block;
+import com.sheaconlon.realcraft.physics.Physical;
+import com.sheaconlon.realcraft.positioning.BlockPosition;
 import com.sheaconlon.realcraft.positioning.Position;
 import com.sheaconlon.realcraft.renderer.Renderable;
 
 /**
  * An entity, any object in the world which is not a {@link Block}.
  */
-public abstract class Entity implements Renderable {
+public abstract class Entity implements Renderable, Physical {
     /**
      * The position of the anchor point of this entity.
      */

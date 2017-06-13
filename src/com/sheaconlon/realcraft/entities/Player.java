@@ -1,5 +1,6 @@
 package com.sheaconlon.realcraft.entities;
 
+import com.sheaconlon.realcraft.physics.BoundingBox;
 import com.sheaconlon.realcraft.positioning.Position;
 import com.sheaconlon.realcraft.renderer.Quad;
 
@@ -10,9 +11,26 @@ import java.util.LinkedList;
  */
 public class Player extends CompositeEntity {
     /**
+     * The bounding box of the head of a player.
+     */
+    private static final BoundingBox HEAD_BOUNDING_BOX = new BoundingBox(1,1, 1);
+
+    /**
+     * The bounding box of the body of a player.
+     */
+    private static final BoundingBox BODY_BOUNDING_BOX = new BoundingBox(1,2, 1);
+
+    /**
+     * The bounding box of a player.
+     */
+    private static final BoundingBox BOUNDING_BOX = new BoundingBox(1, 2, 1);
+
+    /**
      * The player's head.
      */
     private class PlayerHead extends Entity {
+        private final BoundingBox BOUNDING_BOX = new BoundingBox(1, 1, 1);
+
         /**
          * Construct a player head.
          * @param pos See {@link Entity#pos}.
@@ -30,12 +48,22 @@ public class Player extends CompositeEntity {
         public Iterable<Quad> getQuads() {
             return new LinkedList<>();
         }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public BoundingBox getBoundingBox() {
+            return Player.BODY_BOUNDING_BOX;
+        }
     }
 
     /**
      * The player's body.
      */
     private class PlayerBody extends Entity {
+        private final BoundingBox BOUNDING_BOX = new BoundingBox(1,2, 1);
+
         /**
          * Construct a player body.
          * @param pos See {@link Entity#pos}.
@@ -53,6 +81,14 @@ public class Player extends CompositeEntity {
          */
         public Iterable<Quad> getQuads() {
             return new LinkedList<>();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public BoundingBox getBoundingBox() {
+            return Player.HEAD_BOUNDING_BOX;
         }
     }
 

@@ -1,5 +1,7 @@
 package com.sheaconlon.realcraft.blocks;
 
+import com.sheaconlon.realcraft.physics.BoundingBox;
+import com.sheaconlon.realcraft.physics.Physical;
 import com.sheaconlon.realcraft.positioning.Position;
 import com.sheaconlon.realcraft.renderer.Renderable;
 import com.sheaconlon.realcraft.renderer.Vertex;
@@ -8,7 +10,12 @@ import com.sheaconlon.realcraft.positioning.BlockPosition;
 /**
  * A block, a cubical, grid-aligned object in the world.
  */
-public abstract class Block implements Renderable {
+public abstract class Block implements Renderable, Physical {
+    /**
+     * The bounding box of a block.
+     */
+    private static final BoundingBox BOUNDING_BOX = new BoundingBox(1, 1, 1);
+
     /**
      * The normal vector for the front face of a block.
      */
@@ -123,5 +130,13 @@ public abstract class Block implements Renderable {
     @Override
     public Position getPosition() {
         return this.pos.toPosition();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public BoundingBox getBoundingBox() {
+        return Block.BOUNDING_BOX;
     }
 }
