@@ -1,5 +1,7 @@
-package com.sheaconlon.realcraft.entities;
+package com.sheaconlon.realcraft.entity.entities;
 
+import com.sheaconlon.realcraft.entity.CompositeEntity;
+import com.sheaconlon.realcraft.entity.Entity;
 import com.sheaconlon.realcraft.physics.BoundingBox;
 import com.sheaconlon.realcraft.positioning.Position;
 import com.sheaconlon.realcraft.renderer.Quad;

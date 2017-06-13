@@ -1,4 +1,4 @@
-package com.sheaconlon.realcraft.entities;
+package com.sheaconlon.realcraft.entity;
 
 import com.sheaconlon.realcraft.physics.BoundingBox;
 import com.sheaconlon.realcraft.positioning.Position;
@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.LinkedList;
 
 /**
- * A composite entity, an entity composed of some constitutent entities.
+ * A composite entity, an entity composed of some constitutent entity.
  */
 public abstract class CompositeEntity extends Entity {
     /**
-     * The constituent entities of this composite entity.
+     * The constituent entity of this composite entity.
      */
     private final List<Entity> entities;
 

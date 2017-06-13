@@ -1,8 +1,7 @@
-package com.sheaconlon.realcraft.entities;
+package com.sheaconlon.realcraft.entity;
 
 import com.sheaconlon.realcraft.blocks.Block;
 import com.sheaconlon.realcraft.physics.Physical;
-import com.sheaconlon.realcraft.positioning.BlockPosition;
 import com.sheaconlon.realcraft.positioning.Position;
 import com.sheaconlon.realcraft.renderer.Renderable;
 
