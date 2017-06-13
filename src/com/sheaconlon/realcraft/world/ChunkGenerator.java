@@ -3,9 +3,8 @@ package com.sheaconlon.realcraft.world;
 import com.sheaconlon.realcraft.blocks.AirBlock;
 import com.sheaconlon.realcraft.blocks.Block;
 import com.sheaconlon.realcraft.blocks.DirtBlock;
-import com.sheaconlon.realcraft.utilities.BlockPosition;
-import com.sheaconlon.realcraft.utilities.ChunkPosition;
-import com.sheaconlon.realcraft.utilities.EntityPosition;
+import com.sheaconlon.realcraft.positioning.BlockPosition;
+import com.sheaconlon.realcraft.positioning.ChunkPosition;
 
 /**
  * A chunk generator. Creates the initial state of the world.

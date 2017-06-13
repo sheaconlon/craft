@@ -1,8 +1,7 @@
 package com.sheaconlon.realcraft.blocks;
 
 import com.sheaconlon.realcraft.renderer.Quad;
-import com.sheaconlon.realcraft.utilities.BlockPosition;
-import com.sheaconlon.realcraft.utilities.EntityPosition;
+import com.sheaconlon.realcraft.positioning.BlockPosition;
 
 import java.util.LinkedList;
 

@@ -1,6 +1,6 @@
 package com.sheaconlon.realcraft.renderer;
 
-import com.sheaconlon.realcraft.utilities.EntityPosition;
+import com.sheaconlon.realcraft.positioning.EntityPosition;
 
 /**
  * A vertex of a face.

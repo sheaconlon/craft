@@ -2,7 +2,7 @@ package com.sheaconlon.realcraft.entities;
 
 import com.sheaconlon.realcraft.blocks.Block;
 import com.sheaconlon.realcraft.renderer.Renderable;
-import com.sheaconlon.realcraft.utilities.EntityPosition;
+import com.sheaconlon.realcraft.positioning.EntityPosition;
 
 /**
  * An entity, any object in the world which is not a {@link Block}.

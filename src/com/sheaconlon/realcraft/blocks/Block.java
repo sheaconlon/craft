@@ -2,8 +2,8 @@ package com.sheaconlon.realcraft.blocks;
 
 import com.sheaconlon.realcraft.renderer.Renderable;
 import com.sheaconlon.realcraft.renderer.Vertex;
-import com.sheaconlon.realcraft.utilities.BlockPosition;
-import com.sheaconlon.realcraft.utilities.EntityPosition;
+import com.sheaconlon.realcraft.positioning.BlockPosition;
+import com.sheaconlon.realcraft.positioning.EntityPosition;
 
 /**
  * A block, a cubical, grid-aligned object in the world.

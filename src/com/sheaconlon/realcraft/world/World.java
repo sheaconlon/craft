@@ -3,8 +3,8 @@ package com.sheaconlon.realcraft.world;
 import java.util.HashMap;
 import java.util.Map;
 import com.sheaconlon.realcraft.blocks.Block;
-import com.sheaconlon.realcraft.utilities.BlockPosition;
-import com.sheaconlon.realcraft.utilities.ChunkPosition;
+import com.sheaconlon.realcraft.positioning.BlockPosition;
+import com.sheaconlon.realcraft.positioning.ChunkPosition;
 
 /**
  * The world.

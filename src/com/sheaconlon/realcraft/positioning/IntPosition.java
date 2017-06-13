@@ -1,4 +1,4 @@
-package com.sheaconlon.realcraft.utilities;
+package com.sheaconlon.realcraft.positioning;
 
 import java.util.Arrays;
 

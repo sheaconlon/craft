@@ -1,7 +1,7 @@
 package com.sheaconlon.realcraft.entities;
 
 import com.sheaconlon.realcraft.renderer.Quad;
-import com.sheaconlon.realcraft.utilities.EntityPosition;
+import com.sheaconlon.realcraft.positioning.EntityPosition;
 
 import java.util.LinkedList;
 

@@ -4,10 +4,9 @@ import com.sheaconlon.realcraft.blocks.Block;
 import com.sheaconlon.realcraft.entities.Entity;
 import com.sheaconlon.realcraft.renderer.Renderable;
 import com.sheaconlon.realcraft.renderer.Quad;
-import com.sheaconlon.realcraft.utilities.BlockPosition;
-import com.sheaconlon.realcraft.utilities.ChunkPosition;
-import com.sheaconlon.realcraft.utilities.EntityPosition;
-import com.sun.javaws.exceptions.InvalidArgumentException;
+import com.sheaconlon.realcraft.positioning.BlockPosition;
+import com.sheaconlon.realcraft.positioning.ChunkPosition;
+import com.sheaconlon.realcraft.positioning.EntityPosition;
 
 import java.util.LinkedList;
 import java.util.List;
