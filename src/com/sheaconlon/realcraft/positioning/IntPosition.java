@@ -130,5 +130,8 @@ public abstract class IntPosition {
                 && this.getZ() == otherPosition.getZ();
     }
 
-
+    public boolean isOrigin() {
+        // TODO: Make the world "wrap around".
+        return this.getX() == 0 && this.getY() == 0 && this.getZ() == 0;
+    }
 }
