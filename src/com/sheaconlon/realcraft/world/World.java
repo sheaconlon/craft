@@ -3,6 +3,7 @@ package com.sheaconlon.realcraft.world;
 import java.util.HashMap;
 import java.util.Map;
 import com.sheaconlon.realcraft.blocks.Block;
+import com.sheaconlon.realcraft.entity.entities.Player;
 import com.sheaconlon.realcraft.positioning.BlockPosition;
 import com.sheaconlon.realcraft.positioning.ChunkPosition;
 
@@ -24,11 +25,25 @@ public class World {
     private final ChunkGenerator chunkGenerator;
 
     /**
+     * The player of this world.
+     */
+    private final Player player;
+
+    /**
      * Construct a world.
      */
     public World(final ChunkGenerator chunkGenerator) {
         this.chunks = new HashMap<>();
         this.chunkGenerator = chunkGenerator;
+        this.player = this.chunkGenerator.getPlayer();
+    }
+
+    /**
+     * Get the player of this world.
+     * @return The player of this world.
+     */
+    public Player getPlayer() {
+        return this.player;
     }
 
     /**
