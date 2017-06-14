@@ -10,11 +10,6 @@ import com.sheaconlon.realcraft.renderer.Renderable;
  */
 public abstract class Entity extends Physical implements Renderable {
     /**
-     * The position of the anchor point of this entity.
-     */
-    private Position pos;
-
-    /**
      * The component counterclockwise from the positive x-axis of the orientation of this entity.
      */
     private double xAngle;
@@ -31,23 +26,16 @@ public abstract class Entity extends Physical implements Renderable {
 
     /**
      * Construct an entity with a given initial position and orientation.
-     * @param pos See {@link #pos}.
+     * @param pos See {@link Physical#position}.
      * @param xAngle See {@link #xAngle}.
      * @param yAngle See {@link #xAngle}.
      * @param zAngle See {@link #xAngle}.
      */
     protected Entity(final Position pos, final double xAngle, final double yAngle, final double zAngle) {
-        this.pos = new Position(pos);
+        super(pos);
         this.xAngle = xAngle;
         this.yAngle = yAngle;
         this.zAngle = zAngle;
-    }
-
-    /**
-     * Getter for {@link #pos}.
-     */
-    public Position getPosition() {
-        return this.pos;
     }
 
     /**
