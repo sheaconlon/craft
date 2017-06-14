@@ -52,20 +52,19 @@ public class World {
      * @return The block at {@code pos}.
      */
     Block getBlock(final BlockPosition pos) {
-        this.ensureChunkLoaded(pos.toChunkPosition());
-        return this.chunks.get(pos.toChunkPosition()).getBlock(pos);
+        return this.getChunk(pos.toChunkPosition()).getBlock(pos);
     }
 
     /**
-     * Ensure that a chunk at some position is loaded into {@link #chunks}.
-     *
-     * If the chunk is not already loaded, uses {@link #chunkGenerator} to generate it.
-     * @param pos The position.
+     * Get the chunk at some position.
+     * @param position The position.
+     * @return The chunk.
      */
-    private void ensureChunkLoaded(final ChunkPosition pos) {
-        if (!this.chunks.containsKey(pos)) {
-            final Chunk chunk = this.chunkGenerator.getChunk(pos);
-            this.chunks.put(pos, chunk);
+    Chunk getChunk(final ChunkPosition position) {
+        if (!this.chunks.containsKey(position)) {
+            final Chunk chunk = this.chunkGenerator.getChunk(position);
+            this.chunks.put(position, chunk);
         }
+        return this.chunks.get(position);
     }
 }
