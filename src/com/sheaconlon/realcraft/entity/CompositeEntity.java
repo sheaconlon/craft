@@ -1,53 +1,82 @@
 package com.sheaconlon.realcraft.entity;
 
 import com.sheaconlon.realcraft.physics.BoundingBox;
+import com.sheaconlon.realcraft.physics.Physical;
 import com.sheaconlon.realcraft.positioning.Position;
+import com.sheaconlon.realcraft.positioning.ThreeVector;
 import com.sheaconlon.realcraft.renderer.Quad;
 
 import java.util.List;
 import java.util.LinkedList;
 
 /**
- * A composite entity, an entity composed of some constitutent entity.
+ * A composite entity, an entity composed of some constituent entities.
  */
 public abstract class CompositeEntity extends Entity {
     /**
-     * The constituent entity of this composite entity.
+     * The constituent entities of this composite entity.
      */
-    private final List<Entity> entities;
+    private final List<Entity> constituents;
 
     /**
-     * Construct a composite entity.
-     * @param pos See {@link Entity#pos}.
-     * @param xAngle See {@link Entity#xAngle}.
-     * @param yAngle See {@link Entity#xAngle}.
-     * @param zAngle See {@link Entity#xAngle}.
+     * The cached bounding box of this composite entity.
      */
-    protected CompositeEntity(final Position pos, final double xAngle, final double yAngle,
-                              final double zAngle) {
-        super(pos, xAngle, yAngle, zAngle);
-        this.entities = new LinkedList<>();
+    private BoundingBox boundingBox;
+
+    /**
+     * The cached quads of this composite entity.
+     */
+    private List<Quad> quads;
+
+    /**
+     * @see Physical#Physical(Position, double, ThreeVector)
+     */
+    protected CompositeEntity(final Position position, final double orientation, final ThreeVector velocity) {
+        super(position, orientation, velocity);
+        this.constituents = new LinkedList<>();
+        this.boundingBox = new BoundingBox(0, 0, 0);
     }
 
     /**
-     * Add a constituent entity.
-     * @param e The constituent entity.
+     * @see Physical#Physical(Position, double)
      */
-    protected void addConstituent(final Entity e) {
-        this.entities.add(e);
+    protected CompositeEntity(final Position position, final double orientation) {
+        super(position, orientation);
+        this.constituents = new LinkedList<>();
+    }
+
+    /**
+     * @see Physical#Physical(Position)
+     */
+    protected CompositeEntity(final Position position) {
+        super(position);
+        this.constituents = new LinkedList<>();
+    }
+
+    /**
+     * @see Physical#Physical()
+     */
+    protected CompositeEntity() {
+        super();
+        this.constituents = new LinkedList<>();
+    }
+
+    /**
+     * Add a constituent entity to this composite entity.
+     * @param constituent The constituent entity.
+     */
+    protected void addConstituent(final Entity constituent) {
+        this.constituents.add(constituent);
+        this.updateBoundingBox(constituent);
+        this.updateQuads(constituent);
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public Iterable<Quad> getQuads() {
-        final List<Quad> quads = new LinkedList<>();
-        for (final Entity e : this.entities) {
-            for (final Quad q : e.getQuads()) {
-                quads.add(q);
-            }
-        }
-        return quads;
+        return this.quads;
     }
 
     /**
@@ -55,16 +84,34 @@ public abstract class CompositeEntity extends Entity {
      */
     @Override
     public BoundingBox getBoundingBox() {
-        long xLength = 0;
-        long yLength = 0;
-        long zLength = 0;
-        for (final Entity e : this.entities) {
-            final Position ePosition = e.getPosition();
-            final BoundingBox eBoundingBox = e.getBoundingBox();
-            xLength = (long)Math.max(xLength, ePosition.getX() + eBoundingBox.getXLength());
-            yLength = (long)Math.max(yLength, ePosition.getY() + eBoundingBox.getYLength());
-            zLength = (long)Math.max(zLength, ePosition.getZ() + eBoundingBox.getZLength());
+        return this.boundingBox;
+    }
+
+    /**
+     * Update this composite entity's cached bounding box.
+     * @param newConstituent A new constituent entity that may necessitate an update of the bounding box.
+     */
+    private void updateBoundingBox(final Entity newConstituent) {
+        final Position thisPosition = this.getPosition();
+        final BoundingBox thisBoundingBox = this.getBoundingBox();
+        final Position constituentPosition = newConstituent.getPosition();
+        final BoundingBox constituentBoundingBox = newConstituent.getBoundingBox();
+        final long xLength = (long)Math.max(thisBoundingBox.getXLength(),
+                constituentPosition.getX() + constituentBoundingBox.getXLength());
+        final long yLength = (long)Math.max(thisBoundingBox.getYLength(),
+                constituentPosition.getY() + constituentBoundingBox.getYLength());
+        final long zLength = (long)Math.max(thisBoundingBox.getZLength(),
+                constituentPosition.getZ() + constituentBoundingBox.getZLength());
+        this.boundingBox = new BoundingBox(xLength, yLength, zLength);
+    }
+
+    /**
+     * Update the composite entity's cached quads.
+     * @param newConstituent A new constituent entity that may necessitate an update of the quads.
+     */
+    private void updateQuads(final Entity newConstituent) {
+        for (final Quad quad : newConstituent.getQuads()) {
+            this.quads.add(quad);
         }
-        return new BoundingBox(xLength, yLength, zLength);
     }
 }
