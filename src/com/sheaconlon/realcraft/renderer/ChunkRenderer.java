@@ -5,6 +5,10 @@ import com.sheaconlon.realcraft.world.Chunk;
 import org.lwjgl.opengl.GL11;
 
 public class ChunkRenderer {
+    public ChunkRenderer(final Chunk chunk) {
+
+    }
+
     void render(final Chunk chunk) {
         GL11.glBegin(GL11.GL_QUADS);
         for (final Quad quad : chunk.getQuads()) {
