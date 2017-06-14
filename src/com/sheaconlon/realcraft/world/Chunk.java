@@ -1,7 +1,7 @@
 package com.sheaconlon.realcraft.world;
 
 import com.sheaconlon.realcraft.blocks.Block;
-import com.sheaconlon.realcraft.entities.Entity;
+import com.sheaconlon.realcraft.entity.Entity;
 import com.sheaconlon.realcraft.positioning.Position;
 import com.sheaconlon.realcraft.renderer.Renderable;
 import com.sheaconlon.realcraft.renderer.Quad;
