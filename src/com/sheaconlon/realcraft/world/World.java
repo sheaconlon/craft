@@ -60,7 +60,7 @@ public class World {
      * @param position The position.
      * @return The chunk.
      */
-    Chunk getChunk(final ChunkPosition position) {
+    public Chunk getChunk(final ChunkPosition position) {
         if (!this.chunks.containsKey(position)) {
             final Chunk chunk = this.chunkGenerator.getChunk(position);
             this.chunks.put(position, chunk);
