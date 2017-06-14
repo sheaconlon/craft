@@ -5,15 +5,9 @@ import com.sheaconlon.realcraft.world.Chunk;
 import org.lwjgl.opengl.GL11;
 
 public class ChunkRenderer {
-    private final Chunk chunk;
-
-    ChunkRenderer(final Chunk chunk) {
-        this.chunk = chunk;
-    }
-
-    void render() {
+    void render(final Chunk chunk) {
         GL11.glBegin(GL11.GL_QUADS);
-        for (final Quad quad : this.chunk.getQuads()) {
+        for (final Quad quad : chunk.getQuads()) {
             final double[] color = quad.getColor();
             GL11.glColor3d(color[0], color[1], color[2]);
             for (final Vertex vertex : quad.getVertices()) {
