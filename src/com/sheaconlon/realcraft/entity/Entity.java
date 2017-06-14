@@ -3,59 +3,38 @@ package com.sheaconlon.realcraft.entity;
 import com.sheaconlon.realcraft.blocks.Block;
 import com.sheaconlon.realcraft.physics.Physical;
 import com.sheaconlon.realcraft.positioning.Position;
+import com.sheaconlon.realcraft.positioning.ThreeVector;
 import com.sheaconlon.realcraft.renderer.Renderable;
 
 /**
- * An entity, any object in the world which is not a {@link Block}.
+ * Something which is not a {@link Block}.
  */
 public abstract class Entity extends Physical implements Renderable {
     /**
-     * The component counterclockwise from the positive x-axis of the orientation of this entity.
+     * @see {@link Physical(Position, double, ThreeVector)}
      */
-    private double xAngle;
-
-    /**
-     * The component counterclockwise from the positive y-axis of the orientation of this entity.
-     */
-    private double yAngle;
-
-    /**
-     * The component counterclockwise from the positive z-axis of the orientation of this entity.
-     */
-    private double zAngle;
-
-    /**
-     * Construct an entity with a given initial position and orientation.
-     * @param pos See {@link Physical#position}.
-     * @param xAngle See {@link #xAngle}.
-     * @param yAngle See {@link #xAngle}.
-     * @param zAngle See {@link #xAngle}.
-     */
-    protected Entity(final Position pos, final double xAngle, final double yAngle, final double zAngle) {
-        super(pos);
-        this.xAngle = xAngle;
-        this.yAngle = yAngle;
-        this.zAngle = zAngle;
+    public Entity(final Position position, final double orientation, final ThreeVector velocity) {
+        super(position, orientation, velocity);
     }
 
     /**
-     * Getter for {@link #xAngle}.
+     * @see {@link Physical(Position, double)}
      */
-    public double getXAngle() {
-        return this.xAngle;
+    public Entity(final Position position, final double orientation) {
+        super(position, orientation);
     }
 
     /**
-     * Getter for {@link #yAngle}.
+     * @see {@link Physical(Position)}
      */
-    public double getYAngle() {
-        return this.yAngle;
+    public Entity(final Position position) {
+        super(position);
     }
 
     /**
-     * Getter for {@link #zAngle}.
+     * @see {@link Physical()}
      */
-    public double getZAngle() {
-        return this.zAngle;
+    public Entity() {
+        super();
     }
 }
