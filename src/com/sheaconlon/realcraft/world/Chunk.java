@@ -111,6 +111,16 @@ public class Chunk implements Renderable {
         return quads;
     }
 
+    /**
+     * Add an entity to this chunk.
+     * @param newEntity The entity.
+     */
+    public void addEntity(final Entity newEntity) {
+        final BlockPosition position = newEntity.getPosition().toBlockPosition();
+        // TODO: Use ArrayList<LinkedList> instead of LinkedList[] so that long block positions will be supported.
+        this.entities[(int)position.getX()][(int)position.getY()][(int)position.getZ()].add(newEntity);
+    }
+
     private BlockPosition makeRelative(final BlockPosition pos) {
         final BlockPosition result = new BlockPosition(
                 pos.getX() - this.pos.getX(),
