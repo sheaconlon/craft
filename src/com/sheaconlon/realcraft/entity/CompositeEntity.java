@@ -43,6 +43,7 @@ public abstract class CompositeEntity extends Entity {
     protected CompositeEntity(final Position position, final double orientation) {
         super(position, orientation);
         this.constituents = new LinkedList<>();
+        this.boundingBox = new BoundingBox(0, 0, 0);
     }
 
     /**
@@ -51,6 +52,7 @@ public abstract class CompositeEntity extends Entity {
     protected CompositeEntity(final Position position) {
         super(position);
         this.constituents = new LinkedList<>();
+        this.boundingBox = new BoundingBox(0, 0, 0);
     }
 
     /**
@@ -59,6 +61,7 @@ public abstract class CompositeEntity extends Entity {
     protected CompositeEntity() {
         super();
         this.constituents = new LinkedList<>();
+        this.boundingBox = new BoundingBox(0, 0, 0);
     }
 
     /**
