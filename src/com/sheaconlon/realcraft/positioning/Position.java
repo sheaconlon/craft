@@ -7,6 +7,11 @@ import com.sheaconlon.realcraft.world.Chunk;
  */
 public class Position extends ThreeVector {
     /**
+     * The zero position, the position whose coordinates are all zero.
+     */
+    public static final Position ZERO = new Position(0, 0, 0);
+
+    /**
      * Construct a vector.
      * @param x The x-coordinate of the vector.
      * @param y The y-coordinate of the vector.
@@ -46,6 +51,33 @@ public class Position extends ThreeVector {
                 Position.floorCoordinate(this.getY() / Chunk.SIZE),
                 Position.floorCoordinate(this.getZ() / Chunk.SIZE)
         );
+    }
+
+    /**
+     * Get the x-coordinate of this position, viewing it as relative to some reference position.
+     * @param reference The reference position.
+     * @return The x-coordinate of this position, viewing it as relative to some reference position.
+     */
+    public double getXRelative(final Position reference) {
+        return reference.getX() + this.getX();
+    }
+
+    /**
+     * Get the y-coordinate of this position, viewing it as relative to some reference position.
+     * @param reference The reference position.
+     * @return The y-coordinate of this position, viewing it as relative to some reference position.
+     */
+    public double getYRelative(final Position reference) {
+        return reference.getY() + this.getY();
+    }
+
+    /**
+     * Get the z-coordinate of this position, viewing it as relative to some reference position.
+     * @param reference The reference position.
+     * @return The z-coordinate of this position, viewing it as relative to some reference position.
+     */
+    public double getZRelative(final Position reference) {
+        return reference.getZ() + this.getZ();
     }
 
     /**
