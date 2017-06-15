@@ -1,5 +1,6 @@
 package com.sheaconlon.realcraft;
 
+import com.sheaconlon.realcraft.renderer.Renderer;
 import com.sheaconlon.realcraft.ui.UserInterface;
 import com.sheaconlon.realcraft.world.ChunkGenerator;
 import com.sheaconlon.realcraft.world.World;
@@ -19,14 +20,21 @@ public class Launcher {
     private UserInterface ui;
 
     /**
+     * The renderer.
+     */
+    private Renderer renderer;
+
+    /**
      * Launch Realcraft.
      */
     private void launch() {
         this.world = new World(new ChunkGenerator());
         this.ui = new UserInterface();
         this.ui.show();
+        this.renderer = new Renderer(this.ui.getWindowHandle(), this.ui.getDimensions());
     }
 
+    // TODO: Use `this` where possible.
     /**
      * Run Realcraft.
      *
@@ -35,6 +43,7 @@ public class Launcher {
     private void run() {
         while (!ui.shouldClose()) {
             ui.respond();
+            this.renderer.render(this.world);
         }
     }
 
