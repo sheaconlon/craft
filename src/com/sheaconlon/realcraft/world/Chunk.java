@@ -138,4 +138,31 @@ public class Chunk implements Renderable {
         }
         return result;
     }
+
+    /**
+     * Return the hash code of this chunk.
+     *
+     * The hash code of a chunk is the hash code of its chunk position.
+     * @return The hash code of this chunk.
+     */
+    @Override
+    public int hashCode() {
+        return this.getPosition().hashCode();
+    }
+
+    /**
+     * Return whether this chunk equals some other chunk.
+     *
+     * Two chunks are equal if their chunk positions are the same.
+     * @param other The other chunk.
+     * @return Whether this chunk equals the other chunk.
+     */
+    @Override
+    public boolean equals(final Object other) {
+        if (!(other instanceof Chunk)) {
+            return false;
+        }
+        final Chunk otherChunk = (Chunk)other;
+        return this.getPosition().equals(otherChunk.getPosition());
+    }
 }
