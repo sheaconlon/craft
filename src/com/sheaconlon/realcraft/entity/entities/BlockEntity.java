@@ -10,19 +10,9 @@ import com.sheaconlon.realcraft.renderer.Quad;
  */
 public class BlockEntity extends Entity {
     /**
-     * The initial x-angle of a block entity.
+     * The initial orientation of a block entity.
      */
-    private final static double INITIAL_X_ANGLE = 0;
-
-    /**
-     * The initial y-angle of a block entity.
-     */
-    private final static double INITIAL_Y_ANGLE = 0;
-
-    /**
-     * The initial z-angle of a block entity.
-     */
-    private final static double INITIAL_Z_ANGLE = 0;
+    private final static double INITIAL_ORIENTATION = 0;
 
     /**
      * The block that this block entity represents.
@@ -34,8 +24,7 @@ public class BlockEntity extends Entity {
      * @param block The block that the block entity should represent.
      */
     public BlockEntity(final Block block) {
-        super(block.getPosition(), BlockEntity.INITIAL_X_ANGLE, BlockEntity.INITIAL_Y_ANGLE,
-                BlockEntity.INITIAL_Z_ANGLE);
+        super(block.getPosition(), BlockEntity.INITIAL_ORIENTATION);
         this.block = block;
     }
 
