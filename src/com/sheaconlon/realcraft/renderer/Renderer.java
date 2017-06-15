@@ -60,6 +60,7 @@ public class Renderer {
         Renderer.setProjection(windowDimensions);
     }
 
+    // TODO: Render chunks relative to player, not origin.
     public void render(final World world) {
         final Player player = world.getPlayer();
         Renderer.setModelView(player.getPosition(), player.getOrientation());
@@ -67,10 +68,12 @@ public class Renderer {
         for (long x = -Renderer.RENDER_DISTANCE; x <= Renderer.RENDER_DISTANCE; x++){
             for (long y = -Renderer.RENDER_DISTANCE; y <= Renderer.RENDER_DISTANCE; y++){
                 for (long z = -Renderer.RENDER_DISTANCE; z <= Renderer.RENDER_DISTANCE; z++){
+                    System.out.printf("rendering chunk at (%d, %d, %d)...\n", x, y, z);
                     final ChunkPosition renderChunkPosition = new ChunkPosition(x, y, z);
                     final Chunk renderChunk = world.getChunk(renderChunkPosition);
                     final ChunkRenderer chunkRenderer = this.getChunkRenderer(renderChunk);
                     chunkRenderer.render(renderChunk);
+                    System.out.printf("done with chunk at (%d, %d, %d)...\n", x, y, z);
                 }
             }
         }

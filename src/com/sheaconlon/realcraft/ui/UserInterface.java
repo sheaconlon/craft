@@ -44,11 +44,13 @@ public class UserInterface {
      * The user interface will not be visible, but can be made visible by a call to {@link #show()}.
      */
     public UserInterface() {
+        System.out.println("setting up UI...");
         this.window = new Window();
         // Save a strong reference to the callback so that it is not garbage collected.
         this.windowCloseCallback = new UserInterface.WindowCloseCallback();
         this.window.setWindowCloseCallback(this.windowCloseCallback);
         this.shouldClose = false;
+        System.out.println("done with UI");
     }
 
     /**
