@@ -63,7 +63,7 @@ public class Renderer {
     // TODO: Render chunks relative to player, not origin.
     public void render(final World world) {
         final Player player = world.getPlayer();
-        Renderer.setModelView(player.getPosition(), player.getOrientation());
+        Renderer.setModelView(player.getPosition(), player.getEyePosition(), player.getOrientation());
         final ChunkPosition playerChunkPosition = player.getPosition().toChunkPosition();
         for (long x = -Renderer.RENDER_DISTANCE; x <= Renderer.RENDER_DISTANCE; x++){
             for (long y = -Renderer.RENDER_DISTANCE; y <= Renderer.RENDER_DISTANCE; y++){
@@ -106,13 +106,14 @@ public class Renderer {
      * Set the OpenGL model view matrix to
      * TODO: Finish this.
      */
-    private static void setModelView(final Position position, final double orientation) {
-        final double x = position.getX();
-        final double y = position.getY();
-        final double z = position.getZ();
-        final float centerX = (float)(x + Math.cos(orientation));
+    private static void setModelView(final Position playerPosition, final Position playerEyePosition,
+                                     final double playerOrientation) {
+        final double x = playerEyePosition.getXRelative(playerPosition);
+        final double y = playerEyePosition.getYRelative(playerPosition);
+        final double z = playerEyePosition.getZRelative(playerPosition);
+        final float centerX = (float)(x + Math.cos(playerOrientation));
         final float centerY = (float)y;
-        final float centerZ = (float)(z + Math.sin(orientation));
+        final float centerZ = (float)(z + Math.sin(playerOrientation));
         final float upX = 0;
         final float upY = 1;
         final float upZ = 0;

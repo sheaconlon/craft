@@ -77,6 +77,8 @@ public class Player extends CompositeEntity {
      */
     private static final double HEAD_HEIGHT = 1.25;
 
+    private static final Position EYE_POSITION = new Position(0.5, Player.HEAD_HEIGHT, 0.5);
+
     /**
      * The player's head.
      */
@@ -98,5 +100,9 @@ public class Player extends CompositeEntity {
         headPosition.changeY(Player.HEAD_HEIGHT);
         this.head = new PlayerHead(headPosition);
         this.addConstituent(this.head);
+    }
+
+    public Position getEyePosition() {
+        return Player.EYE_POSITION;
     }
 }
