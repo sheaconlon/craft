@@ -99,6 +99,15 @@ public abstract class Physical {
     }
 
     /**
+     * Get the orientation of this physical.
+     * @see {@link #orientation}.
+     * @return The orientation of this physical.
+     */
+    public double getOrientation() {
+        return this.orientation;
+    }
+
+    /**
      * Get the velocity of this physical.
      * @see {@link #velocity}
      * @return The velocity of this physical. This object is not a copy, so changes to it will affect this
