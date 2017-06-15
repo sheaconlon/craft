@@ -15,7 +15,7 @@ public class ChunkGenerator {
     /**
      * The initial position of the player.
      */
-    public static final Position PLAYER_INITIAL_POSITION = new Position(0, 0, 0);
+    public static final Position PLAYER_INITIAL_POSITION = new Position(0, ChunkGenerator.GROUND_LEVEL, 0);
 
     /**
      * The y-coordinate of the top of the ground.
