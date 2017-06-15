@@ -53,7 +53,7 @@ public class Position extends ThreeVector {
      * @param coordinate The coordinate.
      * @return The largest integer that is still less than or equal to {@code coordinate}.
      */
-    private static long floorCoordinate(final double coordinate) {
+    static long floorCoordinate(final double coordinate) {
         return (long)Math.floor(coordinate);
     }
 }
