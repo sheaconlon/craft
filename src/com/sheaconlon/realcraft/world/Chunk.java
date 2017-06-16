@@ -21,6 +21,7 @@ public class Chunk implements Renderable {
      */
     public static final int SIZE = 100;
 
+    // TODO: Fix this.
     /**
      * The x-coordinate of this chunk.
      *
@@ -84,6 +85,12 @@ public class Chunk implements Renderable {
         return this.blocks[(int)relativePos.getX()][(int)relativePos.getY()][(int)relativePos.getZ()];
     }
 
+    // TODO: Add notion of anchors throughout codebase.
+    /**
+     * Get the block at some position relative to the return value of {@code #getPosition()}.
+     * @param position The position.
+     * @return The block.
+     */
     Block getBlockRelative(final BlockPosition position) {
         return this.blocks[(int)position.getX()][(int)position.getY()][(int)position.getZ()];
     }
