@@ -29,6 +29,9 @@ public class Renderer {
      */
     private static final float[] SUNLIGHT_COLOR = new float[]{1, 0.965f, 0.847f, 1};
 
+    /**
+     * The color of the sky, in RGBA format.
+     */
     private static final float[] SKY_COLOR = new float[]{0.435f, 0.675f, 0.969f};
 
     /**
