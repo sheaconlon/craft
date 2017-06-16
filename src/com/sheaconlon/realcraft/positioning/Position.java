@@ -81,6 +81,33 @@ public class Position extends ThreeVector {
     }
 
     /**
+     * Get the x-coordinate of this position relative to some reference position.
+     * @param reference The reference position.
+     * @return The x-coordinate of this position relative to the reference position.
+     */
+    public double getXRelative(final Position reference) {
+        return this.getX() - reference.getX();
+    }
+
+    /**
+     * Get the y-coordinate of this position relative to some reference position.
+     * @param reference The reference position.
+     * @return The y-coordinate of this position relative to the reference position.
+     */
+    public double getYRelative(final Position reference) {
+        return this.getY() - reference.getY();
+    }
+
+    /**
+     * Get the z-coordinate of this position relative to some reference position.
+     * @param reference The reference position.
+     * @return The z-coordinate of this position relative to the reference position.
+     */
+    public double getZRelative(final Position reference) {
+        return this.getZ() - reference.getZ();
+    }
+
+    /**
      * Floor a coordinate.
      * @param coordinate The coordinate.
      * @return The largest integer that is still less than or equal to {@code coordinate}.
