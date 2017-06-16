@@ -292,8 +292,9 @@ public class Chunk implements Renderable {
      * @param block The block.
      */
     void setBlock(final BlockPosition pos, final Block block) {
-        final BlockPosition relativePos = this.makeRelative(pos);
-        this.blocks[(int)relativePos.getX()][(int)relativePos.getY()][(int)relativePos.getZ()] = block;
+        final BlockPosition anchor = this.pos.toBlockPosition();
+        this.blocks[(int)pos.getXRelative(anchor)][(int)pos.getYRelative(anchor)]
+                [(int)pos.getZRelative(anchor)] = block;
     }
 
     /**
@@ -302,8 +303,10 @@ public class Chunk implements Renderable {
      * @return The block.
      */
     Block getBlock(final BlockPosition pos) {
-        final BlockPosition relativePos = this.makeRelative(pos);
-        return this.blocks[(int)relativePos.getX()][(int)relativePos.getY()][(int)relativePos.getZ()];
+        // TODO: Cache this.pos.toBlockPosition()
+        final BlockPosition anchor = this.pos.toBlockPosition();
+        return this.blocks[(int)pos.getXRelative(anchor)][(int)pos.getYRelative(anchor)]
+                [(int)pos.getZRelative(anchor)];
     }
 
     // TODO: Add notion of anchors throughout codebase.
@@ -322,9 +325,9 @@ public class Chunk implements Renderable {
      * @return A list of the entities within the block position.
      */
     List<Entity> getEntities(final BlockPosition position) {
-        final BlockPosition relativePosition = this.makeRelative(position);
-        return this.entities[(int)relativePosition.getX()][(int)relativePosition.getY()]
-                [(int)relativePosition.getZ()];
+        final BlockPosition anchor = this.pos.toBlockPosition();
+        return this.entities[(int)position.getXRelative(anchor)][(int)position.getYRelative(anchor)]
+                [(int)position.getZRelative(anchor)];
     }
 
     /**
@@ -358,27 +361,11 @@ public class Chunk implements Renderable {
      * @param newEntity The entity.
      */
     public void addEntity(final Entity newEntity) {
+        final BlockPosition anchor = this.pos.toBlockPosition();
         final BlockPosition position = newEntity.getPosition().toBlockPosition();
         // TODO: Use ArrayList<LinkedList> instead of LinkedList[] so that long block positions will be supported.
-        this.entities[(int)position.getX()][(int)position.getY()][(int)position.getZ()].add(newEntity);
-    }
-
-    private BlockPosition makeRelative(final BlockPosition pos) {
-        final BlockPosition result = new BlockPosition(
-                pos.getX() - this.pos.getX(),
-                pos.getY() - this.pos.getY(),
-                pos.getZ() - this.pos.getZ()
-        );
-        if (result.getX() < 0 || result.getX() >= Chunk.SIZE) {
-            throw new IllegalArgumentException("position is not within this chunk");
-        }
-        if (result.getY() < 0 || result.getY() >= Chunk.SIZE) {
-            throw new IllegalArgumentException("position is not within this chunk");
-        }
-        if (result.getZ() < 0 || result.getZ() >= Chunk.SIZE) {
-            throw new IllegalArgumentException("position is not within this chunk");
-        }
-        return result;
+        this.entities[(int)position.getXRelative(anchor)][(int)position.getYRelative(anchor)]
+                [(int)position.getZRelative(anchor)].add(newEntity);
     }
 
     /**
