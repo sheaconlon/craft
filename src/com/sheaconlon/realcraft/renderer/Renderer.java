@@ -19,6 +19,16 @@ import java.util.Map;
  * A renderer, which renders the world for the launcher.
  */
 public class Renderer {
+    /**
+     * A vector giving the direction of the sun.
+     */
+    private static final float[] SUN_DIRECTION = new float[]{-1, 3, 1, 0};
+
+    /**
+     * The color of sunlight, in RGBA format.
+     */
+    private static final float[] SUNLIGHT_COLOR = new float[]{1, 0.965f, 0.847f, 1};
+
     private static final float[] SKY_COLOR = new float[]{0.435f, 0.675f, 0.969f};
 
     /**
@@ -60,6 +70,11 @@ public class Renderer {
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glEnable(GL11.GL_CULL_FACE);
         Renderer.setProjection(windowDimensions);
+        GL11.glEnable(GL11.GL_LIGHTING);
+        GL11.glEnable(GL11.GL_LIGHT0);
+        GL11.glShadeModel(GL11.GL_SMOOTH);
+        GL11.glLightfv(GL11.GL_LIGHT0, GL11.GL_POSITION, Renderer.SUN_DIRECTION);
+        GL11.glLightfv(GL11.GL_LIGHT0, GL11.GL_DIFFUSE, Renderer.SUNLIGHT_COLOR);
     }
 
     // TODO: Render chunks relative to player, not origin.
