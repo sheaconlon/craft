@@ -20,7 +20,8 @@ import java.util.Map;
  */
 public class Renderer {
     /**
-     * A vector giving the direction of the sun.
+     * A vector giving the direction of the sun. The trailing zero indicates to OpenGL that the light is
+     * directional, not positional.
      */
     private static final float[] SUN_DIRECTION = new float[]{-1, 3, 1, 0};
 
