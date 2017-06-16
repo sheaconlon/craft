@@ -34,15 +34,14 @@ public class Launcher {
         this.renderer = new Renderer(this.ui.getWindowHandle(), this.ui.getDimensions());
     }
 
-    // TODO: Use `this` where possible.
     /**
      * Run Realcraft.
      *
      * Runs until close is requested. Should be called after {@link #launch()}.
      */
     private void run() {
-        while (!ui.shouldClose()) {
-            ui.respond();
+        while (!this.ui.shouldClose()) {
+            this.ui.respond();
             this.renderer.render(this.world);
         }
     }
@@ -53,7 +52,7 @@ public class Launcher {
      * Cleans up. Should be called after {@link #run()}.
      */
     private void close() {
-        ui.close();
+        this.ui.close();
     }
 
     /**
