@@ -44,7 +44,6 @@ public class Chunk implements Renderable {
             this.chunk = chunk;
             this.currentPosition = chunk.getPosition().toBlockPosition();
             this.currentIterator = new BlockPositionQuadIterator(this.chunk, this.currentPosition);
-            this.advancePosition();
         }
 
         /**
@@ -55,8 +54,11 @@ public class Chunk implements Renderable {
             if (this.currentIterator.hasNext()) {
                 return true;
             }
-            this.advancePosition();
-            return this.currentIterator.hasNext();
+            final boolean success = this.advancePosition();
+            if (!success) {
+                return false;
+            }
+            return this.hasNext();
         }
 
         /**
@@ -73,21 +75,23 @@ public class Chunk implements Renderable {
         /**
          * Advance the position from which we are getting quads.
          */
-        private void advancePosition() {
+        private boolean advancePosition() {
             this.advancePositionZ();
             if (this.chunk.containsPosition(this.currentPosition)) {
                 this.currentIterator = new BlockPositionQuadIterator(this.chunk, this.currentPosition);
-                return;
+                return true;
             }
             this.advancePositionY();
             if (this.chunk.containsPosition(this.currentPosition)) {
                 this.currentIterator = new BlockPositionQuadIterator(this.chunk, this.currentPosition);
-                return;
+                return true;
             }
             this.advancePositionX();
             if (this.chunk.containsPosition(this.currentPosition)) {
                 this.currentIterator = new BlockPositionQuadIterator(this.chunk, this.currentPosition);
+                return true;
             }
+            return false;
         }
 
         /**
@@ -165,7 +169,7 @@ public class Chunk implements Renderable {
             if (this.blockQuadIterator.hasNext()) {
                 return true;
             }
-            if (this.entityQuadIterator.hasNext()) {
+            if (this.entityQuadIterator != null && this.entityQuadIterator.hasNext()) {
                 return true;
             }
             if (this.entityIterator.hasNext()) {
