@@ -96,6 +96,27 @@ public class Chunk implements Renderable {
     }
 
     /**
+     * Get a list of the entities within some block position.
+     * @param position The block position.
+     * @return A list of the entities within the block position.
+     */
+    List<Entity> getEntities(final BlockPosition position) {
+        final BlockPosition relativePosition = this.makeRelative(position);
+        return this.entities[(int)relativePosition.getX()][(int)relativePosition.getY()]
+                [(int)relativePosition.getZ()];
+    }
+
+    /**
+     * Get a list of the entities within some block position relative to the return value of
+     * {@code #getPosition()}.
+     * @param position The block position.
+     * @return A list of the entities within the block position.
+     */
+    List<Entity> getEntitiesRelative(final BlockPosition position) {
+        return this.entities[(int)position.getX()][(int)position.getY()][(int)position.getZ()];
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
