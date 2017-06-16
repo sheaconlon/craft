@@ -65,7 +65,6 @@ public class Chunk implements Renderable {
         }
     }
 
-    // TODO: Make IntPosition extend Position so that temporary Positions are not needlessly created.
     boolean containsPosition(final Position position) {
         final Position chunkPosition = this.getPosition();
         final double xRelative = position.getXRelative(chunkPosition);
@@ -77,6 +76,30 @@ public class Chunk implements Renderable {
             return false;
         }
         final double zRelative = position.getZRelative(chunkPosition);
+        if (zRelative < 0 || zRelative >= Chunk.SIZE) {
+            return false;
+        }
+        return true;
+    }
+
+    // TODO: Cache this.pos.toBlockPosition()
+
+    /**
+     * Return whether this chunk contains some position.
+     * @param position The position.
+     * @return Whether this chunk contains the position.
+     */
+    boolean containsPosition(final BlockPosition position) {
+        final BlockPosition anchor = this.pos.toBlockPosition();
+        final long xRelative = position.getXRelative(anchor);
+        if (xRelative < 0 || xRelative >= Chunk.SIZE) {
+            return false;
+        }
+        final long yRelative = position.getYRelative(anchor);
+        if (yRelative < 0 || yRelative >= Chunk.SIZE) {
+            return false;
+        }
+        final long zRelative = position.getZRelative(anchor);
         if (zRelative < 0 || zRelative >= Chunk.SIZE) {
             return false;
         }
