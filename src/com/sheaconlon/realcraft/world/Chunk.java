@@ -65,6 +65,11 @@ public class Chunk implements Renderable {
         }
     }
 
+    /**
+     * Return whether this chunk contains some position.
+     * @param position The position.
+     * @return Whether this chunk contains the position.
+     */
     boolean containsPosition(final Position position) {
         final Position chunkPosition = this.getPosition();
         final double xRelative = position.getXRelative(chunkPosition);
