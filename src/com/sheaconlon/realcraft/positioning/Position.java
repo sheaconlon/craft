@@ -54,29 +54,29 @@ public class Position extends ThreeVector {
     }
 
     /**
-     * Get the x-coordinate of this position, viewing it as relative to some reference position.
+     * Get the absolute x-coordinate of this position, if it is relative to some reference position.
      * @param reference The reference position.
-     * @return The x-coordinate of this position, viewing it as relative to some reference position.
+     * @return The absolute x-coordinate of this position, if it is relative to the reference position.
      */
-    public double getXRelativeTo(final Position reference) {
+    public double getXAbsolute(final Position reference) {
         return reference.getX() + this.getX();
     }
 
     /**
-     * Get the y-coordinate of this position, viewing it as relative to some reference position.
+     * Get the absolute y-coordinate of this position, if it is relative to some reference position.
      * @param reference The reference position.
-     * @return The y-coordinate of this position, viewing it as relative to some reference position.
+     * @return The absolute y-coordinate of this position, if it is relative to the reference position.
      */
-    public double getYRelativeTo(final Position reference) {
+    public double getYAbsolute(final Position reference) {
         return reference.getY() + this.getY();
     }
 
     /**
-     * Get the z-coordinate of this position, viewing it as relative to some reference position.
+     * Get the absolute z-coordinate of this position, if it is relative to some reference position.
      * @param reference The reference position.
-     * @return The z-coordinate of this position, viewing it as relative to some reference position.
+     * @return The absolute z-coordinate of this position, if it is relative to the reference position.
      */
-    public double getZRelativeTo(final Position reference) {
+    public double getZAbsolute(final Position reference) {
         return reference.getZ() + this.getZ();
     }
 
