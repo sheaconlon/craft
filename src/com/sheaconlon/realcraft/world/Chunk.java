@@ -8,8 +8,10 @@ import com.sheaconlon.realcraft.renderer.Quad;
 import com.sheaconlon.realcraft.positioning.BlockPosition;
 import com.sheaconlon.realcraft.positioning.ChunkPosition;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * A cubical subset of the world.
@@ -109,6 +111,82 @@ public class Chunk implements Renderable {
         private void advancePositionX() {
             this.currentPosition.changeX(1);
             this.currentPosition.setY(0);
+        }
+    }
+
+
+    /**
+     * An iterator over quads in a block position in a chunk.
+     */
+    private class BlockPositionQuadIterator implements Iterator<Quad> {
+        /**
+         * The chunk which contains the block position we are iterating over the quads of.
+         */
+        private final Chunk chunk;
+
+        /**
+         * The block position we are iterating over the quads of.
+         */
+        private final BlockPosition position;
+
+        /**
+         * The iterator over {@link #position}'s block's quads.
+         */
+        private final Iterator<Quad> blockQuadIterator;
+
+        /**
+         * The iterator over {@link #position}'s entities.
+         */
+        private final Iterator<Entity> entityIterator;
+
+        /**
+         * The iterator over the current entity's quads.
+         */
+        private Iterator<Quad> entityQuadIterator;
+
+        /**
+         * Construct a chunk block position quad iterator.
+         * @param chunk The chunk in which {#code position} is located.
+         * @param position The position to iterate over the quads of.
+         */
+        BlockPositionQuadIterator(final Chunk chunk, final BlockPosition position) {
+            this.chunk = chunk;
+            this.position = new BlockPosition(position);
+            this.blockQuadIterator = this.chunk.getBlock(this.position).getQuads().iterator();
+            this.entityIterator = this.chunk.getEntities(this.position).iterator();
+            this.entityQuadIterator = null;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public boolean hasNext() {
+            if (this.blockQuadIterator.hasNext()) {
+                return true;
+            }
+            if (this.entityQuadIterator.hasNext()) {
+                return true;
+            }
+            if (this.entityIterator.hasNext()) {
+                this.entityQuadIterator = this.entityIterator.next().getQuads().iterator();
+                return this.hasNext();
+            }
+            return false;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public Quad next() {
+            if (!this.hasNext()) {
+                throw new NoSuchElementException();
+            }
+            if (this.blockQuadIterator.hasNext()) {
+                return this.blockQuadIterator.next();
+            }
+            return this.entityQuadIterator.next();
         }
     }
 
