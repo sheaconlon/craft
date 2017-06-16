@@ -30,9 +30,10 @@ public abstract class Block extends Physical implements Renderable {
             if (!this.hasNext()) {
                 throw new NoSuchElementException();
             }
-            final Quad result = Block.this.getQuads()[this.quadIndex];
+            final Quad next = Block.this.getQuads()[this.quadIndex];
+            final Quad absoluteNext = next.makeAbsolute(Block.this.getPosition());
             this.quadIndex++;
-            return result;
+            return absoluteNext;
         }
     }
 
