@@ -13,7 +13,7 @@ public class AirBlock extends Block {
     /**
      * The quads of an air block.
      */
-    private static final Iterable<Quad> QUADS = new LinkedList<>();
+    private static final Quad[] QUADS = new Quad[]{};
 
     /**
      * Construct an air block.
@@ -27,7 +27,7 @@ public class AirBlock extends Block {
      * {@inheritDoc}
      */
     @Override
-    public Iterable<Quad> getQuads() {
+    public Quad[] getQuads() {
         return AirBlock.QUADS;
     }
 }

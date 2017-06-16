@@ -11,7 +11,7 @@ public class ChunkRenderer {
 
     void render(final Chunk chunk) {
         GL11.glBegin(GL11.GL_QUADS);
-        for (final Quad quad : chunk.getQuads()) {
+        for (final Quad quad : chunk) {
             final double[] color = quad.getColor();
             GL11.glColor3d(color[0], color[1], color[2]);
             for (final Vertex vertex : quad.getVertices()) {

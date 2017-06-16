@@ -8,11 +8,22 @@ import com.sheaconlon.realcraft.positioning.Position;
 import com.sheaconlon.realcraft.renderer.Quad;
 
 import java.util.LinkedList;
+import java.util.Iterator;
 
 /**
  * The player, the avatar of the user.
  */
 public class Player extends CompositeEntity {
+    /**
+     * The quads of a player's head.
+     */
+    private static final Iterable<Quad> PLAYER_HEAD_QUADS = new LinkedList<Quad>();
+
+    /**
+     * The quads of a player's body.
+     */
+    private static final Iterable<Quad> PLAYER_BODY_QUADS = new LinkedList<Quad>();
+
     /**
      * The bounding box of the head of a player.
      */
@@ -37,9 +48,9 @@ public class Player extends CompositeEntity {
         /**
          * {@inheritDoc}
          */
-        public Iterable<Quad> getQuads() {
+        public Iterator<Quad> iterator() {
             // TODO: Add quads for PlayerHead.
-            return new LinkedList<>();
+            return Player.PLAYER_HEAD_QUADS.iterator();
         }
 
         /**
@@ -58,9 +69,9 @@ public class Player extends CompositeEntity {
         /**
          * {@inheritDoc}
          */
-        public Iterable<Quad> getQuads() {
+        public Iterator<Quad> iterator() {
             // TODO: Add quads for PlayerBody.
-            return new LinkedList<>();
+            return Player.PLAYER_BODY_QUADS.iterator();
         }
 
         /**

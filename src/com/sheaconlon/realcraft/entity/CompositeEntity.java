@@ -6,13 +6,46 @@ import com.sheaconlon.realcraft.positioning.Position;
 import com.sheaconlon.realcraft.positioning.ThreeVector;
 import com.sheaconlon.realcraft.renderer.Quad;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
 
 /**
  * A composite entity, an entity composed of some constituent entities.
  */
 public abstract class CompositeEntity extends Entity {
+    private class CompositeEntityQuadIterator implements Iterator<Quad> {
+        // TODO: Make other quad iterators use parent attributes directly.
+
+        private Iterator<Entity> constituentIterator;
+
+        private Iterator<Quad> constituentQuadIterator;
+
+        CompositeEntityQuadIterator() {
+            this.constituentIterator = CompositeEntity.this.constituents.iterator();
+            this.constituentQuadIterator = null;
+        }
+
+        public boolean hasNext() {
+            if (this.constituentQuadIterator != null && this.constituentQuadIterator.hasNext()) {
+                return true;
+            }
+            if (this.constituentIterator.hasNext()) {
+                this.constituentQuadIterator = this.constituentIterator.next().iterator();
+                return this.hasNext();
+            }
+            return false;
+        }
+
+        public Quad next() {
+            if (!this.hasNext()) {
+                throw new NoSuchElementException();
+            }
+            return this.constituentQuadIterator.next();
+        }
+    }
+
     /**
      * The constituent entities of this composite entity.
      */
@@ -78,16 +111,16 @@ public abstract class CompositeEntity extends Entity {
      * {@inheritDoc}
      */
     @Override
-    public Iterable<Quad> getQuads() {
-        return this.quads;
+    public BoundingBox getBoundingBox() {
+        return this.boundingBox;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public BoundingBox getBoundingBox() {
-        return this.boundingBox;
+    public Iterator<Quad> iterator() {
+        return new CompositeEntityQuadIterator();
     }
 
     /**
@@ -113,7 +146,7 @@ public abstract class CompositeEntity extends Entity {
      * @param newConstituent A new constituent entity that may necessitate an update of the quads.
      */
     private void updateQuads(final Entity newConstituent) {
-        for (final Quad quad : newConstituent.getQuads()) {
+        for (final Quad quad : newConstituent) {
             this.quads.add(quad);
         }
     }

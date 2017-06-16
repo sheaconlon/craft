@@ -6,11 +6,34 @@ import com.sheaconlon.realcraft.positioning.Position;
 import com.sheaconlon.realcraft.renderer.Renderable;
 import com.sheaconlon.realcraft.renderer.Vertex;
 import com.sheaconlon.realcraft.positioning.BlockPosition;
+import com.sheaconlon.realcraft.renderer.Quad;
+
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * A block, a cubical, grid-aligned object in the world.
  */
 public abstract class Block extends Physical implements Renderable {
+    private class BlockQuadIterator implements Iterator<Quad> {
+        private int quadIndex;
+
+        BlockQuadIterator() {
+            this.quadIndex = 0;
+        }
+
+        public boolean hasNext() {
+            return this.quadIndex < Block.this.getQuads().length;
+        }
+
+        public Quad next() {
+            if (!this.hasNext()) {
+                throw new NoSuchElementException();
+            }
+            return Block.this.getQuads()[this.quadIndex];
+        }
+    }
+
     /**
      * The bounding box of a block.
      */
@@ -133,5 +156,19 @@ public abstract class Block extends Physical implements Renderable {
     @Override
     public BoundingBox getBoundingBox() {
         return Block.BOUNDING_BOX;
+    }
+
+    /**
+     * Get the quads of this block.
+     * @return The quads of this block.
+     */
+    protected abstract Quad[] getQuads();
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Iterator<Quad> iterator() {
+        return new BlockQuadIterator();
     }
 }

@@ -2,10 +2,12 @@ package com.sheaconlon.realcraft.renderer;
 
 import com.sheaconlon.realcraft.positioning.Position;
 
+import java.util.Iterator;
+
 /**
  * Something which can be rendered.
  */
-public interface Renderable {
+public interface Renderable extends Iterable<Quad> {
     /**
      * Return the position of the anchor point of this renderable.
      * @return The position of the anchor point of this renderable
@@ -13,8 +15,8 @@ public interface Renderable {
     public Position getPosition();
 
     /**
-     * Get the quads that make up this renderable.
-     * @return The quads that make up this renderable.
+     * {@inheritDoc}
      */
-    public Iterable<Quad> getQuads();
+    @Override
+    public abstract Iterator<Quad> iterator();
 }

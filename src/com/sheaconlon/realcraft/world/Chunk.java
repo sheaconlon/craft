@@ -152,7 +152,7 @@ public class Chunk implements Renderable {
         BlockPositionQuadIterator(final Chunk chunk, final BlockPosition position) {
             this.chunk = chunk;
             this.position = new BlockPosition(position);
-            this.blockQuadIterator = this.chunk.getBlock(this.position).getQuads().iterator();
+            this.blockQuadIterator = this.chunk.getBlock(this.position).iterator();
             this.entityIterator = this.chunk.getEntities(this.position).iterator();
             this.entityQuadIterator = null;
         }
@@ -169,7 +169,7 @@ public class Chunk implements Renderable {
                 return true;
             }
             if (this.entityIterator.hasNext()) {
-                this.entityQuadIterator = this.entityIterator.next().getQuads().iterator();
+                this.entityQuadIterator = this.entityIterator.next().iterator();
                 return this.hasNext();
             }
             return false;
@@ -349,19 +349,8 @@ public class Chunk implements Renderable {
      * {@inheritDoc}
      */
     @Override
-    public Iterable<Quad> getQuads() {
-        final List<Quad> quads = new LinkedList<>();
-        for (long bx = this.pos.getX(); bx < this.pos.getX() + Chunk.SIZE; bx++) {
-            for (long by = this.pos.getY(); by < this.pos.getY() + Chunk.SIZE; by++) {
-                for (long bz = this.pos.getZ(); bz < this.pos.getZ() + Chunk.SIZE; bz++) {
-                    final BlockPosition blockPos = new BlockPosition(bx, by, bz);
-                    for (final Quad quad : this.getBlock(blockPos).getQuads()) {
-                        quads.add(quad);
-                    }
-                }
-            }
-        }
-        return quads;
+    public Iterator<Quad> iterator() {
+        return new ChunkQuadIterator(this);
     }
 
     /**

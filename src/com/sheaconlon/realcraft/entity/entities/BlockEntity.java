@@ -5,6 +5,8 @@ import com.sheaconlon.realcraft.entity.Entity;
 import com.sheaconlon.realcraft.physics.BoundingBox;
 import com.sheaconlon.realcraft.renderer.Quad;
 
+import java.util.Iterator;
+
 /**
  * A block entity, a block in motion.
  */
@@ -32,8 +34,8 @@ public class BlockEntity extends Entity {
      * {@inheritDoc}
      */
     @Override
-    public Iterable<Quad> getQuads() {
-        return this.block.getQuads();
+    public Iterator<Quad> iterator() {
+        return this.block.iterator();
     }
 
     /**
