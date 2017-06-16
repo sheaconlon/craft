@@ -11,27 +11,31 @@ import com.sheaconlon.realcraft.renderer.Renderable;
  */
 public abstract class Entity extends Physical implements Renderable {
     /**
+     * Construct an entity.
      * @see Physical#Physical(Position, double, ThreeVector)
      */
-    public Entity(final Position position, final double orientation, final ThreeVector velocity) {
-        super(position, orientation, velocity);
+    public Entity(final Position anchor, final double orientation, final ThreeVector velocity) {
+        super(anchor, orientation, velocity);
     }
 
     /**
+     * Construct an entity.
      * @see Physical#Physical(Position, double)
      */
-    public Entity(final Position position, final double orientation) {
-        super(position, orientation);
+    public Entity(final Position anchor, final double orientation) {
+        super(anchor, orientation);
     }
 
     /**
+     * Construct an entity.
      * @see Physical#Physical(Position)
      */
-    public Entity(final Position position) {
-        super(position);
+    public Entity(final Position anchor) {
+        super(anchor);
     }
 
     /**
+     * Construct an entity.
      * @see Physical#Physical()
      */
     public Entity() {

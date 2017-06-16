@@ -18,16 +18,15 @@ public abstract class Physical {
     private static final double DEFAULT_INITIAL_ORIENTATION = 0;
 
     /**
-     * The default value for the initial position of a physical.
+     * The default anchor of a physical.
      */
-    private static final Position DEFAULT_INITIAL_POSITION = new Position(0, 0, 0);
+    private static final Position DEFAULT_ANCHOR = Position.ZERO;
 
     /**
-     * The position of this physical, in feet.
-     *
-     * The components are the X, Y, and Z coordinates of the position, respectively.
+     * The anchor of this physical is the position whose x, y, and z coordinates are the minimal x, y, and z
+     * coordinates, respectively, of any position within this physical.
      */
-    private final Position position;
+    private final Position anchor;
 
     /**
      * The orientation of this physical, in radians.
@@ -45,39 +44,39 @@ public abstract class Physical {
     private final ThreeVector velocity;
 
     /**
-     * Construct a physical from an initial position, orientation, and velocity.
-     * @param position The initial position.
+     * Construct a physical from an anchor, orientation, and velocity.
+     * @param anchor The anchor. See {@link #anchor}.
      * @param orientation The initial orientation.
      * @param velocity The initial velocity.
      */
-    public Physical(final Position position, final double orientation, final ThreeVector velocity) {
-        this.position = position;
+    public Physical(final Position anchor, final double orientation, final ThreeVector velocity) {
+        this.anchor = anchor;
         this.orientation = orientation;
         this.velocity = velocity;
     }
 
     /**
-     * Construct a physical from an initial position and orientation.
-     * @param position The initial position.
+     * Construct a physical from an anchor and orientation.
+     * @param anchor The anchor. See {@link #anchor}.
      * @param orientation The initial orientation.
      */
-    public Physical(final Position position, final double orientation) {
-        this(position, orientation, Physical.DEFAULT_INITIAL_VELOCITY);
+    public Physical(final Position anchor, final double orientation) {
+        this(anchor, orientation, Physical.DEFAULT_INITIAL_VELOCITY);
     }
 
     /**
-     * Construct a physical from an initial position.
-     * @param position The initial position.
+     * Construct a physical from an anchor.
+     * @param anchor The anchor. See {@link #anchor}.
      */
-    public Physical(final Position position) {
-        this(position, Physical.DEFAULT_INITIAL_ORIENTATION, Physical.DEFAULT_INITIAL_VELOCITY);
+    public Physical(final Position anchor) {
+        this(anchor, Physical.DEFAULT_INITIAL_ORIENTATION, Physical.DEFAULT_INITIAL_VELOCITY);
     }
 
     /**
      * Construct a physical.
      */
     public Physical() {
-        this(Physical.DEFAULT_INITIAL_POSITION, Physical.DEFAULT_INITIAL_ORIENTATION,
+        this(new Position(Physical.DEFAULT_ANCHOR), Physical.DEFAULT_INITIAL_ORIENTATION,
                 Physical.DEFAULT_INITIAL_VELOCITY);
     }
 
@@ -89,13 +88,10 @@ public abstract class Physical {
     public abstract BoundingBox getBoundingBox();
 
     /**
-     * Get the position of this physical.
-     * @see {@link #position}.
-     * @return The position of this physical. This object is not a copy, so changes to it will affect this
-     *          physical.
+     * Getter for {@link #anchor}.
      */
-    public Position getPosition() {
-        return this.position;
+    public Position getAnchor() {
+        return this.anchor;
     }
 
     /**

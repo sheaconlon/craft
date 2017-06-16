@@ -136,10 +136,10 @@ public abstract class Block extends Physical implements Renderable {
 
     /**
      * Construct a block.
-     * @param pos See {@link Physical#position}.
+     * @see Physical#Physical(Position)
      */
-    protected Block(final BlockPosition pos) {
-        super(pos.toPosition());
+    protected Block(final BlockPosition anchor) {
+        super(anchor.toPosition());
     }
 
     // TODO: Add @Override annotations to the rest of the code base.

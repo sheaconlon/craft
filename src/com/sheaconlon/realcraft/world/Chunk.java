@@ -313,7 +313,6 @@ public class Chunk implements Renderable {
                 [(int)pos.getZRelative(anchor)];
     }
 
-    // TODO: Add notion of anchors throughout codebase.
     /**
      * Get the block at some position relative to the return value of {@code #getPosition()}.
      * @param position The position.
