@@ -4,6 +4,11 @@ import com.sheaconlon.realcraft.world.Chunk;
 
 public class ChunkPosition extends IntPosition {
     /**
+     * The chunk position whose coordinates are all zeros.
+     */
+    public static final ChunkPosition ZERO = new ChunkPosition(0, 0, 0);
+
+    /**
      * Construct a chunk position.
      * @param x The x-coordinate of the chunk position.
      * @param y The y-coordinate of the chunk position.

@@ -4,6 +4,11 @@ import com.sheaconlon.realcraft.world.Chunk;
 
 public class BlockPosition extends IntPosition {
     /**
+     * The block position whose coordinates are all zeros.
+     */
+    public static final BlockPosition ZERO = new BlockPosition(0, 0, 0);
+
+    /**
      * Construct a block position.
      * @param x The x-coordinate of the block position.
      * @param y The y-coordinate of the block position.
