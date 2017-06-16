@@ -15,6 +15,103 @@ import java.util.List;
  * A cubical subset of the world.
  */
 public class Chunk implements Renderable {
+    /**
+     * An iterator over quads in a chunk.
+     */
+    private class ChunkQuadIterator implements Iterator<Quad> {
+        /**
+         * The chunk to iterate over the quads of.
+         */
+        private final Chunk chunk;
+
+        /**
+         * The block position from which we are currently getting quads.
+         */
+        private BlockPosition currentPosition;
+
+        /**
+         * The {@link ChunkBlockPositionQuadIterator} for {@link #chunk} and {@link #currentPosition}.
+         */
+        private Iterator<Quad> currentIterator;
+
+        /**
+         * Construct a chunk quad iterator.
+         * @param chunk The chunk to iterate over the quads of.
+         */
+        ChunkQuadIterator(final Chunk chunk) {
+            this.chunk = chunk;
+            this.currentPosition = chunk.getPosition().toBlockPosition();
+            this.currentIterator = new ChunkBlockPositionQuadIterator(this.chunk, this.currentPosition);
+            this.advancePosition();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public boolean hasNext() {
+            if (this.currentIterator.hasNext()) {
+                return true;
+            }
+            this.advancePosition();
+            return this.currentIterator.hasNext();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public Quad next() {
+            if (!this.hasNext()) {
+                throw new NoSuchElementException();
+            }
+            return this.currentIterator.next();
+        }
+
+        /**
+         * Advance the position from which we are getting quads.
+         */
+        private void advancePosition() {
+            this.advancePositionZ();
+            if (this.chunk.containsPosition(this.currentPosition)) {
+                this.currentIterator = new ChunkBlockPositionQuadIterator(this.chunk, this.currentPosition);
+                return;
+            }
+            this.advancePositionY();
+            if (this.chunk.containsPosition(this.currentPosition)) {
+                this.currentIterator = new ChunkBlockPositionQuadIterator(this.chunk, this.currentPosition);
+                return;
+            }
+            this.advancePositionX();
+            if (this.chunk.containsPosition(this.currentPosition)) {
+                this.currentIterator = new ChunkBlockPositionQuadIterator(this.chunk, this.currentPosition);
+            }
+        }
+
+        /**
+         * Advance the position from which we are getting quads along the z-axis.
+         */
+        private void advancePositionZ() {
+            this.currentPosition.changeZ(1);
+        }
+
+        /**
+         * Advance the position from which we are getting quads along the y-axis.
+         */
+        private void advancePositionY() {
+            this.currentPosition.changeY(1);
+            this.currentPosition.setZ(0);
+        }
+
+        /**
+         * Advance the position from which we are getting quads along the x-axis.
+         */
+        private void advancePositionX() {
+            this.currentPosition.changeX(1);
+            this.currentPosition.setY(0);
+        }
+    }
+
     // TODO: Tune chunk size.
     /**
      * The side length of chunks, in meters.
