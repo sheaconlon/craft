@@ -65,6 +65,24 @@ public class Chunk implements Renderable {
         }
     }
 
+    // TODO: Make IntPosition extend Position so that temporary Positions are not needlessly created.
+    boolean containsPosition(final Position position) {
+        final Position chunkPosition = this.getPosition();
+        final double xRelative = position.getXRelative(chunkPosition);
+        if (xRelative < 0 || xRelative >= Chunk.SIZE) {
+            return false;
+        }
+        final double yRelative = position.getYRelative(chunkPosition);
+        if (yRelative < 0 || yRelative >= Chunk.SIZE) {
+            return false;
+        }
+        final double zRelative = position.getZRelative(chunkPosition);
+        if (zRelative < 0 || zRelative >= Chunk.SIZE) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Put a block at some position.
      * @param pos The position.
