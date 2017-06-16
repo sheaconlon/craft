@@ -146,14 +146,6 @@ public abstract class Block extends Physical implements Renderable {
     // TODO: Use @inheritDoc throughout codebase.
 
     /**
-     * See {@link Renderable#getPosition()}.
-     */
-    @Override
-    public Position getPosition() {
-        return this.getPosition();
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
