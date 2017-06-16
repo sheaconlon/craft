@@ -13,7 +13,7 @@ public class DirtBlock extends Block {
     /**
      * The brown color of dirt.
      */
-    private static final double[] BROWN = new double[]{132/255, 81/255, 10/255};
+    private static final double[] BROWN = new double[]{132d/255d, 81d/255d, 10d/255d};
 
     /**
      * The quads of a dirt block.
