@@ -32,7 +32,7 @@ public class Renderer {
     /**
      * The "radius" of the cubical subset of the world which should be rendered, in chunks.
      */
-    private static final long RENDER_DISTANCE = 3;
+    private static final long RENDER_DISTANCE = 1;
 
     /**
      * The chunk renderers that this renderer has made.
@@ -69,7 +69,8 @@ public class Renderer {
             for (long y = -Renderer.RENDER_DISTANCE; y <= Renderer.RENDER_DISTANCE; y++){
                 for (long z = -Renderer.RENDER_DISTANCE; z <= Renderer.RENDER_DISTANCE; z++){
                     System.out.printf("rendering chunk at (%d, %d, %d)...\n", x, y, z);
-                    final ChunkPosition renderChunkPosition = new ChunkPosition(x, y, z);
+                    final ChunkPosition renderChunkPosition = new ChunkPosition(playerChunkPosition.getX() + x,
+                            playerChunkPosition.getY() + y, playerChunkPosition.getZ() + z);
                     final Chunk renderChunk = world.getChunk(renderChunkPosition);
                     final ChunkRenderer chunkRenderer = this.getChunkRenderer(renderChunk);
                     chunkRenderer.render(renderChunk);
@@ -108,9 +109,9 @@ public class Renderer {
      */
     private static void setModelView(final Position playerPosition, final Position playerEyePosition,
                                      final double playerOrientation) {
-        final double x = playerEyePosition.getXRelative(playerPosition);
-        final double y = playerEyePosition.getYRelative(playerPosition);
-        final double z = playerEyePosition.getZRelative(playerPosition);
+        final double x = playerEyePosition.getXAbsolute(playerPosition);
+        final double y = playerEyePosition.getYAbsolute(playerPosition);
+        final double z = playerEyePosition.getZAbsolute(playerPosition);
         final float centerX = (float)(x + Math.cos(playerOrientation));
         final float centerY = (float)y;
         final float centerZ = (float)(z + Math.sin(playerOrientation));
