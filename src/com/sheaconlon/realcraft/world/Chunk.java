@@ -84,6 +84,10 @@ public class Chunk implements Renderable {
         return this.blocks[(int)relativePos.getX()][(int)relativePos.getY()][(int)relativePos.getZ()];
     }
 
+    Block getBlockRelative(final BlockPosition position) {
+        return this.blocks[(int)position.getX()][(int)position.getY()][(int)position.getZ()];
+    }
+
     /**
      * {@inheritDoc}
      */
