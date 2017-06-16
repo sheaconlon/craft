@@ -32,7 +32,7 @@ public class Chunk implements Renderable {
         private BlockPosition currentPosition;
 
         /**
-         * The {@link ChunkBlockPositionQuadIterator} for {@link #chunk} and {@link #currentPosition}.
+         * The {@link BlockPositionQuadIterator} for {@link #chunk} and {@link #currentPosition}.
          */
         private Iterator<Quad> currentIterator;
 
@@ -43,7 +43,7 @@ public class Chunk implements Renderable {
         ChunkQuadIterator(final Chunk chunk) {
             this.chunk = chunk;
             this.currentPosition = chunk.getPosition().toBlockPosition();
-            this.currentIterator = new ChunkBlockPositionQuadIterator(this.chunk, this.currentPosition);
+            this.currentIterator = new BlockPositionQuadIterator(this.chunk, this.currentPosition);
             this.advancePosition();
         }
 
@@ -76,17 +76,17 @@ public class Chunk implements Renderable {
         private void advancePosition() {
             this.advancePositionZ();
             if (this.chunk.containsPosition(this.currentPosition)) {
-                this.currentIterator = new ChunkBlockPositionQuadIterator(this.chunk, this.currentPosition);
+                this.currentIterator = new BlockPositionQuadIterator(this.chunk, this.currentPosition);
                 return;
             }
             this.advancePositionY();
             if (this.chunk.containsPosition(this.currentPosition)) {
-                this.currentIterator = new ChunkBlockPositionQuadIterator(this.chunk, this.currentPosition);
+                this.currentIterator = new BlockPositionQuadIterator(this.chunk, this.currentPosition);
                 return;
             }
             this.advancePositionX();
             if (this.chunk.containsPosition(this.currentPosition)) {
-                this.currentIterator = new ChunkBlockPositionQuadIterator(this.chunk, this.currentPosition);
+                this.currentIterator = new BlockPositionQuadIterator(this.chunk, this.currentPosition);
             }
         }
 
