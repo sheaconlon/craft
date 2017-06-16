@@ -53,11 +53,12 @@ public class ChunkGenerator {
     Chunk getChunk(final ChunkPosition position) {
         System.out.printf("generating chunk at (%d, %d, %d)...\n", position.getX(), position.getY(), position.getZ());
         final Chunk chunk = new Chunk(position);
+        final BlockPosition anchor = position.toBlockPosition();
         for (long x = 0; x < Chunk.SIZE; x++) {
             for (long z = 0; z < Chunk.SIZE; z++) {
                 for (long y = 0; y < Chunk.SIZE; y++) {
-                    final BlockPosition blockPosition = new BlockPosition(x + position.getX(),
-                            y + position.getY(), z + position.getZ());
+                    final BlockPosition blockPosition = new BlockPosition(x + anchor.getX(),
+                            y + anchor.getY(), z + anchor.getZ());
                     Block block;
                     // Place dirt at every even hash code block position. The dirt blocks should be placed at
                     // positions up to GROUND_LEVEL - 1 so that the highest dirt blocks' upper surfaces are at
