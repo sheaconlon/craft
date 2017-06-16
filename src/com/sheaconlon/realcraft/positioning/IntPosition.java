@@ -58,6 +58,60 @@ public abstract class IntPosition {
     }
 
     /**
+     * Get the absolute x-coordinate of this integer position, if it is relative to some reference position.
+     * @param reference The reference position.
+     * @return The absolute x-coordinate of this integer position, if it is relative to the reference position.
+     */
+    public long getXAbsolute(final IntPosition reference) {
+        return reference.getX() + this.getX();
+    }
+
+    /**
+     * Get the absolute y-coordinate of this integer position, if it is relative to some reference position.
+     * @param reference The reference position.
+     * @return The absolute y-coordinate of this integer position, if it is relative to the reference position.
+     */
+    public long getYAbsolute(final IntPosition reference) {
+        return reference.getY() + this.getY();
+    }
+
+    /**
+     * Get the absolute z-coordinate of this integer position, if it is relative to some reference position.
+     * @param reference The reference position.
+     * @return The absolute z-coordinate of this integer position, if it is relative to the reference position.
+     */
+    public long getZAbsolute(final IntPosition reference) {
+        return reference.getZ() + this.getZ();
+    }
+
+    /**
+     * Get the x-coordinate of this integer position relative to some reference position.
+     * @param reference The reference position.
+     * @return The x-coordinate of this integer position relative to the reference position.
+     */
+    public long getXRelative(final IntPosition reference) {
+        return this.getX() - reference.getX();
+    }
+
+    /**
+     * Get the y-coordinate of this integer position relative to some reference position.
+     * @param reference The reference position.
+     * @return The y-coordinate of this integer position relative to the reference position.
+     */
+    public long getYRelative(final IntPosition reference) {
+        return this.getY() - reference.getY();
+    }
+
+    /**
+     * Get the z-coordinate of this integer position relative to some reference position.
+     * @param reference The reference position.
+     * @return The z-coordinate of this integer position relative to the reference position.
+     */
+    public long getZRelative(final IntPosition reference) {
+        return this.getZ() - reference.getZ();
+    }
+
+    /**
      * Set the x-coordinate of this integer position.
      * @param x The new x-coordinate.
      */
