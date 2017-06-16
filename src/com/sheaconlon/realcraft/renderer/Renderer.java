@@ -19,6 +19,8 @@ import java.util.Map;
  * A renderer, which renders the world for the launcher.
  */
 public class Renderer {
+    private static final float[] SKY_COLOR = new float[]{0.435f, 0.675f, 0.969f};
+
     /**
      * The size of the vertical field of view of the player, in radians.
      */
@@ -62,6 +64,7 @@ public class Renderer {
 
     // TODO: Render chunks relative to player, not origin.
     public void render(final World world) {
+        Renderer.clear();
         final Player player = world.getPlayer();
         Renderer.setModelView(player.getPosition(), player.getEyePosition(), player.getOrientation());
         final ChunkPosition playerChunkPosition = player.getPosition().toChunkPosition();
@@ -123,5 +126,10 @@ public class Renderer {
         matrix.setLookAt((float)x, (float)y, (float)z, centerX, centerY, centerZ, upX, upY, upZ);
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
         GL11.glLoadMatrixf(matrix.get(buffer));
+    }
+
+    private static void clear() {
+        GL11.glClearColor(Renderer.SKY_COLOR[0], Renderer.SKY_COLOR[1], Renderer.SKY_COLOR[2], 1);
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
     }
 }
