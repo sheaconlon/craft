@@ -81,7 +81,6 @@ public class Renderer {
         GL11.glLightfv(GL11.GL_LIGHT0, GL11.GL_DIFFUSE, Renderer.SUNLIGHT_COLOR);
     }
 
-    // TODO: Render chunks relative to player, not origin.
     public void render(final World world) {
         Renderer.clear();
         final Player player = world.getPlayer();
