@@ -111,8 +111,7 @@ public class Renderer {
     }
 
     /**
-     * Set the OpenGL projection to
-     * TODO: Finish this.
+     * Set up a perspective projection.
      */
     private static void setProjection(final int[] windowDimensions) {
         final FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
@@ -125,8 +124,7 @@ public class Renderer {
     }
 
     /**
-     * Set the OpenGL model view matrix to
-     * TODO: Finish this.
+     * Set up a model view matrix that matches the player's current state.
      */
     private static void setModelView(final Position playerPosition, final Position playerEyePosition,
                                      final double playerOrientation) {
