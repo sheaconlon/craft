@@ -386,7 +386,6 @@ public class Chunk implements Renderable {
     public void addEntity(final Entity newEntity) {
         final BlockPosition anchor = this.getBlockAnchor();
         final BlockPosition position = newEntity.getAnchor().toBlockPosition();
-        // TODO: Use ArrayList<LinkedList> instead of LinkedList[] so that long block positions will be supported.
         this.entities[(int)position.getXRelative(anchor)][(int)position.getYRelative(anchor)]
                 [(int)position.getZRelative(anchor)].add(newEntity);
     }
