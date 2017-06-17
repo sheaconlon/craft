@@ -128,9 +128,9 @@ public abstract class CompositeEntity extends Entity {
      * @param newConstituent A new constituent entity that may necessitate an update of the bounding box.
      */
     private void updateBoundingBox(final Entity newConstituent) {
-        final Position thisPosition = this.getPosition();
+        final Position thisPosition = this.getAnchor();
         final BoundingBox thisBoundingBox = this.getBoundingBox();
-        final Position constituentPosition = newConstituent.getPosition();
+        final Position constituentPosition = newConstituent.getAnchor();
         final BoundingBox constituentBoundingBox = newConstituent.getBoundingBox();
         final long xLength = (long)Math.max(thisBoundingBox.getXLength(),
                 constituentPosition.getX() + constituentBoundingBox.getXLength());

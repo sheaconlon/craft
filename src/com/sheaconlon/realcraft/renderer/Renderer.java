@@ -85,8 +85,8 @@ public class Renderer {
     public void render(final World world) {
         Renderer.clear();
         final Player player = world.getPlayer();
-        Renderer.setModelView(player.getPosition(), player.getEyePosition(), player.getOrientation());
-        final ChunkPosition playerChunkPosition = player.getPosition().toChunkPosition();
+        Renderer.setModelView(player.getAnchor(), player.getEyePosition(), player.getOrientation());
+        final ChunkPosition playerChunkPosition = player.getAnchor().toChunkPosition();
         for (long x = -Renderer.RENDER_DISTANCE; x <= Renderer.RENDER_DISTANCE; x++){
             for (long y = -Renderer.RENDER_DISTANCE; y <= Renderer.RENDER_DISTANCE; y++){
                 for (long z = -Renderer.RENDER_DISTANCE; z <= Renderer.RENDER_DISTANCE; z++){

@@ -1,5 +1,6 @@
 package com.sheaconlon.realcraft.renderer;
 
+import com.sheaconlon.realcraft.physics.Physical;
 import com.sheaconlon.realcraft.positioning.Position;
 
 import java.util.Iterator;
@@ -9,10 +10,9 @@ import java.util.Iterator;
  */
 public interface Renderable extends Iterable<Quad> {
     /**
-     * Return the position of the anchor point of this renderable.
-     * @return The position of the anchor point of this renderable
+     * @see Physical#anchor
      */
-    public Position getPosition();
+    public Position getAnchor();
 
     /**
      * {@inheritDoc}

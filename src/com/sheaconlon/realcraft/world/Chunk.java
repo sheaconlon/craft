@@ -2,6 +2,7 @@ package com.sheaconlon.realcraft.world;
 
 import com.sheaconlon.realcraft.blocks.Block;
 import com.sheaconlon.realcraft.entity.Entity;
+import com.sheaconlon.realcraft.physics.Physical;
 import com.sheaconlon.realcraft.positioning.Position;
 import com.sheaconlon.realcraft.renderer.Renderable;
 import com.sheaconlon.realcraft.renderer.Quad;
@@ -42,7 +43,7 @@ public class Chunk implements Renderable {
          */
         ChunkQuadIterator(final Chunk chunk) {
             this.chunk = chunk;
-            this.currentPosition = chunk.getPosition().toBlockPosition();
+            this.currentPosition = chunk.getBlockAnchor();
             this.currentIterator = new BlockPositionQuadIterator(this.chunk, this.currentPosition);
         }
 
@@ -200,15 +201,21 @@ public class Chunk implements Renderable {
      */
     public static final int SIZE = 25;
 
-    // TODO: Fix this.
     /**
-     * The x-coordinate of this chunk.
-     *
-     * This chunk represents the components of the world with x coordinate such that this.x &lt;= x &lt; this.x +
-     * Chunk.SIZE, y coordinate such that this.y &lt;= y &lt; this.y + Chunk.SIZE, and z coordinate such that
-     * this.z &lt;= z &lt; this.z + Chunk.SIZE.
+     * The chunk position of this chunk.
      */
-    private final ChunkPosition pos;
+    private final ChunkPosition chunkPosition;
+
+    /**
+     * The anchor of this chunk, as a block position.
+     * @see Physical#anchor
+     */
+    private final BlockPosition blockAnchor;
+
+    /**
+     * @see Physical#anchor
+     */
+    private final Position anchor;
 
     /**
      * The blocks in this chunk.
@@ -228,10 +235,12 @@ public class Chunk implements Renderable {
     /**
      * Construct a chunk.
      *
-     * @param pos See {@link #pos}.
+     * @param chunkPosition See {@link #chunkPosition}.
      */
-    Chunk(final ChunkPosition pos) {
-        this.pos = new ChunkPosition(pos);
+    Chunk(final ChunkPosition chunkPosition) {
+        this.chunkPosition = new ChunkPosition(chunkPosition);
+        this.blockAnchor = chunkPosition.toBlockPosition();
+        this.anchor = chunkPosition.toPosition();
         this.blocks = new Block[Chunk.SIZE][Chunk.SIZE][Chunk.SIZE];
         // TODO: Reevaluate choice of LinkedList over ArrayList.
         this.entities = new LinkedList[Chunk.SIZE][Chunk.SIZE][Chunk.SIZE];
@@ -250,7 +259,7 @@ public class Chunk implements Renderable {
      * @return Whether this chunk contains the position.
      */
     boolean containsPosition(final Position position) {
-        final Position chunkPosition = this.getPosition();
+        final Position chunkPosition = this.getAnchor();
         final double xRelative = position.getXRelative(chunkPosition);
         if (xRelative < 0 || xRelative >= Chunk.SIZE) {
             return false;
@@ -274,7 +283,7 @@ public class Chunk implements Renderable {
      * @return Whether this chunk contains the position.
      */
     boolean containsPosition(final BlockPosition position) {
-        final BlockPosition anchor = this.pos.toBlockPosition();
+        final BlockPosition anchor = this.getBlockAnchor();
         final long xRelative = position.getXRelative(anchor);
         if (xRelative < 0 || xRelative >= Chunk.SIZE) {
             return false;
@@ -296,7 +305,7 @@ public class Chunk implements Renderable {
      * @param block The block.
      */
     void setBlock(final BlockPosition pos, final Block block) {
-        final BlockPosition anchor = this.pos.toBlockPosition();
+        final BlockPosition anchor = this.getBlockAnchor();
         this.blocks[(int)pos.getXRelative(anchor)][(int)pos.getYRelative(anchor)]
                 [(int)pos.getZRelative(anchor)] = block;
     }
@@ -308,7 +317,7 @@ public class Chunk implements Renderable {
      */
     Block getBlock(final BlockPosition pos) {
         // TODO: Cache this.pos.toBlockPosition()
-        final BlockPosition anchor = this.pos.toBlockPosition();
+        final BlockPosition anchor = this.getBlockAnchor();
         return this.blocks[(int)pos.getXRelative(anchor)][(int)pos.getYRelative(anchor)]
                 [(int)pos.getZRelative(anchor)];
     }
@@ -328,7 +337,7 @@ public class Chunk implements Renderable {
      * @return A list of the entities within the block position.
      */
     List<Entity> getEntities(final BlockPosition position) {
-        final BlockPosition anchor = this.pos.toBlockPosition();
+        final BlockPosition anchor = this.getBlockAnchor();
         return this.entities[(int)position.getXRelative(anchor)][(int)position.getYRelative(anchor)]
                 [(int)position.getZRelative(anchor)];
     }
@@ -344,11 +353,25 @@ public class Chunk implements Renderable {
     }
 
     /**
+     * Getter for {@link #chunkPosition}.
+     */
+    public ChunkPosition getChunkPosition() {
+        return this.chunkPosition;
+    }
+
+    /**
+     * Getter for {@link #blockAnchor}.
+     */
+    public BlockPosition getBlockAnchor() {
+        return this.blockAnchor;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
-    public Position getPosition() {
-        return this.pos.toPosition();
+    public Position getAnchor() {
+        return this.anchor;
     }
 
     /**
@@ -364,8 +387,8 @@ public class Chunk implements Renderable {
      * @param newEntity The entity.
      */
     public void addEntity(final Entity newEntity) {
-        final BlockPosition anchor = this.pos.toBlockPosition();
-        final BlockPosition position = newEntity.getPosition().toBlockPosition();
+        final BlockPosition anchor = this.getBlockAnchor();
+        final BlockPosition position = newEntity.getAnchor().toBlockPosition();
         // TODO: Use ArrayList<LinkedList> instead of LinkedList[] so that long block positions will be supported.
         this.entities[(int)position.getXRelative(anchor)][(int)position.getYRelative(anchor)]
                 [(int)position.getZRelative(anchor)].add(newEntity);
@@ -379,7 +402,7 @@ public class Chunk implements Renderable {
      */
     @Override
     public int hashCode() {
-        return this.getPosition().hashCode();
+        return this.getChunkPosition().hashCode();
     }
 
     /**
@@ -395,6 +418,6 @@ public class Chunk implements Renderable {
             return false;
         }
         final Chunk otherChunk = (Chunk)other;
-        return this.getPosition().equals(otherChunk.getPosition());
+        return this.getChunkPosition().equals(otherChunk.getChunkPosition());
     }
 }

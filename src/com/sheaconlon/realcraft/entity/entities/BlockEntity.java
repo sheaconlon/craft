@@ -26,7 +26,7 @@ public class BlockEntity extends Entity {
      * @param block The block that the block entity should represent.
      */
     public BlockEntity(final Block block) {
-        super(block.getPosition(), BlockEntity.INITIAL_ORIENTATION);
+        super(block.getAnchor(), BlockEntity.INITIAL_ORIENTATION);
         this.block = block;
     }
 
