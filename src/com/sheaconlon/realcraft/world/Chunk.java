@@ -275,8 +275,6 @@ public class Chunk implements Renderable {
         return true;
     }
 
-    // TODO: Cache this.pos.toBlockPosition()
-
     /**
      * Return whether this chunk contains some position.
      * @param position The position.
@@ -316,7 +314,6 @@ public class Chunk implements Renderable {
      * @return The block.
      */
     Block getBlock(final BlockPosition pos) {
-        // TODO: Cache this.pos.toBlockPosition()
         final BlockPosition anchor = this.getBlockAnchor();
         return this.blocks[(int)pos.getXRelative(anchor)][(int)pos.getYRelative(anchor)]
                 [(int)pos.getZRelative(anchor)];
