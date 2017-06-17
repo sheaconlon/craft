@@ -43,7 +43,7 @@ public class Chunk implements Renderable {
          */
         ChunkQuadIterator(final Chunk chunk) {
             this.chunk = chunk;
-            this.currentPosition = chunk.getBlockAnchor();
+            this.currentPosition = new BlockPosition(chunk.getBlockAnchor());
             this.currentIterator = new BlockPositionQuadIterator(this.chunk, this.currentPosition);
         }
 
