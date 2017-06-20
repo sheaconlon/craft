@@ -3,6 +3,7 @@ package com.sheaconlon.realcraft.ui;
 import org.lwjgl.glfw.*;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
+import org.lwjgl.glfw.GLFW;
 
 import java.nio.IntBuffer;
 
@@ -154,5 +155,37 @@ public class Window {
         GLFW.glfwTerminate();
         // Set the GLFW-wide error callback to null and free the old callback.
         GLFW.glfwSetErrorCallback(null).free();
+    }
+
+    /**
+     * Returns whether the 'W' key is currently being pressed.
+     * @return Whether the 'W' key is currently being pressed.
+     */
+    boolean wKeyIsPressed() {
+        return GLFW.glfwGetKey(this.getHandle(), GLFW.GLFW_KEY_W) == GLFW.GLFW_PRESS;
+    }
+
+    /**
+     * Returns whether the 'A' key is currently being pressed.
+     * @return Whether the 'A' key is currently being pressed.
+     */
+    boolean aKeyIsPressed() {
+        return GLFW.glfwGetKey(this.getHandle(), GLFW.GLFW_KEY_A) == GLFW.GLFW_PRESS;
+    }
+
+    /**
+     * Returns whether the 'S' key is currently being pressed.
+     * @return Whether the 'S' key is currently being pressed.
+     */
+    boolean sKeyIsPressed() {
+        return GLFW.glfwGetKey(this.getHandle(), GLFW.GLFW_KEY_S) == GLFW.GLFW_PRESS;
+    }
+
+    /**
+     * Returns whether the 'D' key is currently being pressed.
+     * @return Whether the 'D' key is currently being pressed.
+     */
+    boolean dKeyIsPressed() {
+        return GLFW.glfwGetKey(this.getHandle(), GLFW.GLFW_KEY_D) == GLFW.GLFW_PRESS;
     }
 }
