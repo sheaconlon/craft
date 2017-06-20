@@ -3,7 +3,9 @@ package com.sheaconlon.realcraft.ui;
 import com.sheaconlon.realcraft.world.World;
 import com.sheaconlon.realcraft.positioning.Position;
 
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWWindowCloseCallbackI;
+import org.lwjgl.glfw.GLFWKeyCallbackI;
 
 /**
  * A user interface for Realcraft.
@@ -28,6 +30,21 @@ public class UserInterface {
     }
 
     /**
+     * The user interface's callback for key events.
+     */
+    private class KeyCallback implements GLFWKeyCallbackI {
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void invoke(long window, int key, int scancode, int action, int mods) {
+            if (key == GLFW.GLFW_KEY_ESCAPE) {
+                UserInterface.this.shouldClose = true;
+            }
+        }
+    }
+
+    /**
      * The window this user interface is displayed in.
      */
     private final Window window;
@@ -40,6 +57,13 @@ public class UserInterface {
      */
     private final UserInterface.WindowCloseCallback windowCloseCallback;
 
+    /**
+     * The user interface's callback for key events.
+     *
+     * This instance attribute exists to maintain a strong reference to the callback so that it is not garbage
+     * collected.
+     */
+    private final UserInterface.KeyCallback keyCallback;
 
     /**
      * Whether the user interface should close.
@@ -56,7 +80,9 @@ public class UserInterface {
         this.window = new Window();
         // Save a strong reference to the callback so that it is not garbage collected.
         this.windowCloseCallback = new UserInterface.WindowCloseCallback();
+        this.keyCallback = new UserInterface.KeyCallback();
         this.window.setWindowCloseCallback(this.windowCloseCallback);
+        this.window.setKeyCallback(this.keyCallback);
         this.shouldClose = false;
         System.out.println("done with UI");
     }
