@@ -41,7 +41,7 @@ public class Launcher {
      */
     private void run() {
         while (!this.ui.shouldClose()) {
-            this.ui.respond();
+            this.ui.respond(this.world);
             this.renderer.render(this.world);
         }
     }

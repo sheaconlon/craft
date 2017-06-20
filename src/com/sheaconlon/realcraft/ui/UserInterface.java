@@ -1,5 +1,7 @@
 package com.sheaconlon.realcraft.ui;
 
+import com.sheaconlon.realcraft.world.World;
+
 import org.lwjgl.glfw.GLFWWindowCloseCallbackI;
 
 /**
@@ -96,7 +98,7 @@ public class UserInterface {
     /**
      * Respond to input.
      */
-    public void respond() {
+    public void respond(final World world) {
         window.runCallbacks();
     }
 
