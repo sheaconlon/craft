@@ -73,6 +73,7 @@ public class Window {
         if (this.handle == MemoryUtil.NULL) {
             throw new RuntimeException("GLFW#glfwCreateWindow(...) returned MemoryUtil#NULL");
         }
+        GLFW.glfwSetInputMode(this.handle, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_DISABLED);
         // TODO: Restrict aspect ratio so that the player cannot cheat by making their window very wide.
         // TODO: Set window icon.
     }
@@ -91,6 +92,14 @@ public class Window {
      */
     void setKeyCallback(final GLFWKeyCallbackI callback) {
         GLFW.glfwSetKeyCallback(this.handle, callback);
+    }
+
+    /**
+     * Set the callback for cursor position change events.
+     * @param callback The callback.
+     */
+    void setCursorPositionCallback(final GLFWCursorPosCallbackI callback) {
+        GLFW.glfwSetCursorPosCallback(this.getHandle(), callback);
     }
 
     /**
