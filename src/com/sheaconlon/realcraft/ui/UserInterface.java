@@ -1,6 +1,7 @@
 package com.sheaconlon.realcraft.ui;
 
 import com.sheaconlon.realcraft.world.World;
+import com.sheaconlon.realcraft.positioning.Position;
 
 import org.lwjgl.glfw.GLFWWindowCloseCallbackI;
 
@@ -8,6 +9,11 @@ import org.lwjgl.glfw.GLFWWindowCloseCallbackI;
  * A user interface for Realcraft.
  */
 public class UserInterface {
+    /**
+     * The desired speed of the user's movement, in blocks per second.
+     */
+    private static final double SPEED_OF_MOVEMENT = 2;
+
     /**
      * The user interface's callback for window close events.
      */
@@ -103,6 +109,7 @@ public class UserInterface {
      */
     public void respond(final World world, final double elapsedTime) {
         window.runCallbacks();
+        this.respondToMovement(world, elapsedTime);
     }
 
     /**
@@ -118,5 +125,46 @@ public class UserInterface {
      */
     public void close() {
         this.window.close();
+    }
+
+    /**
+     * Respond to input that requests movement.
+     * @param world The world.
+     * @param elapsedTime The estimated amount of time that has elapsed since the last call to this method, in
+     *                    seconds.
+     */
+    private void respondToMovement(final World world, final double elapsedTime) {
+        double relativeDirectionX = 0;
+        double relativeDirectionZ = 0;
+        if (this.window.wKeyIsPressed()) {
+            // towards negative z
+            relativeDirectionX += 1;
+        }
+        if (this.window.aKeyIsPressed()) {
+            // towards negative x
+            relativeDirectionZ += -1;
+        }
+        if (this.window.sKeyIsPressed()) {
+            // towards positive z
+            relativeDirectionX += -1;
+        }
+        if (this.window.dKeyIsPressed()) {
+            // towards positive x
+            relativeDirectionZ += 1;
+        }
+        if (relativeDirectionX != 0 || relativeDirectionZ != 0) {
+            final double orientation = world.getPlayer().getOrientation();
+            double directionX = relativeDirectionX * Math.cos(orientation);
+            directionX += relativeDirectionZ * Math.sin(orientation);
+            double directionZ = relativeDirectionZ * Math.cos(orientation);
+            directionZ += relativeDirectionX * Math.sin(orientation);
+            final double magnitude = Math.sqrt(directionX*directionX + directionZ*directionZ);
+            directionX /= magnitude;
+            directionZ /= magnitude;
+            final double distance = UserInterface.SPEED_OF_MOVEMENT * elapsedTime;
+            final Position anchor = world.getPlayer().getAnchor();
+            anchor.changeX(directionX * distance);
+            anchor.changeZ(directionZ * distance);
+        }
     }
 }
