@@ -10,6 +10,11 @@ import com.sheaconlon.realcraft.world.World;
  */
 public class Launcher {
     /**
+     * The number of nanoseconds in a second.
+     */
+    private static final double NANOSECONDS_PER_SECOND = Math.pow(10, 9);
+
+    /**
      * The world.
      */
     private World world;
@@ -25,6 +30,11 @@ public class Launcher {
     private Renderer renderer;
 
     /**
+     * The time, in nanoseconds from some start time, of the last tick.
+     */
+    private long lastTickTime;
+
+    /**
      * Launch Realcraft.
      */
     private void launch() {
@@ -32,6 +42,8 @@ public class Launcher {
         this.ui = new UserInterface();
         this.ui.show();
         this.renderer = new Renderer(this.ui.getWindowHandle(), this.ui.getDimensions());
+        // Pretend that a tick occured upon construction.
+        this.lastTickTime = System.nanoTime();
     }
 
     /**
@@ -41,9 +53,20 @@ public class Launcher {
      */
     private void run() {
         while (!this.ui.shouldClose()) {
-            this.ui.respond(this.world);
-            this.renderer.render(this.world);
+            final long currentTime = System.nanoTime();
+            final double elapsedTime = (currentTime - this.lastTickTime) / Launcher.NANOSECONDS_PER_SECOND;
+            this.lastTickTime = currentTime;
+            this.tick(elapsedTime);
         }
+    }
+
+    /**
+     * Allow each worker to do some work.
+     * @param elapsedTime The estimated amount of time since the last call to this method, in seconds.
+     */
+    private void tick(final double elapsedTime) {
+        this.ui.respond(this.world, elapsedTime);
+        this.renderer.render(this.world);
     }
 
     /**

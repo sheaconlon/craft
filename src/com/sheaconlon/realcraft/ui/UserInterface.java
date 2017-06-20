@@ -97,8 +97,11 @@ public class UserInterface {
 
     /**
      * Respond to input.
+     * @param world The world.
+     * @param elapsedTime The estimated amount of time that has elapsed since the last call to this method, in
+     *                    seconds.
      */
-    public void respond(final World world) {
+    public void respond(final World world, final double elapsedTime) {
         window.runCallbacks();
     }
 
