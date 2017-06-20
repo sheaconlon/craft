@@ -4,6 +4,7 @@ import org.lwjgl.glfw.*;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWKeyCallbackI;
 
 import java.nio.IntBuffer;
 
@@ -82,6 +83,14 @@ public class Window {
      */
     void setWindowCloseCallback(final GLFWWindowCloseCallbackI callback) {
         GLFW.glfwSetWindowCloseCallback(this.handle, callback);
+    }
+
+    /**
+     * Set the callback for key events.
+     * @param callback The callback.
+     */
+    void setKeyCallback(final GLFWKeyCallbackI callback) {
+        GLFW.glfwSetKeyCallback(this.handle, callback);
     }
 
     /**
