@@ -217,7 +217,7 @@ public class UserInterface {
         if (relativeDirectionX != 0 || relativeDirectionZ != 0) {
             final double orientation = world.getPlayer().getOrientation();
             double directionX = relativeDirectionX * Math.cos(orientation);
-            directionX += relativeDirectionZ * Math.sin(orientation);
+            directionX += relativeDirectionZ * -Math.sin(orientation);
             double directionZ = relativeDirectionZ * Math.cos(orientation);
             directionZ += relativeDirectionX * Math.sin(orientation);
             final double magnitude = Math.sqrt(directionX*directionX + directionZ*directionZ);
