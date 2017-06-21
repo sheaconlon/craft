@@ -4,13 +4,27 @@ import com.sheaconlon.realcraft.world.World;
 import com.sheaconlon.realcraft.positioning.Position;
 
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWCursorPosCallbackI;
 import org.lwjgl.glfw.GLFWWindowCloseCallbackI;
 import org.lwjgl.glfw.GLFWKeyCallbackI;
+import org.lwjgl.BufferUtils;
+
+import java.nio.DoubleBuffer;
 
 /**
  * A user interface for Realcraft.
  */
 public class UserInterface {
+    /**
+     * The number of radians that the player's orientation should change by for each pixel of mouse movement.
+     */
+    private static final double LOOKING_FACTOR = 0.2;
+
+    /**
+     * The maximum angular speed, in radians per second, at which the player may change their orientation.
+     */
+    private static final double LOOKING_MAX_SPEED = Math.PI / 2;
+
     /**
      * The desired speed of the user's movement, in blocks per second.
      */
@@ -71,6 +85,11 @@ public class UserInterface {
     private boolean shouldClose;
 
     /**
+     * The most recently recorded cursor position, as an array with x- and y-coordinates.
+     */
+    private double[] cursorPosition;
+
+    /**
      * Construct a user interface.
      *
      * The user interface will not be visible, but can be made visible by a call to {@link #show()}.
@@ -84,6 +103,7 @@ public class UserInterface {
         this.window.setWindowCloseCallback(this.windowCloseCallback);
         this.window.setKeyCallback(this.keyCallback);
         this.shouldClose = false;
+        this.cursorPosition = this.window.getCursorPosition();
         System.out.println("done with UI");
     }
 
@@ -128,6 +148,21 @@ public class UserInterface {
     }
 
     /**
+     * Get the change in the cursor's position since the last call to this method.
+     * @return The change in the cursor's position since the last call to this method, as an array of changes
+     * in x- and y-coordinate.
+     */
+    private double[] getCursorPositionDelta() {
+        final double[] currentCursorPosition = this.window.getCursorPosition();
+        final double[] delta = new double[]{
+                currentCursorPosition[0] - this.cursorPosition[0],
+                currentCursorPosition[1] - this.cursorPosition[1]
+        };
+        this.cursorPosition = currentCursorPosition;
+        return delta;
+    }
+
+    /**
      * Respond to input.
      * @param world The world.
      * @param elapsedTime The estimated amount of time that has elapsed since the last call to this method, in
@@ -136,6 +171,7 @@ public class UserInterface {
     public void respond(final World world, final double elapsedTime) {
         window.runCallbacks();
         this.respondToMovement(world, elapsedTime);
+        this.respondToLooking(world, elapsedTime);
     }
 
     /**
@@ -192,5 +228,13 @@ public class UserInterface {
             anchor.changeX(directionX * distance);
             anchor.changeZ(directionZ * distance);
         }
+    }
+
+    private void respondToLooking(final World world, final double elapsedTime) {
+        final double[] cursorPositionDelta = this.getCursorPositionDelta();
+        double orientationDelta = cursorPositionDelta[0] * UserInterface.LOOKING_FACTOR;
+        final double limit = UserInterface.LOOKING_MAX_SPEED * elapsedTime;
+        orientationDelta = Math.signum(orientationDelta) * Math.min(limit, Math.abs(orientationDelta));
+        world.getPlayer().changeOrientation(orientationDelta);
     }
 }
