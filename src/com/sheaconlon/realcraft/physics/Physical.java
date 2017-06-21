@@ -34,7 +34,7 @@ public abstract class Physical {
      * The orientation of a physical is its angle of rotation about the line which is parallel to the y-axis and
      * passes through the physical's bounding box's center.
      */
-    private final double orientation;
+    private double orientation;
 
     /**
      * The velocity of this physical, in feet per second.
@@ -111,5 +111,13 @@ public abstract class Physical {
      */
     public ThreeVector getVelocity() {
         return this.velocity;
+    }
+
+    /**
+     * Change the orientation of this physical by some amount.
+     * @param delta The amount, in radians.
+     */
+    public void changeOrientation(final double delta) {
+        this.orientation += delta;
     }
 }
