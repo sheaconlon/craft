@@ -1,11 +1,13 @@
 package com.sheaconlon.realcraft.ui;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.*;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWKeyCallbackI;
 
+import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
 
 /**
@@ -145,6 +147,20 @@ public class Window {
      */
     public long getHandle() {
         return this.handle;
+    }
+
+    /**
+     * Get the position of the cursor.
+     * @return The position of the cursor, as an array with x- and y-coordinates.
+     */
+    double[] getCursorPosition() {
+        final DoubleBuffer widthBuffer = BufferUtils.createDoubleBuffer(1);
+        final DoubleBuffer heightBuffer = BufferUtils.createDoubleBuffer(1);
+        GLFW.glfwGetCursorPos(this.getHandle(), widthBuffer, heightBuffer);
+        return new double[]{
+                widthBuffer.get(),
+                heightBuffer.get()
+        };
     }
 
     /**
