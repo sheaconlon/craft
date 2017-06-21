@@ -230,6 +230,12 @@ public class UserInterface {
         }
     }
 
+    /**
+     * Respond to input that requests looking.
+     * @param world The world.
+     * @param elapsedTime The estimated amount of time that has elapsed since the last call to this method, in
+     *                    seconds.
+     */
     private void respondToLooking(final World world, final double elapsedTime) {
         final double[] cursorPositionDelta = this.getCursorPositionDelta();
         double orientationDelta = cursorPositionDelta[0] * UserInterface.LOOKING_FACTOR;
