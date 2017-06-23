@@ -18,12 +18,12 @@ public class UserInterface {
     /**
      * The number of radians that the player's orientation should change by for each pixel of mouse movement.
      */
-    private static final double LOOKING_FACTOR = 0.2;
+    private static final double LOOKING_FACTOR = 0.003;
 
     /**
      * The maximum angular speed, in radians per second, at which the player may change their orientation.
      */
-    private static final double LOOKING_MAX_SPEED = Math.PI / 2;
+    private static final double LOOKING_MAX_SPEED = 1.5 * Math.PI;
 
     /**
      * The desired speed of the user's movement, in blocks per second.
