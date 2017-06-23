@@ -51,7 +51,6 @@ public class ChunkGenerator {
      * @return The chunk at {@code position}.
      */
     Chunk getChunk(final ChunkPosition position) {
-        System.out.printf("generating chunk at (%d, %d, %d)...\n", position.getX(), position.getY(), position.getZ());
         final Chunk chunk = new Chunk(position);
         final BlockPosition anchor = position.toBlockPosition();
         for (long x = 0; x < Chunk.SIZE; x++) {
@@ -75,7 +74,6 @@ public class ChunkGenerator {
         if (position.equals(ChunkGenerator.PLAYER_INITIAL_POSITION.toChunkPosition())) {
             this.placePlayer(chunk);
         }
-        System.out.printf("done with chunk at (%d, %d, %d)...\n", position.getX(), position.getY(), position.getZ());
         return chunk;
     }
 
