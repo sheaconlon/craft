@@ -6,6 +6,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
 import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
 
 public class ChunkRenderer extends VBORenderer<Chunk> {
     private final Chunk chunk;
@@ -16,18 +17,21 @@ public class ChunkRenderer extends VBORenderer<Chunk> {
         // TODO: Make ChunkRenderer render entities as well as blocks.
         // TODO: Make ChunkRenderer work for variable number of quads.
         final int quadCount = Chunk.SIZE * Chunk.SIZE * Chunk.SIZE * 6;
-        final int doublesPerQuad = (3 + 4 + 3) * 4;
-        final DoubleBuffer vboData = BufferUtils.createDoubleBuffer(quadCount * doublesPerQuad);
+        final int doublesPerQuad = (3 + 3 + 3) * 4;
+        final FloatBuffer vboData = BufferUtils.createFloatBuffer(quadCount * doublesPerQuad);
         for (final Quad quad : chunk) {
-            final double[] color = quad.getColor();
+            final float[] color = quad.getColor();
             for (final Vertex vertex : quad.getVertices()) {
                 final Position position = vertex.getPosition();
-                vboData.put(position.getX());
-                vboData.put(position.getY());
-                vboData.put(position.getZ());
-                vboData.put(color);
-                vboData.put(1);
-                vboData.put(vertex.getNormal());
+                vboData.put((float)position.getX());
+                vboData.put((float)position.getY());
+                vboData.put((float)position.getZ());
+                vboData.put(color[0]);
+                vboData.put(color[1]);
+                vboData.put(color[2]);
+                vboData.put(vertex.getNormal()[0]);
+                vboData.put(vertex.getNormal()[1]);
+                vboData.put(vertex.getNormal()[2]);
             }
         }
         vboData.limit(vboData.position());

@@ -14,14 +14,14 @@ public class Vertex {
     /**
      * The normal vector of this vertex.
      */
-    private final double[] normal;
+    private final float[] normal;
 
     /**
      * Construct a vertex.
      * @param position See {@link #position}.
      * @param normal See {@link #normal}.
      */
-    public Vertex(final Position position, final double[] normal) {
+    public Vertex(final Position position, final float[] normal) {
         this.position = position;
         this.normal = normal;
     }
@@ -38,7 +38,7 @@ public class Vertex {
      * Get the normal vector of this vertex.
      * @return See {@link #normal}.
      */
-    double[] getNormal() {
+    float[] getNormal() {
         return this.normal;
     }
 }

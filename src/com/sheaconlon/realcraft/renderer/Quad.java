@@ -15,13 +15,13 @@ public class Quad {
     /**
      * The color of this quad, in RGB format.
      */
-    private final double[] color;
+    private final float[] color;
 
     /**
      * Construct a quad.
      * @param vertices See {@link #vertices}.
      */
-    public Quad(final Vertex[] vertices, final double[] color) {
+    public Quad(final Vertex[] vertices, final float[] color) {
         if (vertices.length != 4) {
             throw new RuntimeException("incorrect number of vertices supplied to Quad constructor");
         }
@@ -41,7 +41,7 @@ public class Quad {
      * Get the color of this quad.
      * @return See {@link #color}.
      */
-    double[] getColor() {
+    float[] getColor() {
         return this.color;
     }
 
@@ -52,11 +52,11 @@ public class Quad {
      */
     public Quad makeAbsolute(final Position reference) {
         final Vertex[] oldVertices = this.getVertices();
-        final double[] oldColor = this.getColor();
+        final float[] oldColor = this.getColor();
         final Vertex[] newVertices = new Vertex[oldVertices.length];
         for (int i = 0; i < oldVertices.length; i++) {
             final Position oldPosition = oldVertices[i].getPosition();
-            final double[] oldNormal = oldVertices[i].getNormal();
+            final float[] oldNormal = oldVertices[i].getNormal();
             final Position newPosition = new Position(oldPosition.getXAbsolute(reference),
                     oldPosition.getYAbsolute(reference), oldPosition.getZAbsolute(reference));
             newVertices[i] = new Vertex(newPosition, oldNormal);

@@ -45,7 +45,7 @@ public abstract class Block extends Physical implements Renderable {
     /**
      * The normal vector for the front face of a block.
      */
-    private static final double[] FRONT_NORMAL = new double[]{0, 0, 1};
+    private static final float[] FRONT_NORMAL = new float[]{0, 0, 1};
 
     /**
      * The vertices of the front face of a block.
@@ -60,7 +60,7 @@ public abstract class Block extends Physical implements Renderable {
     /**
      * The normal vector for the left face of a block.
      */
-    private static final double[] LEFT_NORMAL = new double[]{-1, 0, 0};
+    private static final float[] LEFT_NORMAL = new float[]{-1, 0, 0};
 
     // TODO: Ensure that attributes are fully qualified throughout codebase.
 
@@ -77,7 +77,7 @@ public abstract class Block extends Physical implements Renderable {
     /**
      * The normal vector for the back face of a block.
      */
-    private static final double[] BACK_NORMAL = new double[]{0, 0, -1};
+    private static final float[] BACK_NORMAL = new float[]{0, 0, -1};
 
     /**
      * The vertices of the back face of a block.
@@ -92,7 +92,7 @@ public abstract class Block extends Physical implements Renderable {
     /**
      * The normal vector for the right face of a block.
      */
-    private static final double[] RIGHT_NORMAL = new double[]{1, 0, 0};
+    private static final float[] RIGHT_NORMAL = new float[]{1, 0, 0};
 
     /**
      * The vertices of the right face of a block.
@@ -107,7 +107,7 @@ public abstract class Block extends Physical implements Renderable {
     /**
      * The normal vector for the top face of a block.
      */
-    private static final double[] TOP_NORMAL = new double[]{0, 1, 0};
+    private static final float[] TOP_NORMAL = new float[]{0, 1, 0};
 
     /**
      * The vertices of the top face of a block.
@@ -122,7 +122,7 @@ public abstract class Block extends Physical implements Renderable {
     /**
      * The normal vector for the bottom face of a block.
      */
-    private static final double[] BOTTOM_NORMAL = new double[]{0, -1, 0};
+    private static final float[] BOTTOM_NORMAL = new float[]{0, -1, 0};
 
     /**
      * The vertices of the bottom face of a block.
