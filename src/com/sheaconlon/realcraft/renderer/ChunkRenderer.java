@@ -16,7 +16,7 @@ public class ChunkRenderer extends VBORenderer<Chunk> {
         // TODO: Make ChunkRenderer render entities as well as blocks.
         // TODO: Make ChunkRenderer work for variable number of quads.
         final int quadCount = Chunk.SIZE * Chunk.SIZE * Chunk.SIZE * 6;
-        final int doublesPerQuad = 3 + 4 + 3;
+        final int doublesPerQuad = (3 + 4 + 3) * 4;
         final DoubleBuffer vboData = BufferUtils.createDoubleBuffer(quadCount * doublesPerQuad);
         for (final Quad quad : chunk) {
             final double[] color = quad.getColor();
