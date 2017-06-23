@@ -199,7 +199,7 @@ public class Chunk implements Renderable {
     /**
      * The side length of chunks, in meters.
      */
-    public static final int SIZE = 25;
+    public static final int SIZE = 10;
 
     /**
      * The chunk position of this chunk.
