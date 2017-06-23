@@ -79,6 +79,11 @@ public class Renderer {
         GL11.glShadeModel(GL11.GL_SMOOTH);
         GL11.glLightfv(GL11.GL_LIGHT0, GL11.GL_POSITION, Renderer.SUN_DIRECTION);
         GL11.glLightfv(GL11.GL_LIGHT0, GL11.GL_DIFFUSE, Renderer.SUNLIGHT_COLOR);
+        GL11.glColorMaterial(GL11.GL_FRONT, GL11.GL_DIFFUSE);
+        GL11.glEnable(GL11.GL_COLOR_MATERIAL);
+        GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
+        GL11.glEnableClientState(GL11.GL_COLOR_ARRAY);
+        GL11.glEnableClientState(GL11.GL_NORMAL_ARRAY);
     }
 
     public void render(final World world) {
