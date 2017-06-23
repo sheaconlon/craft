@@ -8,8 +8,12 @@ import org.lwjgl.glfw.GLFWCursorPosCallbackI;
 import org.lwjgl.glfw.GLFWWindowCloseCallbackI;
 import org.lwjgl.glfw.GLFWKeyCallbackI;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.system.CallbackI;
 
 import java.nio.DoubleBuffer;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * A user interface for Realcraft.
@@ -90,6 +94,16 @@ public class UserInterface {
     private double[] cursorPosition;
 
     /**
+     * The 20 most recent elapsed times in calls to {@link #respond(World, double)}.
+     */
+    private Deque<Double> elapsedTimes;
+
+    /**
+     * The sum of the elements of {@link #elapsedTimes}.
+     */
+    private double elapsedTimesSum;
+
+    /**
      * Construct a user interface.
      *
      * The user interface will not be visible, but can be made visible by a call to {@link #show()}.
@@ -103,6 +117,8 @@ public class UserInterface {
         this.window.setKeyCallback(this.keyCallback);
         this.shouldClose = false;
         this.cursorPosition = this.window.getCursorPosition();
+        this.elapsedTimes = new LinkedList<Double>();
+        this.elapsedTimesSum = 0;
     }
 
     /**
@@ -167,6 +183,15 @@ public class UserInterface {
      *                    seconds.
      */
     public void respond(final World world, final double elapsedTime) {
+        if (this.elapsedTimes.size() == 20) {
+            this.elapsedTimesSum -= this.elapsedTimes.removeFirst();
+            this.elapsedTimes.addLast(elapsedTime);
+            this.elapsedTimesSum += elapsedTime;
+            System.out.println(20 / this.elapsedTimesSum);
+        } else {
+            this.elapsedTimes.addLast(elapsedTime);
+            this.elapsedTimesSum += elapsedTime;
+        }
         window.runCallbacks();
         this.respondToMovement(world, elapsedTime);
         this.respondToLooking(world, elapsedTime);
