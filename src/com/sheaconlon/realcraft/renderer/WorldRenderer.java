@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * A renderer for a world.
  */
-public class WorldRenderer extends Renderer2<World> {
+public class WorldRenderer extends Renderer<World> {
     /**
      * A vector giving the direction of the sun. The trailing zero indicates to OpenGL that the light is
      * directional, not positional.

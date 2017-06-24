@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * A renderer of some {@link Iterable<Quad>} thing which uses VBOs.
  */
-public abstract class VBORenderer<T extends Iterable<Quad>> extends Renderer2<T> {
+public abstract class VBORenderer<T extends Iterable<Quad>> extends Renderer<T> {
     /**
      * The number of floats used to specify a vertex's position.
      */
