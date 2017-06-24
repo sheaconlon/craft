@@ -44,9 +44,9 @@ public class BlockPosition extends IntPosition {
      */
     public ChunkPosition toChunkPosition() {
         return new ChunkPosition(
-                Position.floorCoordinate(this.getX() / Chunk.SIZE),
-                Position.floorCoordinate(this.getY() / Chunk.SIZE),
-                Position.floorCoordinate(this.getZ() / Chunk.SIZE)
+                Position.floorCoordinate((double)this.getX() / (double)Chunk.SIZE),
+                Position.floorCoordinate((double)this.getY() / (double)Chunk.SIZE),
+                Position.floorCoordinate((double)this.getZ() / (double)Chunk.SIZE)
         );
     }
 }
