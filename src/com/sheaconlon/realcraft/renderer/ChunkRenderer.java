@@ -34,7 +34,6 @@ public class ChunkRenderer extends VBORenderer<Chunk> {
                 vboData.put(vertex.getNormal()[2]);
             }
         }
-        vboData.limit(vboData.position());
         vboData.flip();
         this.sendVBOData(vboData);
     }
