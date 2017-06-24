@@ -1,6 +1,6 @@
 package com.sheaconlon.realcraft;
 
-import com.sheaconlon.realcraft.renderer.Renderer;
+import com.sheaconlon.realcraft.renderer.WorldRenderer;
 import com.sheaconlon.realcraft.ui.UserInterface;
 import com.sheaconlon.realcraft.world.ChunkGenerator;
 import com.sheaconlon.realcraft.world.World;
@@ -27,7 +27,7 @@ public class Launcher {
     /**
      * The renderer.
      */
-    private Renderer renderer;
+    private WorldRenderer renderer;
 
     /**
      * The time, in nanoseconds from some start time, of the last tick.
@@ -41,7 +41,7 @@ public class Launcher {
         this.world = new World(new ChunkGenerator());
         this.ui = new UserInterface();
         this.ui.show();
-        this.renderer = new Renderer(this.ui.getWindowHandle(), this.ui.getDimensions());
+        this.renderer = new WorldRenderer(this.ui.getWindowHandle(), this.ui.getDimensions(), this.world);
         // Pretend that a tick occured upon construction.
         this.lastTickTime = System.nanoTime();
     }
@@ -66,7 +66,7 @@ public class Launcher {
      */
     private void tick(final double elapsedTime) {
         this.ui.respond(this.world, elapsedTime);
-        this.renderer.render(this.world);
+        this.renderer.render();
     }
 
     /**

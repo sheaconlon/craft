@@ -16,9 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A renderer, which renders the world for the launcher.
+ * A renderer for a world.
  */
-public class Renderer {
+public class WorldRenderer extends Renderer2<World> {
     /**
      * A vector giving the direction of the sun. The trailing zero indicates to OpenGL that the light is
      * directional, not positional.
@@ -60,25 +60,32 @@ public class Renderer {
      */
     private final long windowHandle;
 
+    /**
+     * The world.
+     */
+    private final World world;
+
     // TODO: Respond to window resizes.
     // TODO: Restrict window fatness to avoid cheating.
     /**
-     * Construct a renderer.
+     * Construct a world renderer.
      */
-    public Renderer(final long windowHandle, final int[] windowDimensions) {
+    public WorldRenderer(final long windowHandle, final int[] windowDimensions, final World world) {
+        super(world);
         this.windowHandle = windowHandle;
         this.chunkRenderers = new HashMap<>();
+        this.world = world;
         GLFW.glfwMakeContextCurrent(windowHandle);
         GLFW.glfwSwapInterval(1);
         GL.createCapabilities();
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glEnable(GL11.GL_CULL_FACE);
-        Renderer.setProjection(windowDimensions);
+        WorldRenderer.setProjection(windowDimensions);
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_LIGHT0);
         GL11.glShadeModel(GL11.GL_SMOOTH);
-        GL11.glLightfv(GL11.GL_LIGHT0, GL11.GL_POSITION, Renderer.SUN_DIRECTION);
-        GL11.glLightfv(GL11.GL_LIGHT0, GL11.GL_DIFFUSE, Renderer.SUNLIGHT_COLOR);
+        GL11.glLightfv(GL11.GL_LIGHT0, GL11.GL_POSITION, WorldRenderer.SUN_DIRECTION);
+        GL11.glLightfv(GL11.GL_LIGHT0, GL11.GL_DIFFUSE, WorldRenderer.SUNLIGHT_COLOR);
         GL11.glColorMaterial(GL11.GL_FRONT, GL11.GL_DIFFUSE);
         GL11.glEnable(GL11.GL_COLOR_MATERIAL);
         GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
@@ -86,17 +93,17 @@ public class Renderer {
         GL11.glEnableClientState(GL11.GL_NORMAL_ARRAY);
     }
 
-    public void render(final World world) {
-        Renderer.clear();
-        final Player player = world.getPlayer();
-        Renderer.setModelView(player.getAnchor(), player.getEyePosition(), player.getOrientation());
+    public void render() {
+        WorldRenderer.clear();
+        final Player player = this.world.getPlayer();
+        WorldRenderer.setModelView(player.getAnchor(), player.getEyePosition(), player.getOrientation());
         final ChunkPosition playerChunkPosition = player.getAnchor().toChunkPosition();
-        for (long x = -Renderer.RENDER_DISTANCE; x <= Renderer.RENDER_DISTANCE; x++){
-            for (long y = -Renderer.RENDER_DISTANCE; y <= Renderer.RENDER_DISTANCE; y++){
-                for (long z = -Renderer.RENDER_DISTANCE; z <= Renderer.RENDER_DISTANCE; z++){
+        for (long x = -WorldRenderer.RENDER_DISTANCE; x <= WorldRenderer.RENDER_DISTANCE; x++){
+            for (long y = -WorldRenderer.RENDER_DISTANCE; y <= WorldRenderer.RENDER_DISTANCE; y++){
+                for (long z = -WorldRenderer.RENDER_DISTANCE; z <= WorldRenderer.RENDER_DISTANCE; z++){
                     final ChunkPosition renderChunkPosition = new ChunkPosition(playerChunkPosition.getX() + x,
                             playerChunkPosition.getY() + y, playerChunkPosition.getZ() + z);
-                    final Chunk renderChunk = world.getChunk(renderChunkPosition);
+                    final Chunk renderChunk = this.world.getChunk(renderChunkPosition);
                     final ChunkRenderer chunkRenderer = this.getChunkRenderer(renderChunk);
                     chunkRenderer.render(renderChunk);
                 }
@@ -120,8 +127,8 @@ public class Renderer {
         final FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
         final Matrix4f matrix = new Matrix4f();
         final float aspectRatio = (float)((double)windowDimensions[0] / (double)windowDimensions[1]);
-        matrix.setPerspective(Renderer.VERTICAL_FIELD_OF_VIEW, aspectRatio, Renderer.NEAR_CUTOFF,
-                2 * Renderer.RENDER_DISTANCE * Chunk.SIZE);
+        matrix.setPerspective(WorldRenderer.VERTICAL_FIELD_OF_VIEW, aspectRatio, WorldRenderer.NEAR_CUTOFF,
+                2 * WorldRenderer.RENDER_DISTANCE * Chunk.SIZE);
         GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glLoadMatrixf(matrix.get(buffer));
     }
@@ -148,7 +155,7 @@ public class Renderer {
     }
 
     private static void clear() {
-        GL11.glClearColor(Renderer.SKY_COLOR[0], Renderer.SKY_COLOR[1], Renderer.SKY_COLOR[2], 1);
+        GL11.glClearColor(WorldRenderer.SKY_COLOR[0], WorldRenderer.SKY_COLOR[1], WorldRenderer.SKY_COLOR[2], 1);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
     }
 }
