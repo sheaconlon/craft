@@ -45,8 +45,8 @@ public class ChunkGenerator {
     /**
      * Generate the chunk at some position.
      *
-     * The world will consist of many layers of dirt blocks at even hash code block positions, then infinitely many
-     * air blocks.
+     * The world will consist of {@code GROUND_LEVEL - 1} layers of 50% dirt blocks and 50% air blocks, then
+     * infinitely many air blocks.
      * @param position The position.
      * @return The chunk at {@code position}.
      */
@@ -59,10 +59,7 @@ public class ChunkGenerator {
                     final BlockPosition blockPosition = new BlockPosition(x + anchor.getX(),
                             y + anchor.getY(), z + anchor.getZ());
                     Block block;
-                    // Place dirt at every even hash code block position. The dirt blocks should be placed at
-                    // positions up to GROUND_LEVEL - 1 so that the highest dirt blocks' upper surfaces are at
-                    // GROUND_LEVEL.
-                    if (blockPosition.getY() <= GROUND_LEVEL - 1 && blockPosition.hashCode() % 2 == 0) {
+                    if (blockPosition.getY() <= (GROUND_LEVEL - 1) && Math.random() > 0.5) {
                         block = new DirtBlock(blockPosition);
                     } else {
                         block = new AirBlock(blockPosition);
