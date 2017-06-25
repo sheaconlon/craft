@@ -22,7 +22,7 @@ public abstract class WorldObject {
 
     /**
      * Create a world object.
-     * @param container The container of this world object.
+     * @param container The container of the world object.
      * @param position The initial position of the anchor point of the world object.
      * @param velocity The initial velocity of the world object.
      */
