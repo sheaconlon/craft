@@ -22,9 +22,9 @@ public abstract class WorldObject {
 
     /**
      * Create a world object.
-     * @param container The container of the world object.
-     * @param position The initial position of the anchor point of the world object.
-     * @param velocity The initial velocity of the world object.
+     * @param container See {@link #container}.
+     * @param position See {@link #position}.
+     * @param velocity See {@link #velocity}.
      */
     public WorldObject(final Container container, final double[] position, final double[] velocity) {
         this.container = container;
