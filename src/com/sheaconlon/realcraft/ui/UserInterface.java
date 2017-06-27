@@ -306,8 +306,11 @@ public class UserInterface extends Worker {
     private void respondToLooking(final World world, final double elapsedTime) {
         final double[] cursorPositionDelta = this.getCursorPositionDelta();
         double orientationDelta = cursorPositionDelta[0] * UserInterface.LOOKING_FACTOR;
+        double lookDirectionDelta = -cursorPositionDelta[1] * UserInterface.LOOKING_FACTOR;
         final double limit = UserInterface.LOOKING_MAX_SPEED * elapsedTime;
         orientationDelta = Math.signum(orientationDelta) * Math.min(limit, Math.abs(orientationDelta));
+        lookDirectionDelta = Math.signum(lookDirectionDelta) * Math.min(limit, Math.abs(lookDirectionDelta));
         world.getPlayer().changeOrientation(orientationDelta);
+        world.getPlayer().changeLookDirection(lookDirectionDelta);
     }
 }
