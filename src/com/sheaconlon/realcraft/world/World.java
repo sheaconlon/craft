@@ -148,4 +148,23 @@ public class World {
     public Player getPlayer() {
         return this.player;
     }
+
+    /**
+     * Return whether a chunk is loaded.
+     * @param pos The position of the anchor point of the chunk.
+     * @return Whether the chunk is loaded.
+     */
+    public boolean chunkLoaded(final int[] pos) {
+        final List<Integer> posList = ArrayUtilities.toList(pos);
+        return this.chunks.containsKey(posList);
+    }
+
+    /**
+     * Load a chunk.
+     * @param pos The position of the anchor point of the chunk.
+     * @param chunk The chunk.
+     */
+    public void loadChunk(final int[] pos, final Chunk chunk) {
+        this.chunks.put(pos, chunk);
+    }
 }

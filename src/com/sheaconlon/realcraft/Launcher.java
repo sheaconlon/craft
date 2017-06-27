@@ -10,6 +10,7 @@ public class Launcher {
         final UserInterface ui = new UserInterface(world);
         ui.show();
         final Thread rendererThread = new Thread(new Renderer(world, ui.getWindowHandle(), ui.getDimensions()));
+        final Thread generatorThread
         rendererThread.start();
         ui.run();
         rendererThread.interrupt();
