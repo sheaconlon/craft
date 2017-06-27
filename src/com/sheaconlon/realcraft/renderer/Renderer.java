@@ -158,17 +158,10 @@ public class Renderer extends Worker {
         this.setPerspective();
         Renderer.setLighting();
         Renderer.clear();
-        final double[] playerPosition = this.world.getPlayer().getPosition();
-        final int[] playerChunkPosition = PositionUtilities.toChunkPosition(playerPosition);
-        final int[] deltaChunkPosition = new int[playerChunkPosition.length];
-        for (deltaChunkPosition[0] = -Renderer.RENDER_DISTANCE; deltaChunkPosition[0] <= Renderer.RENDER_DISTANCE; deltaChunkPosition[0]++) {
-            for (deltaChunkPosition[1] = -Renderer.RENDER_DISTANCE; deltaChunkPosition[1] <= Renderer.RENDER_DISTANCE; deltaChunkPosition[1]++) {
-                for (deltaChunkPosition[2] = -Renderer.RENDER_DISTANCE; deltaChunkPosition[2] <= Renderer.RENDER_DISTANCE; deltaChunkPosition[2]++) {
-                    final int[] renderChunkPosition = ArrayUtilities.add(playerChunkPosition, deltaChunkPosition);
-                    final int[] renderPosition = ArrayUtilities.multiply(renderChunkPosition, Chunk.SIZE);
-                    this.renderChunk(renderPosition);
-                }
-            }
+        final double[] playerPos = this.world.getPlayer().getPosition();
+        final int[] playerChunkPos = PositionUtilities.toChunkPosition(playerPos);
+        for (final int[] renderChunkPos : PositionUtilities.getNearbyChunkPositions(playerChunkPos, Renderer.RENDER_DISTANCE)) {
+            this.renderChunk(renderChunkPos);
         }
         GLFW.glfwSwapBuffers(this.windowHandle);
     }
