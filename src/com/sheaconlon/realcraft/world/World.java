@@ -5,7 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import com.sheaconlon.realcraft.blocks.Block;
 import com.sheaconlon.realcraft.blocks.DirtBlock;
-import com.sheaconlon.realcraft.entity.entities.Player;
+import com.sheaconlon.realcraft.entities.Player;
 import com.sheaconlon.realcraft.utilities.ArrayUtilities;
 
 /**

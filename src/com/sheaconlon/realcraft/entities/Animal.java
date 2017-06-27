@@ -1,4 +1,4 @@
-package com.sheaconlon.realcraft.entity;
+package com.sheaconlon.realcraft.entities;
 
 import com.sheaconlon.realcraft.world.WorldObject;
 

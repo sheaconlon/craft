@@ -1,7 +1,7 @@
 package com.sheaconlon.realcraft.renderer;
 
 import com.sheaconlon.realcraft.Worker;
-import com.sheaconlon.realcraft.entity.entities.Player;
+import com.sheaconlon.realcraft.entities.Player;
 import com.sheaconlon.realcraft.utilities.ArrayUtilities;
 import com.sheaconlon.realcraft.utilities.PositionUtilities;
 import com.sheaconlon.realcraft.world.Chunk;
@@ -13,7 +13,6 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
-import java.lang.reflect.Array;
 import java.nio.FloatBuffer;
 import java.util.*;
 

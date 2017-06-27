@@ -1,6 +1,4 @@
-package com.sheaconlon.realcraft.entity.entities;
-
-import com.sheaconlon.realcraft.entity.Animal;
+package com.sheaconlon.realcraft.entities;
 
 /**
  * The player, the avatar of the user.
