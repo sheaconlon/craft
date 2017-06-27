@@ -7,6 +7,16 @@ import com.sheaconlon.realcraft.world.WorldObject;
  */
 public abstract class Animal extends Entity {
     /**
+     * The minimum allowed look direction for an animal.
+     */
+    private static final double LOOK_DIRECTION_MINIMUM = 0.9 * -Math.PI / 2;
+
+    /**
+     * The maximum allowed look direction for an animal.
+     */
+    private static final double LOOK_DIRECTION_MAXIMUM = 0.9 * Math.PI / 2;
+
+    /**
      * The orientation of this animal in the x-z-plane, as an angle from the positive x-axis.
      */
     private double orientation;
@@ -42,5 +52,23 @@ public abstract class Animal extends Entity {
      */
     public void changeOrientation(final double delta) {
         this.orientation += delta;
+    }
+
+    /**
+     * Getter for {@link #lookDirection}.
+     * @return The value of {@link #lookDirection}.
+     */
+    public double getLookDirection() {
+        return this.lookDirection;
+    }
+
+    /**
+     * Changer for {@link #lookDirection}.
+     * @param delta The amount by which to change {@link #lookDirection}.
+     */
+    public void changeLookDirection(final double delta) {
+        this.lookDirection += delta;
+        this.lookDirection = Math.min(Animal.LOOK_DIRECTION_MAXIMUM, this.lookDirection);
+        this.lookDirection = Math.max(Animal.LOOK_DIRECTION_MINIMUM, this.lookDirection);
     }
 }
