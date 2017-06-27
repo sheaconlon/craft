@@ -17,6 +17,11 @@ public abstract class Animal extends Entity {
     private static final double LOOK_DIRECTION_MAXIMUM = 0.9 * Math.PI / 2;
 
     /**
+     * The angle change, in radians, which represents a full revolution.
+     */
+    private static final double FULL_REVOLUTION_ANGLE = 2 * Math.PI;
+
+    /**
      * The orientation of this animal in the x-z-plane, as an angle from the positive x-axis.
      */
     private double orientation;
@@ -52,6 +57,7 @@ public abstract class Animal extends Entity {
      */
     public void changeOrientation(final double delta) {
         this.orientation += delta;
+        this.orientation = this.orientation % Animal.FULL_REVOLUTION_ANGLE;
     }
 
     /**
