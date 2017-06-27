@@ -59,7 +59,7 @@ public class Renderer extends Worker {
     /**
      * The number of extra chunks to render in each direction from the player's chunk.
      */
-    private static final int RENDER_DISTANCE = 1;
+    public static final int RENDER_DISTANCE = 1;
 
     /**
      * The color of the sky, in RGBA format.
