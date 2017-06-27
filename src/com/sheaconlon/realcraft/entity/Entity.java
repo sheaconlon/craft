@@ -1,44 +1,17 @@
 package com.sheaconlon.realcraft.entity;
 
-import com.sheaconlon.realcraft.blocks.Block;
-import com.sheaconlon.realcraft.physics.Physical;
-import com.sheaconlon.realcraft.positioning.Position;
-import com.sheaconlon.realcraft.positioning.ThreeVector;
-import com.sheaconlon.realcraft.renderer.Renderable;
+import com.sheaconlon.realcraft.world.WorldObject;
 
 /**
- * Something which is not a {@link Block}.
+ * An entity, any world object that is not a block.
  */
-public abstract class Entity extends Physical implements Renderable {
+public abstract class Entity extends WorldObject {
     /**
-     * Construct an entity.
-     * @see Physical#Physical(Position, double, ThreeVector)
+     * Create an entity.
+     * @param position See {@link WorldObject#position}.
+     * @param velocity See {@link WorldObject#velocity}.
      */
-    public Entity(final Position anchor, final double orientation, final ThreeVector velocity) {
-        super(anchor, orientation, velocity);
-    }
-
-    /**
-     * Construct an entity.
-     * @see Physical#Physical(Position, double)
-     */
-    public Entity(final Position anchor, final double orientation) {
-        super(anchor, orientation);
-    }
-
-    /**
-     * Construct an entity.
-     * @see Physical#Physical(Position)
-     */
-    public Entity(final Position anchor) {
-        super(anchor);
-    }
-
-    /**
-     * Construct an entity.
-     * @see Physical#Physical()
-     */
-    public Entity() {
-        super();
+    public Entity(final double[] position, final double[] velocity) {
+        super(null, position, velocity);
     }
 }

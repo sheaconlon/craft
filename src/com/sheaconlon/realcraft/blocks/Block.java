@@ -1,60 +1,26 @@
 package com.sheaconlon.realcraft.blocks;
 
-import com.sheaconlon.realcraft.physics.BoundingBox;
-import com.sheaconlon.realcraft.physics.Physical;
-import com.sheaconlon.realcraft.positioning.Position;
-import com.sheaconlon.realcraft.renderer.Renderable;
-import com.sheaconlon.realcraft.renderer.Vertex;
-import com.sheaconlon.realcraft.positioning.BlockPosition;
-import com.sheaconlon.realcraft.renderer.Quad;
-
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import com.sheaconlon.realcraft.utilities.ArrayUtilities;
+import com.sheaconlon.realcraft.world.WorldObject;
+import com.sheaconlon.realcraft.world.Chunk;
 
 /**
  * A block, a cubical, grid-aligned object in the world.
  */
-public abstract class Block extends Physical implements Renderable {
-    private class BlockQuadIterator implements Iterator<Quad> {
-        private int quadIndex;
-
-        BlockQuadIterator() {
-            this.quadIndex = 0;
-        }
-
-        public boolean hasNext() {
-            return this.quadIndex < Block.this.getQuads().length;
-        }
-
-        public Quad next() {
-            if (!this.hasNext()) {
-                throw new NoSuchElementException();
-            }
-            final Quad next = Block.this.getQuads()[this.quadIndex];
-            final Quad absoluteNext = next.makeAbsolute(Block.this.getAnchor());
-            this.quadIndex++;
-            return absoluteNext;
-        }
-    }
-
-    /**
-     * The bounding box of a block.
-     */
-    private static final BoundingBox BOUNDING_BOX = new BoundingBox(1, 1, 1);
-
+public abstract class Block extends WorldObject {
     /**
      * The normal vector for the front face of a block.
      */
     private static final float[] FRONT_NORMAL = new float[]{0, 0, 1};
 
     /**
-     * The vertices of the front face of a block.
+     * The positions of the vertices of the front face of a block, relative to its anchor.
      */
-    protected static final Vertex[] FRONT_VERTICES = new Vertex[]{
-            new Vertex(new Position(0, 0, 0), Block.FRONT_NORMAL),
-            new Vertex(new Position(1, 0, 0), Block.FRONT_NORMAL),
-            new Vertex(new Position(1, 1, 0), Block.FRONT_NORMAL),
-            new Vertex(new Position(0, 1, 0), Block.FRONT_NORMAL)
+    private static final float[][] FRONT_POSITIONS = new float[][]{
+            new float[]{0, 0, 0},
+            new float[]{1, 0, 0},
+            new float[]{1, 1, 0},
+            new float[]{0, 1, 0}
     };
 
     /**
@@ -65,13 +31,13 @@ public abstract class Block extends Physical implements Renderable {
     // TODO: Ensure that attributes are fully qualified throughout codebase.
 
     /**
-     * The vertices of the left face of a block.
+     * The positions of the vertices of the left face of a block, relative to its anchor.
      */
-    protected static final Vertex[] LEFT_VERTICES = new Vertex[]{
-            new Vertex(new Position(0, 0, -1), Block.LEFT_NORMAL),
-            new Vertex(new Position(0, 0, 0), Block.LEFT_NORMAL),
-            new Vertex(new Position(0, 1, 0), Block.LEFT_NORMAL),
-            new Vertex(new Position(0, 1, -1), Block.LEFT_NORMAL)
+    private static final float[][] LEFT_POSITIONS = new float[][]{
+            new float[]{0, 0, -1},
+            new float[]{0, 0, 0},
+            new float[]{0, 1, 0},
+            new float[]{0, 1, -1}
     };
 
     /**
@@ -80,13 +46,13 @@ public abstract class Block extends Physical implements Renderable {
     private static final float[] BACK_NORMAL = new float[]{0, 0, -1};
 
     /**
-     * The vertices of the back face of a block.
+     * The positions of the vertices of the back face of a block, relative to its anchor.
      */
-    protected static final Vertex[] BACK_VERTICES = new Vertex[]{
-            new Vertex(new Position(1, 0, -1), Block.BACK_NORMAL),
-            new Vertex(new Position(0, 0, -1), Block.BACK_NORMAL),
-            new Vertex(new Position(0, 1, -1), Block.BACK_NORMAL),
-            new Vertex(new Position(1, 1, -1), Block.BACK_NORMAL)
+    private static final float[][] BACK_POSITIONS = new float[][]{
+            new float[]{1, 0, -1},
+            new float[]{0, 0, -1},
+            new float[]{0, 1, -1},
+            new float[]{1, 1, -1}
     };
 
     /**
@@ -95,13 +61,13 @@ public abstract class Block extends Physical implements Renderable {
     private static final float[] RIGHT_NORMAL = new float[]{1, 0, 0};
 
     /**
-     * The vertices of the right face of a block.
+     * The positions of the vertices of the right face of a block, relative to its anchor.
      */
-    protected static final Vertex[] RIGHT_VERTICES = new Vertex[]{
-            new Vertex(new Position(1, 0, 0), Block.RIGHT_NORMAL),
-            new Vertex(new Position(1, 0, -1), Block.RIGHT_NORMAL),
-            new Vertex(new Position(1, 1, -1), Block.RIGHT_NORMAL),
-            new Vertex(new Position(1, 1, 0), Block.RIGHT_NORMAL)
+    private static final float[][] RIGHT_POSITIONS = new float[][]{
+            new float[]{1, 0, 0},
+            new float[]{1, 0, -1},
+            new float[]{1, 1, -1},
+            new float[]{1, 1, 0}
     };
 
     /**
@@ -110,13 +76,13 @@ public abstract class Block extends Physical implements Renderable {
     private static final float[] TOP_NORMAL = new float[]{0, 1, 0};
 
     /**
-     * The vertices of the top face of a block.
+     * The positions of the vertices of the top face of a block, relative to its anchor.
      */
-    protected static final Vertex[] TOP_VERTICES = new Vertex[]{
-            new Vertex(new Position(0, 1, 0), Block.TOP_NORMAL),
-            new Vertex(new Position(1, 1, 0), Block.TOP_NORMAL),
-            new Vertex(new Position(1, 1, -1), Block.TOP_NORMAL),
-            new Vertex(new Position(0, 1, -1), Block.TOP_NORMAL)
+    private static final float[][] TOP_POSITIONS = new float[][]{
+            new float[]{0, 1, 0},
+            new float[]{1, 1, 0},
+            new float[]{1, 1, -1},
+            new float[]{0, 1, -1}
     };
 
     /**
@@ -125,45 +91,81 @@ public abstract class Block extends Physical implements Renderable {
     private static final float[] BOTTOM_NORMAL = new float[]{0, -1, 0};
 
     /**
-     * The vertices of the bottom face of a block.
+     * The positions of the vertices of the bottom face of a block, relative to its anchor.
      */
-    protected static final Vertex[] BOTTOM_VERTICES = new Vertex[]{
-            new Vertex(new Position(0, 0, -1), Block.BOTTOM_NORMAL),
-            new Vertex(new Position(1, 0, -1), Block.BOTTOM_NORMAL),
-            new Vertex(new Position(1, 0, 0), Block.BOTTOM_NORMAL),
-            new Vertex(new Position(0, 0, 0), Block.BOTTOM_NORMAL)
+    private static final float[][] BOTTOM_POSITIONS = new float[][]{
+            new float[]{0, 0, -1},
+            new float[]{1, 0, -1},
+            new float[]{1, 0, 0},
+            new float[]{0, 0, 0}
+    };
+
+    private static final float[][][] PARTIAL_VERTEX_DATA = new float[][][]{
+            new float[][]{Block.FRONT_POSITIONS[0], null, Block.FRONT_NORMAL},
+            new float[][]{Block.FRONT_POSITIONS[1], null, Block.FRONT_NORMAL},
+            new float[][]{Block.FRONT_POSITIONS[2], null, Block.FRONT_NORMAL},
+            new float[][]{Block.FRONT_POSITIONS[3], null, Block.FRONT_NORMAL},
+            new float[][]{Block.LEFT_POSITIONS[0], null, Block.LEFT_NORMAL},
+            new float[][]{Block.LEFT_POSITIONS[1], null, Block.LEFT_NORMAL},
+            new float[][]{Block.LEFT_POSITIONS[2], null, Block.LEFT_NORMAL},
+            new float[][]{Block.LEFT_POSITIONS[3], null, Block.LEFT_NORMAL},
+            new float[][]{Block.BACK_POSITIONS[0], null, Block.BACK_NORMAL},
+            new float[][]{Block.BACK_POSITIONS[1], null, Block.BACK_NORMAL},
+            new float[][]{Block.BACK_POSITIONS[2], null, Block.BACK_NORMAL},
+            new float[][]{Block.BACK_POSITIONS[3], null, Block.BACK_NORMAL},
+            new float[][]{Block.RIGHT_POSITIONS[0], null, Block.RIGHT_NORMAL},
+            new float[][]{Block.RIGHT_POSITIONS[1], null, Block.RIGHT_NORMAL},
+            new float[][]{Block.RIGHT_POSITIONS[2], null, Block.RIGHT_NORMAL},
+            new float[][]{Block.RIGHT_POSITIONS[3], null, Block.RIGHT_NORMAL},
+            new float[][]{Block.TOP_POSITIONS[0], null, Block.TOP_NORMAL},
+            new float[][]{Block.TOP_POSITIONS[1], null, Block.TOP_NORMAL},
+            new float[][]{Block.TOP_POSITIONS[2], null, Block.TOP_NORMAL},
+            new float[][]{Block.TOP_POSITIONS[3], null, Block.TOP_NORMAL},
+            new float[][]{Block.BOTTOM_POSITIONS[0], null, Block.BOTTOM_NORMAL},
+            new float[][]{Block.BOTTOM_POSITIONS[1], null, Block.BOTTOM_NORMAL},
+            new float[][]{Block.BOTTOM_POSITIONS[2], null, Block.BOTTOM_NORMAL},
+            new float[][]{Block.BOTTOM_POSITIONS[3], null, Block.BOTTOM_NORMAL}
     };
 
     /**
-     * Construct a block.
-     * @see Physical#Physical(Position)
+     * The initial velocity of a block.
      */
-    protected Block(final BlockPosition anchor) {
-        super(anchor.toPosition());
-    }
+    private static final double[] INITIAL_VELOCITY = new double[]{0, 0, 0};
 
-    // TODO: Add @Override annotations to the rest of the code base.
-    // TODO: Use @inheritDoc throughout codebase.
+    /**
+     * Create a block.
+     * @param chunk The chunk containing the block.
+     * @param position The position of the block relative to the anchor point of the chunk containing it.
+     */
+    public Block(final Chunk chunk, final int[] position) {
+        super(chunk, ArrayUtilities.toDoubleArray(position), Block.INITIAL_VELOCITY);
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public BoundingBox getBoundingBox() {
-        return Block.BOUNDING_BOX;
+    public float[][][] getVertexData() {
+        final float[][] faceColors = this.getFaceColors();
+        final float[][][] vertexData = new float[Block.PARTIAL_VERTEX_DATA.length][][];
+        for (int vertex = 0; vertex < Block.PARTIAL_VERTEX_DATA.length; vertex++) {
+            final int face = vertex / 4;
+            vertexData[vertex] = new float[][]{
+                    ArrayUtilities.copy(Block.PARTIAL_VERTEX_DATA[vertex][0]),
+                    ArrayUtilities.copy(faceColors[face]),
+                    ArrayUtilities.copy(Block.PARTIAL_VERTEX_DATA[vertex][2])
+            };
+        }
+        return vertexData;
     }
 
     /**
-     * Get the quads of this block.
-     * @return The quads of this block.
+     * Get the colors of the faces of this block.
+     *
+     * The color of a face is a float array consisting of the red, green, and blue components of the face's
+     * color. The colors of the faces of a block are organized into an array of arrays, with the faces' colors
+     * appearing in the order front, left, back, right, top, then bottom.
+     * @return The colors of the faces of this block.
      */
-    protected abstract Quad[] getQuads();
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Iterator<Quad> iterator() {
-        return new BlockQuadIterator();
-    }
+    protected abstract float[][] getFaceColors();
 }

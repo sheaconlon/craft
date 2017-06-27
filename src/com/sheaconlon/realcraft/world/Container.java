@@ -1,5 +1,7 @@
 package com.sheaconlon.realcraft.world;
 
+import com.sheaconlon.realcraft.utilities.ArrayUtilities;
+
 import java.util.Iterator;
 
 /**
@@ -28,4 +30,11 @@ public abstract class Container {
     }
 
     public abstract Iterator<WorldObject> getContents();
+
+    /**
+     * Getter for {@link #position}.
+     */
+    public double[] getPosition() {
+        return ArrayUtilities.copy(this.position);
+    }
 }

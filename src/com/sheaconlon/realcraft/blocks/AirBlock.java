@@ -1,33 +1,35 @@
 package com.sheaconlon.realcraft.blocks;
 
-import com.sheaconlon.realcraft.renderer.Quad;
-import com.sheaconlon.realcraft.positioning.BlockPosition;
-
-import java.util.LinkedList;
+import com.sheaconlon.realcraft.world.Chunk;
 
 /**
  * A block of air.
  */
 public class AirBlock extends Block {
-    // TODO: Optimize rendering by rendering only those blocks touching air/a translucent block.
     /**
-     * The quads of an air block.
+     * Create an air block.
+     * @param chunk The chunk containing the air block.
+     * @param position The position of the air block relative to the anchor point of the chunk containing it.
      */
-    private static final Quad[] QUADS = new Quad[]{};
-
-    /**
-     * Construct an air block.
-     * @param pos See {@link Block#pos}.
-     */
-    public AirBlock(final BlockPosition pos) {
-        super(pos);
+    public AirBlock(final Chunk chunk, final int[] position) {
+        super(chunk, position);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Quad[] getQuads() {
-        return AirBlock.QUADS;
+    public float[][][] getVertexData() {
+        return new float[][][]{};
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public float[][] getFaceColors() {
+        return new float[][]{};
     }
 }
+
+// TODO: Optimize rendering by rendering only those blocks touching air/a translucent block.

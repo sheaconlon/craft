@@ -1,70 +1,151 @@
 package com.sheaconlon.realcraft.world;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
+
 import com.sheaconlon.realcraft.blocks.Block;
+import com.sheaconlon.realcraft.blocks.DirtBlock;
 import com.sheaconlon.realcraft.entity.entities.Player;
-import com.sheaconlon.realcraft.positioning.BlockPosition;
-import com.sheaconlon.realcraft.positioning.ChunkPosition;
+import com.sheaconlon.realcraft.utilities.ArrayUtilities;
 
 /**
  * The world.
  */
 public class World {
     /**
+     * The standard deviation of the distance of the player's spawn point from the origin.
+     */
+    private static final double PLAYER_SPAWN_DISTANCE_STDEV = 50;
+
+    /**
+     * The initial orientation of the player.
+     */
+    private static final double PLAYER_SPAWN_ORIENTATION = Math.PI / 2;
+
+    /**
+     * The initial look direction of the player.
+     */
+    private static final double PLAYER_SPAWN_LOOK_DIRECTION = 0;
+
+    /**
+     * The number of nanoseconds in a second.
+     */
+    private static final int NANOSECONDS_PER_SECOND = 1_000_000_000;
+
+    /**
+     * The number of seconds in a day.
+     */
+    public static final int SECONDS_PER_DAY = 24 * 60 * 60;
+
+    /**
+     * The number of in-game seconds that pass per wall clock second.
+     */
+    private static final int TIME_RATIO = 60;
+
+    /**
+     * The y-coordinate of the highest blocks of the ground in a world.
+     */
+    private static final int GROUND_Y_MAX = 100;
+
+    /**
      * The chunks of the world.
-     *
-     * If loaded, the chunk at block position (x, y, z) is the value of the entry with key
-     * {@code new BlockPosition(x, y, z)}.
      */
-    private final Map<ChunkPosition, Chunk> chunks;
+    private final Map<List<Integer>, Chunk> chunks;
 
     /**
-     * The chunk generator for the world.
+     * The wall time at which the world was created, in nanoseconds since some arbitrary fixed point.
      */
-    private final ChunkGenerator chunkGenerator;
+    private long originTime;
 
     /**
-     * The player of this world.
+     * The player in this world.
      */
-    private final Player player;
+    private Player player;
 
     /**
-     * Construct a world.
+     * Create a world.
      */
-    public World(final ChunkGenerator chunkGenerator) {
+    public World() {
         this.chunks = new HashMap<>();
-        this.chunkGenerator = chunkGenerator;
-        this.player = this.chunkGenerator.getPlayer();
-    }
-
-    /**
-     * Get the player of this world.
-     * @return The player of this world.
-     */
-    public Player getPlayer() {
-        return this.player;
-    }
-
-    /**
-     * Get the block at some position.
-     * @param pos The position.
-     * @return The block at {@code pos}.
-     */
-    Block getBlock(final BlockPosition pos) {
-        return this.getChunk(pos.toChunkPosition()).getBlock(pos);
+        this.originTime = System.nanoTime();
+        this.player = this.generatePlayer();
     }
 
     /**
      * Get the chunk at some position.
      * @param position The position.
-     * @return The chunk.
+     * @return The chunk at the position.
      */
-    public Chunk getChunk(final ChunkPosition position) {
-        if (!this.chunks.containsKey(position)) {
-            final Chunk chunk = this.chunkGenerator.getChunk(position);
-            this.chunks.put(position, chunk);
+    public Chunk getChunk(final int[] position) {
+        final List<Integer> positionList = ArrayUtilities.toList(position);
+        if (!this.chunks.containsKey(positionList)) {
+            this.chunks.put(positionList, this.generateChunk(position));
         }
-        return this.chunks.get(position);
+        return this.chunks.get(positionList);
+    }
+
+    /**
+     * Generate the chunk at some position.
+     *
+     * At and below {@link #GROUND_Y_MAX}, chunks have dirt blocks and air blocks uniformly at random. Above
+     * {@link #GROUND_Y_MAX}, chunks have only air blocks.
+     * @param position The position.
+     * @return The chunk at the position.
+     */
+    private Chunk generateChunk(final int[] position) {
+        final Chunk chunk = new Chunk(position);
+        final int[] blockPosition = new int[3];
+        final ThreadLocalRandom random = ThreadLocalRandom.current();
+        for (blockPosition[0] = position[0]; blockPosition[0] < position[0] + Chunk.SIZE; blockPosition[0]++) {
+            for (blockPosition[1] = position[1]; blockPosition[1] < position[1] + Chunk.SIZE
+                    && blockPosition[1] < World.GROUND_Y_MAX; blockPosition[1]++) {
+                for (blockPosition[2] = position[2]; blockPosition[2] < position[2] + Chunk.SIZE; blockPosition[2]++) {
+                    if (random.nextBoolean()) {
+                        final Block block = new DirtBlock(chunk, blockPosition);
+                        chunk.putBlock(blockPosition, block);
+                    }
+                }
+            }
+        }
+        return chunk;
+    }
+
+    /**
+     * Generate the player.
+     *
+     * The player's position in the x-z-plane will be chosen randomly. The y-coordinate of the player's position
+     * will be chosen to place the player on top of the ground.
+     * @return The player.
+     */
+    private Player generatePlayer() {
+        final ThreadLocalRandom random = ThreadLocalRandom.current();
+        final double distance = random.nextGaussian() * World.PLAYER_SPAWN_DISTANCE_STDEV;
+        final double direction = random.nextDouble(Math.PI * 2);
+        final double[] playerPosition = new double[]{
+                distance * Math.cos(direction),
+                World.GROUND_Y_MAX + 1,
+                distance * Math.sin(direction)
+        };
+        final Player player = new Player(playerPosition, World.PLAYER_SPAWN_ORIENTATION,
+                World.PLAYER_SPAWN_LOOK_DIRECTION);
+        return player;
+    }
+
+    /**
+     * Get the number of in-game seconds that have passed since the start of the current in-game day.
+     */
+    public int getTime() {
+        final double elapsedWallNanoseconds = System.nanoTime() - this.originTime;
+        final double elapsedWallSeconds = elapsedWallNanoseconds / World.NANOSECONDS_PER_SECOND;
+        final long elapsedInGameSeconds = (long)(elapsedWallSeconds * World.TIME_RATIO);
+        final int time = (int)(elapsedInGameSeconds % World.SECONDS_PER_DAY);
+        return time;
+    }
+
+    /**
+     * Getter for {@link #player}.
+     */
+    public Player getPlayer() {
+        return this.player;
     }
 }

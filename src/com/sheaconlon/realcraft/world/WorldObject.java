@@ -1,5 +1,7 @@
 package com.sheaconlon.realcraft.world;
 
+import com.sheaconlon.realcraft.utilities.ArrayUtilities;
+
 /**
  * A world object.
  */
@@ -28,8 +30,8 @@ public abstract class WorldObject {
      */
     public WorldObject(final Container container, final double[] position, final double[] velocity) {
         this.container = container;
-        this.position = position;
-        this.velocity = velocity;
+        this.position = ArrayUtilities.copy(position);
+        this.velocity = ArrayUtilities.copy(velocity);
     }
 
     /**
@@ -44,4 +46,20 @@ public abstract class WorldObject {
      * @return The vertex data of this world object, with positions relative to this world object's anchor.
      */
     public abstract float[][][] getVertexData();
+
+    /**
+     * Getter for {@link #position}.
+     */
+    public double[] getPosition() {
+        return ArrayUtilities.copy(this.position);
+    }
+
+    /**
+     * Changer for {@link #position}.
+     */
+    public void changePosition(final double[] delta) {
+        for (int i = 0; i < this.position.length; i++) {
+            this.position[i] += delta[i];
+        }
+    }
 }

@@ -1,7 +1,7 @@
 package com.sheaconlon.realcraft.ui;
 
+import com.sheaconlon.realcraft.Worker;
 import com.sheaconlon.realcraft.world.World;
-import com.sheaconlon.realcraft.positioning.Position;
 
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWCursorPosCallbackI;
@@ -18,7 +18,12 @@ import java.util.List;
 /**
  * A user interface for Realcraft.
  */
-public class UserInterface {
+public class UserInterface extends Worker {
+    /**
+     * The number of nanoseconds in a second.
+     */
+    private static final double NANOSECONDS_PER_SECOND = Math.pow(10, 9);
+
     /**
      * The number of radians that the player's orientation should change by for each pixel of mouse movement.
      */
@@ -84,6 +89,11 @@ public class UserInterface {
     private final UserInterface.KeyCallback keyCallback;
 
     /**
+     * The world.
+     */
+    private World world;
+
+    /**
      * Whether the user interface should close.
      */
     private boolean shouldClose;
@@ -104,11 +114,18 @@ public class UserInterface {
     private double elapsedTimesSum;
 
     /**
+     * The time of the last call to {@link #tick()}, in nanoseconds since some arbitrary point.
+     */
+    private long lastTickTime;
+
+    /**
      * Construct a user interface.
      *
      * The user interface will not be visible, but can be made visible by a call to {@link #show()}.
      */
-    public UserInterface() {
+    public UserInterface(final World world) {
+        this.world = world;
+        this.lastTickTime = System.nanoTime();
         this.window = new Window();
         // Save a strong reference to the callback so that it is not garbage collected.
         this.windowCloseCallback = new UserInterface.WindowCloseCallback();
@@ -119,6 +136,14 @@ public class UserInterface {
         this.cursorPosition = this.window.getCursorPosition();
         this.elapsedTimes = new LinkedList<Double>();
         this.elapsedTimesSum = 0;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void inThreadInitialize() {
+
     }
 
     /**
@@ -178,11 +203,16 @@ public class UserInterface {
 
     /**
      * Respond to input.
-     * @param world The world.
-     * @param elapsedTime The estimated amount of time that has elapsed since the last call to this method, in
-     *                    seconds.
      */
-    public void respond(final World world, final double elapsedTime) {
+    public void tick() {
+        double elapsedTime = (System.nanoTime() - this.lastTickTime) / UserInterface.NANOSECONDS_PER_SECOND;
+        if (elapsedTime < 1.0/120) {
+            try {
+                Thread.sleep((long) ((1.0 / 120 - elapsedTime) * Math.pow(10, 3)));
+            } catch (final InterruptedException e) {};
+            elapsedTime = (System.nanoTime() - this.lastTickTime) / UserInterface.NANOSECONDS_PER_SECOND;
+        }
+        lastTickTime = System.nanoTime();
         if (this.elapsedTimes.size() == 20) {
             this.elapsedTimesSum -= this.elapsedTimes.removeFirst();
             this.elapsedTimes.addLast(elapsedTime);
@@ -210,6 +240,17 @@ public class UserInterface {
      */
     public void close() {
         this.window.close();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void run() {
+        this.inThreadInitialize();
+        while (!this.shouldClose()) {
+            this.tick();
+        }
     }
 
     /**
@@ -247,9 +288,12 @@ public class UserInterface {
             directionX /= magnitude;
             directionZ /= magnitude;
             final double distance = UserInterface.SPEED_OF_MOVEMENT * elapsedTime;
-            final Position anchor = world.getPlayer().getAnchor();
-            anchor.changeX(directionX * distance);
-            anchor.changeZ(directionZ * distance);
+            final double[] deltaPosition = new double[]{
+                    directionX * distance,
+                    0,
+                    directionZ * distance
+            };
+            world.getPlayer().changePosition(deltaPosition);
         }
     }
 
