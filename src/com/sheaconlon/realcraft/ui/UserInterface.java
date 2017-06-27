@@ -223,8 +223,8 @@ public class UserInterface extends Worker {
             this.elapsedTimesSum += elapsedTime;
         }
         window.runCallbacks();
-        this.respondToMovement(world, elapsedTime);
-        this.respondToLooking(world, elapsedTime);
+        this.respondToMovement(elapsedTime);
+        this.respondToLooking(elapsedTime);
     }
 
     /**
@@ -255,11 +255,10 @@ public class UserInterface extends Worker {
 
     /**
      * Respond to input that requests movement.
-     * @param world The world.
      * @param elapsedTime The estimated amount of time that has elapsed since the last call to this method, in
      *                    seconds.
      */
-    private void respondToMovement(final World world, final double elapsedTime) {
+    private void respondToMovement(final double elapsedTime) {
         double relativeDirectionX = 0;
         double relativeDirectionZ = 0;
         if (this.window.wKeyIsPressed()) {
@@ -279,7 +278,7 @@ public class UserInterface extends Worker {
             relativeDirectionZ += 1;
         }
         if (relativeDirectionX != 0 || relativeDirectionZ != 0) {
-            final double orientation = world.getPlayer().getOrientation();
+            final double orientation =  this.world.getPlayer().getOrientation();
             double directionX = relativeDirectionX * Math.cos(orientation);
             directionX += relativeDirectionZ * -Math.sin(orientation);
             double directionZ = relativeDirectionZ * Math.cos(orientation);
@@ -293,24 +292,23 @@ public class UserInterface extends Worker {
                     0,
                     directionZ * distance
             };
-            world.getPlayer().changePosition(deltaPosition);
+            this.world.getPlayer().changePosition(deltaPosition);
         }
     }
 
     /**
      * Respond to input that requests looking.
-     * @param world The world.
      * @param elapsedTime The estimated amount of time that has elapsed since the last call to this method, in
      *                    seconds.
      */
-    private void respondToLooking(final World world, final double elapsedTime) {
+    private void respondToLooking(final double elapsedTime) {
         final double[] cursorPositionDelta = this.getCursorPositionDelta();
         double orientationDelta = cursorPositionDelta[0] * UserInterface.LOOKING_FACTOR;
         double lookDirectionDelta = -cursorPositionDelta[1] * UserInterface.LOOKING_FACTOR;
         final double limit = UserInterface.LOOKING_MAX_SPEED * elapsedTime;
         orientationDelta = Math.signum(orientationDelta) * Math.min(limit, Math.abs(orientationDelta));
         lookDirectionDelta = Math.signum(lookDirectionDelta) * Math.min(limit, Math.abs(lookDirectionDelta));
-        world.getPlayer().changeOrientation(orientationDelta);
-        world.getPlayer().changeLookDirection(lookDirectionDelta);
+        this.world.getPlayer().changeOrientation(orientationDelta);
+        this.world.getPlayer().changeLookDirection(lookDirectionDelta);
     }
 }
