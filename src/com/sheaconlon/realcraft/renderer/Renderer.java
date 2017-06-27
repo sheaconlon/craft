@@ -180,25 +180,26 @@ public class Renderer extends Worker {
         final Player player = this.world.getPlayer();
         final double[] position = player.getPosition();
         final double orientation = player.getOrientation();
+        final double lookDirection = player.getLookDirection();
         final double[] eyePosition = new double[]{
                 position[0] + Renderer.PLAYER_EYE_POSITION[0],
                 position[1] + Renderer.PLAYER_EYE_POSITION[1],
                 position[2] + Renderer.PLAYER_EYE_POSITION[2]
         };
         final double[] gazePosition = new double[]{
-                eyePosition[0] + Math.cos(orientation),
-                eyePosition[1],
-                eyePosition[2] + Math.sin(orientation)
+                eyePosition[0] + Math.cos(orientation)*Math.cos(lookDirection),
+                eyePosition[1] + Math.sin(lookDirection),
+                eyePosition[2] + Math.sin(orientation)*Math.cos(lookDirection)
         };
-        final float[] up = new float[]{
-                0,
-                1,
-                0
+        final double[] up = new double[]{
+                Math.cos(orientation)*Math.cos(lookDirection + Math.PI / 2),
+                Math.sin(lookDirection + Math.PI / 2),
+                Math.sin(orientation)*Math.cos(lookDirection + Math.PI / 2)
         };
         final FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
         final Matrix4f matrix = new Matrix4f();
         matrix.setLookAt((float)eyePosition[0], (float)eyePosition[1], (float)eyePosition[2], (float)gazePosition[0],
-                (float)gazePosition[1], (float)gazePosition[2], up[0], up[1], up[2]);
+                (float)gazePosition[1], (float)gazePosition[2], (float)up[0], (float)up[1], (float)up[2]);
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
         GL11.glLoadMatrixf(matrix.get(buffer));
     }
