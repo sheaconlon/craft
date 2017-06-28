@@ -161,7 +161,9 @@ public class Renderer extends Worker {
         final double[] playerPos = this.world.getPlayer().getPosition();
         final int[] playerChunkPos = PositionUtilities.toChunkPosition(playerPos);
         for (final int[] renderChunkPos : PositionUtilities.getNearbyChunkPositions(playerChunkPos, Renderer.RENDER_DISTANCE)) {
-            this.renderChunk(renderChunkPos);
+            if (this.world.chunkLoaded(renderChunkPos)) {
+                this.renderChunk(renderChunkPos);
+            }
         }
         GLFW.glfwSwapBuffers(this.windowHandle);
     }

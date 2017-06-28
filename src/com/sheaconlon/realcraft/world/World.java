@@ -1,11 +1,13 @@
 package com.sheaconlon.realcraft.world;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 import com.sheaconlon.realcraft.blocks.Block;
 import com.sheaconlon.realcraft.blocks.DirtBlock;
 import com.sheaconlon.realcraft.entities.Player;
+import com.sheaconlon.realcraft.generator.Generator;
 import com.sheaconlon.realcraft.utilities.ArrayUtilities;
 
 /**
@@ -66,7 +68,7 @@ public class World {
      * Create a world.
      */
     public World() {
-        this.chunks = new HashMap<>();
+        this.chunks = new ConcurrentHashMap<>();
         this.originTime = System.nanoTime();
         this.player = this.generatePlayer();
     }
@@ -78,36 +80,7 @@ public class World {
      */
     public Chunk getChunk(final int[] position) {
         final List<Integer> positionList = ArrayUtilities.toList(position);
-        if (!this.chunks.containsKey(positionList)) {
-            this.chunks.put(positionList, this.generateChunk(position));
-        }
         return this.chunks.get(positionList);
-    }
-
-    /**
-     * Generate the chunk at some position.
-     *
-     * At and below {@link #GROUND_Y_MAX}, chunks have dirt blocks and air blocks uniformly at random. Above
-     * {@link #GROUND_Y_MAX}, chunks have only air blocks.
-     * @param position The position.
-     * @return The chunk at the position.
-     */
-    private Chunk generateChunk(final int[] position) {
-        final Chunk chunk = new Chunk(position);
-        final int[] blockPosition = new int[3];
-        final ThreadLocalRandom random = ThreadLocalRandom.current();
-        for (blockPosition[0] = position[0]; blockPosition[0] < position[0] + Chunk.SIZE; blockPosition[0]++) {
-            for (blockPosition[1] = position[1]; blockPosition[1] < position[1] + Chunk.SIZE
-                    && blockPosition[1] < World.GROUND_Y_MAX; blockPosition[1]++) {
-                for (blockPosition[2] = position[2]; blockPosition[2] < position[2] + Chunk.SIZE; blockPosition[2]++) {
-                    if (random.nextBoolean()) {
-                        final Block block = new DirtBlock(chunk, blockPosition);
-                        chunk.putBlock(blockPosition, block);
-                    }
-                }
-            }
-        }
-        return chunk;
     }
 
     /**
@@ -123,7 +96,7 @@ public class World {
         final double direction = random.nextDouble(Math.PI * 2);
         final double[] playerPosition = new double[]{
                 distance * Math.cos(direction),
-                World.GROUND_Y_MAX + 1,
+                Generator.GROUND_LEVEL + 1,
                 distance * Math.sin(direction)
         };
         final Player player = new Player(playerPosition, World.PLAYER_SPAWN_ORIENTATION,
@@ -165,6 +138,7 @@ public class World {
      * @param chunk The chunk.
      */
     public void loadChunk(final int[] pos, final Chunk chunk) {
-        this.chunks.put(pos, chunk);
+        final List<Integer> posList = ArrayUtilities.toList(pos);
+        this.chunks.put(posList, chunk);
     }
 }
