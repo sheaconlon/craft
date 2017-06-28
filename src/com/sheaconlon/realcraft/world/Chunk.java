@@ -92,7 +92,7 @@ public class Chunk extends Container {
      * Create a chunk.
      * @param position The anchor point of the chunk.
      */
-    Chunk(final int[] position) {
+    public Chunk(final int[] position) {
         super(null, ArrayUtilities.toDoubleArray(position));
         this.blocks = new Block[Chunk.SIZE][Chunk.SIZE][Chunk.SIZE];
         this.position = ArrayUtilities.copy(position);
