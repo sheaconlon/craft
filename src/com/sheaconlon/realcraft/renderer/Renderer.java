@@ -161,7 +161,7 @@ public class Renderer extends Worker {
         final double[] playerPos = this.world.getPlayer().getPosition();
         final int[] playerChunkPos = PositionUtilities.toChunkPosition(playerPos);
         for (final int[] renderChunkPos : PositionUtilities.getNearbyChunkPositions(playerChunkPos, Renderer.RENDER_DISTANCE)) {
-            if (this.world.chunkLoaded(renderChunkPos)) {
+            if (this.VBOLoaded(renderChunkPos)) {
                 this.renderChunk(renderChunkPos);
             }
         }
@@ -204,39 +204,8 @@ public class Renderer extends Worker {
      * @param position The position of the anchor point of the chunk.
      */
     private void renderChunk(final int[] position) {
-        final VertexBufferObject vbo = this.getVBO(position);
+        final VertexBufferObject vbo = this.chunkVbos.get(ArrayUtilities.toList(position));
         vbo.render();
-    }
-
-    /**
-     * Get the VBO for a chunk.
-     *
-     * Will return the already-existent VBO in {@link #chunkVbos} or create a new one if one does not exist.
-     * @param position The position of the anchor point of the chunk.
-     * @return A VBO for the chunk.
-     */
-    private VertexBufferObject getVBO(final int[] position) {
-        final List<Integer> positionList = ArrayUtilities.toList(position);
-        if (!this.chunkVbos.containsKey(positionList)) {
-            final Chunk chunk = this.world.getChunk(position);
-            final List<float[][]> vertexDataList = new ArrayList<>();
-            for (final Iterator<WorldObject> iterator = chunk.getContents(); iterator.hasNext(); ) {
-                final WorldObject obj = iterator.next();
-                for (final float[][] singleVertexData : obj.getVertexData()) {
-                    final float[][] singleVertexDataAbsolute = new float[][]{
-                            ArrayUtilities.add(singleVertexData[0], obj.getPosition()),
-                            singleVertexData[1],
-                            singleVertexData[2]
-                    };
-                    vertexDataList.add(singleVertexDataAbsolute);
-                }
-            }
-            final float[][][] vertexData = vertexDataList.toArray(new float[][][]{});
-            final VertexBufferObject vbo = new VertexBufferObject();
-            vbo.write(vertexData);
-            this.chunkVbos.put(positionList, vbo);
-        }
-        return this.chunkVbos.get(positionList);
     }
 
     /**
