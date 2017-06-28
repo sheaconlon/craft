@@ -137,7 +137,7 @@ public class Renderer extends Worker {
     public Renderer(final World world, final long windowHandle, final int[] windowDimensions) {
         this.world = world;
         this.windowHandle = windowHandle;
-        this.chunkVbos = new HashMap<>();
+        // TODO
         this.windowDimensions = windowDimensions;
     }
 
@@ -161,9 +161,7 @@ public class Renderer extends Worker {
         final double[] playerPos = this.world.getPlayer().getPosition();
         final int[] playerChunkPos = PositionUtilities.toChunkPosition(playerPos);
         for (final int[] renderChunkPos : PositionUtilities.getNearbyChunkPositions(playerChunkPos, Renderer.RENDER_DISTANCE)) {
-            if (this.VBOLoaded(renderChunkPos)) {
-                this.renderChunk(renderChunkPos);
-            }
+            // TODO
         }
         GLFW.glfwSwapBuffers(this.windowHandle);
     }
@@ -204,25 +202,6 @@ public class Renderer extends Worker {
      * @param position The position of the anchor point of the chunk.
      */
     private void renderChunk(final int[] position) {
-        final VertexBufferObject vbo = this.chunkVbos.get(ArrayUtilities.toList(position));
-        vbo.render();
-    }
-
-    /**
-     * Return whether the VBO for a chunk is loaded.
-     * @param pos The position of the anchor point of the chunk.
-     * @return Whether the VBO for the chunk is loaded.
-     */
-    boolean VBOLoaded(final int[] pos) {
-        return this.chunkVbos.containsKey(ArrayUtilities.toList(pos));
-    }
-
-    /**
-     * Load the VBO for a chunk.
-     * @param pos The position of the anchor point of the chunk.
-     * @param vbo The VBO for the chunk.
-     */
-    void loadVBO(final int[] pos, final VertexBufferObject vbo) {
-        this.chunkVbos.put(ArrayUtilities.toList(pos), vbo);
+        // TODO
     }
 }
