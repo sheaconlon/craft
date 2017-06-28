@@ -238,4 +238,22 @@ public class Renderer extends Worker {
         }
         return this.chunkVbos.get(positionList);
     }
+
+    /**
+     * Return whether the VBO for a chunk is loaded.
+     * @param pos The position of the anchor point of the chunk.
+     * @return Whether the VBO for the chunk is loaded.
+     */
+    boolean VBOLoaded(final int[] pos) {
+        return this.chunkVbos.containsKey(ArrayUtilities.toList(pos));
+    }
+
+    /**
+     * Load the VBO for a chunk.
+     * @param pos The position of the anchor point of the chunk.
+     * @param vbo The VBO for the chunk.
+     */
+    void loadVBO(final int[] pos, final VertexBufferObject vbo) {
+        this.chunkVbos.put(ArrayUtilities.toList(pos), vbo);
+    }
 }
