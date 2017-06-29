@@ -8,43 +8,43 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 /**
- * An OpenGL vertex buffer object.
+ * Represents an OpenGL vertex buffer object.
  */
 class VertexBufferObject {
     /**
-     * The number of elements per vertex position in a VBO.
+     * The number of floats per vertex position in a VBO.
      */
-    private static final int ELEMENTS_PER_POSITION = 3;
+    private static final int FLOATS_PER_POSITION = 3;
 
     /**
-     * The number of elements per vertex color in a VBO.
+     * The number of floats per vertex color in a VBO.
      */
-    private static final int ELEMENTS_PER_COLOR = 3;
+    private static final int FLOATS_PER_COLOR = 3;
 
     /**
-     * The number of elements per vertex normal in a VBO.
+     * The number of floats per vertex normal in a VBO.
      */
-    private static final int ELEMENTS_PER_NORMAL = 3;
+    private static final int FLOATS_PER_NORMAL = 3;
 
     /**
-     * The number of elements per vertex in a VBO.
+     * The total number of floats per vertex in a VBO.
      */
-    private static final int ELEMENTS_PER_VERTEX = VertexBufferObject.ELEMENTS_PER_POSITION
-            + VertexBufferObject.ELEMENTS_PER_COLOR + VertexBufferObject.ELEMENTS_PER_NORMAL;
+    private static final int FLOATS_PER_VERTEX = VertexBufferObject.FLOATS_PER_POSITION
+            + VertexBufferObject.FLOATS_PER_COLOR + VertexBufferObject.FLOATS_PER_NORMAL;
 
     /**
-     * The number of bytes per element in a VBO.
+     * The number of bytes per float in a VBO.
      */
-    private static final int BYTES_PER_ELEMENT = 4;
+    private static final int BYTES_PER_FLOAT = 4;
 
     /**
-     * The number of bytes per vertex in a VBO.
+     * The total number of bytes per vertex in a VBO.
      */
-    private static final int BYTES_PER_VERTEX = VertexBufferObject.ELEMENTS_PER_VERTEX
-            * VertexBufferObject.BYTES_PER_ELEMENT;
+    private static final int BYTES_PER_VERTEX = VertexBufferObject.FLOATS_PER_VERTEX
+            * VertexBufferObject.BYTES_PER_FLOAT;
 
     /**
-     * The OpenGL handle of this VBO.
+     * The handle of the OpenGL VBO underlying this VBO.
      */
     private int handle;
 
@@ -54,53 +54,94 @@ class VertexBufferObject {
     private int numVertices;
 
     /**
+     * The thread which is the owner of OpenGL VBO underlying this VBO.
+     */
+    private final Thread owner;
+
+    /**
+     * A mapped buffer for the OpenGL VBO underlying this VBO.
+     */
+    private final FloatBuffer mappedBuffer;
+
+    /**
+     * Whether this VBO has been finalized and sent to the GPU.
+     */
+    private boolean sent;
+
+    /**
      * Create a vertex buffer object.
      *
-     * An OpenGL context must be current.
+     * An OpenGL context must be current. The underlying OpenGL VBO will be owned by the thread which calls this.
      */
     VertexBufferObject() {
         final IntBuffer handleBuffer = BufferUtils.createIntBuffer(1);
         GL15.glGenBuffers(handleBuffer);
         this.handle = handleBuffer.get();
-        this.write(new float[][][]{});
+        this.numVertices = 0;
+        this.owner = Thread.currentThread();
+        this.mappedBuffer = GL15.glMapBuffer(GL15.GL_ARRAY_BUFFER, GL15.GL_STATIC_DRAW).asFloatBuffer();
+        this.sent = false;
     }
 
     /**
      * Write some vertex data to this VBO.
      *
-     * An OpenGL context must be current.
+     * An OpenGL context must be current. Can be called only before sending this VBO.
      * @param vertexData The vertex data.
      */
     void write(final float[][][] vertexData) {
-        this.numVertices = 0;
-        final int elements = vertexData.length * VertexBufferObject.ELEMENTS_PER_VERTEX;
-        final FloatBuffer vertexDataBuffer = BufferUtils.createFloatBuffer(elements);
+        if (this.sent) {
+            throw new RuntimeException("Attempted to call VertexBufferObject#write() after calling #send().");
+        }
         for (final float[][] vertex : vertexData) {
             this.numVertices++;
             for (final float[] piece : vertex) {
-                vertexDataBuffer.put(piece);
+                this.mappedBuffer.put(piece);
             }
         }
-        vertexDataBuffer.flip();
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, this.handle);
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vertexDataBuffer, GL15.GL_STATIC_DRAW);
+    }
+
+    /**
+     * Finalize this VBO and send it to the GPU.
+     *
+     * An OpenGL context must be current. This method may be called only by the thread that owns the OpenGL VBO
+     * underlying this VBO.
+     * @return Whether this VBO was successfully finalized and sent to the GPU.
+     */
+    boolean send() {
+        this.protect();
+        return GL15.glUnmapBuffer(GL15.GL_ARRAY_BUFFER);
     }
 
     /**
      * Render this VBO.
      *
-     * An OpenGL context must be current.
+     * An OpenGL context must be current. This method may be called only by the thread that owns the OpenGL VBO
+     * underlying this VBO. Can be called only after sending this VBO.
      */
     void render() {
+        if (!this.sent) {
+            throw new RuntimeException("Attempted to call VertexBufferObject#render() before calling #send().");
+        }
+        this.protect();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, this.handle);
-        GL11.glVertexPointer(VertexBufferObject.ELEMENTS_PER_POSITION, GL11.GL_FLOAT,
+        GL11.glVertexPointer(VertexBufferObject.FLOATS_PER_POSITION, GL11.GL_FLOAT,
                 VertexBufferObject.BYTES_PER_VERTEX, 0);
-        GL11.glColorPointer(VertexBufferObject.ELEMENTS_PER_COLOR, GL11.GL_FLOAT,
+        GL11.glColorPointer(VertexBufferObject.FLOATS_PER_COLOR, GL11.GL_FLOAT,
                 VertexBufferObject.BYTES_PER_VERTEX,
-                VertexBufferObject.ELEMENTS_PER_POSITION * VertexBufferObject.BYTES_PER_ELEMENT);
+                VertexBufferObject.FLOATS_PER_POSITION * VertexBufferObject.BYTES_PER_FLOAT);
         GL11.glNormalPointer(GL11.GL_FLOAT, VertexBufferObject.BYTES_PER_VERTEX,
-                (VertexBufferObject.ELEMENTS_PER_POSITION + VertexBufferObject.ELEMENTS_PER_COLOR)
-                        * VertexBufferObject.BYTES_PER_ELEMENT);
+                (VertexBufferObject.FLOATS_PER_POSITION + VertexBufferObject.FLOATS_PER_COLOR)
+                        * VertexBufferObject.BYTES_PER_FLOAT);
         GL11.glDrawArrays(GL11.GL_QUADS, 0, this.numVertices);
+    }
+
+    /**
+     * Protect this VBO from invalid access by throwing an error if the calling thread is not its owner.
+     */
+    private void protect() {
+        if (!Thread.currentThread().equals(this.owner)) {
+            throw new RuntimeException("Attempted to call VertexBufferObject#send() from a non-owner thread.");
+        }
     }
 }
