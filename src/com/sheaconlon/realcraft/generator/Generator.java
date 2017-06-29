@@ -69,6 +69,7 @@ public class Generator extends Worker {
         for (final int[] chunkPos : PositionUtilities.getNearbyChunkPositions(playerChunkPos, Generator.LOAD_DISTANCE)) {
             if (!world.chunkLoaded(chunkPos)) {
                 world.loadChunk(chunkPos, this.generateChunk(chunkPos));
+                return;
             }
         }
     }

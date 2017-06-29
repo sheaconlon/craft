@@ -77,6 +77,7 @@ public class Prerenderer extends Worker {
                     this.prerenderChunk(renderChunkPos, vbo);
                     this.renderer.receiveCompletedVBO(renderChunkPos, vbo);
                 }
+                return;
             }
         }
     }
