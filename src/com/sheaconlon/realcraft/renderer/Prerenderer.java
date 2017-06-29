@@ -71,11 +71,11 @@ public class Prerenderer extends Worker {
         final double[] playerPos = this.world.getPlayer().getPosition();
         final int[] playerChunkPos = PositionUtilities.toChunkPosition(playerPos);
         for (final int[] renderChunkPos : PositionUtilities.getNearbyChunkPositions(playerChunkPos, Prerenderer.PRERENDER_DISTANCE)) {
-            if (world.chunkLoaded(renderChunkPos) && !renderer.hasCompletedVBO(renderChunkPos)) {
+            if (world.chunkLoaded(renderChunkPos) && !renderer.hasWrittenVBO(renderChunkPos)) {
                 final VertexBufferObject vbo = this.renderer.getEmptyVBO();
                 if (vbo != null) {
                     this.prerenderChunk(renderChunkPos, vbo);
-                    this.renderer.receiveCompletedVBO(renderChunkPos, vbo);
+                    this.renderer.receiveWrittenVBO(renderChunkPos, vbo);
                 }
                 return;
             }

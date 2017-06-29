@@ -17,11 +17,17 @@ import java.nio.FloatBuffer;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * A renderer.
  */
 public class Renderer extends Worker {
+    /**
+     * The number of frames to wait between sends of VBOs.
+     */
+    private static final int SEND_INTERVAL = 30;
+
     /**
      * The target tick rate of a renderer, in ticks per second.
      *
@@ -140,14 +146,24 @@ public class Renderer extends Worker {
     private final int[] windowDimensions;
 
     /**
-     * The completed VBOs that this renderer has received.
-     */
-    private final Map<List<Integer>, VertexBufferObject> completedVBOs;
-
-    /**
-     * The empty VBOs that this renderer has created.
+     * The empty VBOs that this renderer has.
      */
     private final Deque<VertexBufferObject> emptyVBOs;
+
+    /**
+     * The written VBOs that this renderer has.
+     */
+    private final Map<List<Integer>, VertexBufferObject> writtenVBOs;
+
+    /**
+     * The sent VBOs that this renderer has.
+     */
+    private final Map<List<Integer>, VertexBufferObject> sentVBOs;
+
+    /**
+     * The number of frames that have been shown since the last VBO was sent.
+     */
+    private int framesSinceVBOSend;
 
     /**
      * Create a renderer.
@@ -158,8 +174,10 @@ public class Renderer extends Worker {
         this.world = world;
         this.windowHandle = windowHandle;
         this.windowDimensions = windowDimensions;
-        this.completedVBOs = new ConcurrentHashMap<>();
         this.emptyVBOs = new ConcurrentLinkedDeque<>();
+        this.writtenVBOs = new ConcurrentHashMap<>();
+        this.sentVBOs = new ConcurrentHashMap<>();
+        this.framesSinceVBOSend = Renderer.SEND_INTERVAL;
     }
 
     /**
@@ -179,24 +197,24 @@ public class Renderer extends Worker {
     }
 
     /**
-     * Receive a completed VBO for some chunk.
+     * Receive a written VBO for some chunk.
      * @param pos The position of the anchor point of the chunk.
      * @param vbo The VBO.
      */
-    public void receiveCompletedVBO(final int[] pos, final VertexBufferObject vbo) {
+    public void receiveWrittenVBO(final int[] pos, final VertexBufferObject vbo) {
         System.out.printf("Receiving VBO for chunk at (%d, %d, %d)...\n", pos[0], pos[1], pos[2]);
         final List<Integer> posList = ArrayUtilities.toList(pos);
-        this.completedVBOs.put(posList, vbo);
+        this.writtenVBOs.put(posList, vbo);
     }
 
     /**
-     * Return whether this renderer has a completed VBO for some chunk.
+     * Return whether this renderer has a written VBO for some chunk.
      * @param pos The position of the anchor point of the chunk.
-     * @return Whether this renderer has a completed VBO for the chunk.
+     * @return Whether this renderer has a written VBO for the chunk.
      */
-    public boolean hasCompletedVBO(final int[] pos) {
+    public boolean hasWrittenVBO(final int[] pos) {
         final List<Integer> posList = ArrayUtilities.toList(pos);
-        return this.completedVBOs.containsKey(posList);
+        return this.sentVBOs.containsKey(posList) || this.writtenVBOs.containsKey(posList);
     }
 
     /**
@@ -218,23 +236,20 @@ public class Renderer extends Worker {
         this.setPerspective();
         Renderer.setLighting();
         Renderer.clear();
+        this.sendVBO();
         final double[] playerPos = this.world.getPlayer().getPosition();
         final int[] playerChunkPos = PositionUtilities.toChunkPosition(playerPos);
         for (final int[] renderChunkPos : PositionUtilities.getNearbyChunkPositions(playerChunkPos, Renderer.RENDER_DISTANCE)) {
             final List<Integer> renderChunkPosList = ArrayUtilities.toList(renderChunkPos);
-            if (this.completedVBOs.containsKey(renderChunkPosList)) {
-                final VertexBufferObject vbo = this.completedVBOs.get(renderChunkPosList);
-                final boolean success = vbo.send();
-                if (success) {
-                    System.out.printf("Rendering chunk at (%d, %d, %d)...\n", renderChunkPos[0], renderChunkPos[1],
+            if (this.sentVBOs.containsKey(renderChunkPosList)) {
+                final VertexBufferObject vbo = this.sentVBOs.get(renderChunkPosList);
+                System.out.printf("Rendering chunk at (%d, %d, %d)...\n", renderChunkPos[0], renderChunkPos[1],
                             renderChunkPos[2]);
-                    vbo.render();
-                } else {
-                    this.completedVBOs.remove(renderChunkPosList);
-                }
+                vbo.render();
             }
         }
         GLFW.glfwSwapBuffers(this.windowHandle);
+        this.framesSinceVBOSend++;
     }
 
     /**
@@ -274,6 +289,24 @@ public class Renderer extends Worker {
     private void refillEmptyVBOs() {
         while (this.emptyVBOs.size() < Renderer.TARGET_NUM_EMPTY_VBOS) {
             this.emptyVBOs.addLast(new VertexBufferObject());
+        }
+    }
+
+    /**
+     * Possibly send a VBO, depending on how many frames have passed since a VBO was last sent.
+     */
+    private void sendVBO() {
+        if (this.framesSinceVBOSend < Renderer.SEND_INTERVAL) {
+            return;
+        }
+        for (final List<Integer> posList : this.writtenVBOs.keySet()) {
+            final VertexBufferObject vbo = this.writtenVBOs.remove(posList);
+            final boolean success = vbo.send();
+            if (success) {
+                this.sentVBOs.put(posList, vbo);
+            }
+            this.framesSinceVBOSend = 0;
+            return;
         }
     }
 }
