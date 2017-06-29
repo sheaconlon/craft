@@ -125,6 +125,9 @@ class VertexBufferObject {
      * @return Whether this VBO was successfully finalized and sent to the GPU.
      */
     boolean send() {
+        if (this.sent) {
+            return true;
+        }
         this.protect();
         return GL15.glUnmapBuffer(GL15.GL_ARRAY_BUFFER);
     }
