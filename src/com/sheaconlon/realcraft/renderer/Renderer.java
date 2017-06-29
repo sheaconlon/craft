@@ -196,7 +196,13 @@ public class Renderer extends Worker {
         for (final int[] renderChunkPos : PositionUtilities.getNearbyChunkPositions(playerChunkPos, Renderer.RENDER_DISTANCE)) {
             final List<Integer> renderChunkPosList = ArrayUtilities.toList(renderChunkPos);
             if (this.completedVBOs.containsKey(renderChunkPosList)) {
-                this.completedVBOs.get(renderChunkPosList).render();
+                final VertexBufferObject vbo = this.completedVBOs.get(renderChunkPosList);
+                final boolean success = vbo.send();
+                if (success) {
+                    vbo.render();
+                } else {
+                    this.completedVBOs.remove(renderChunkPosList);
+                }
             }
         }
         GLFW.glfwSwapBuffers(this.windowHandle);
