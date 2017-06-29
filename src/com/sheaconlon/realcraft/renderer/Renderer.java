@@ -15,11 +15,18 @@ import org.lwjgl.opengl.GL11;
 
 import java.nio.FloatBuffer;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * A renderer.
  */
 public class Renderer extends Worker {
+    /**
+     * The number of VBOs that a renderer should stock its empty VBO list with on each refill.
+     */
+    private static final int TARGET_NUM_EMPTY_VBOS = 2;
+
     /**
      * The world.
      */
@@ -125,9 +132,14 @@ public class Renderer extends Worker {
     private final int[] windowDimensions;
 
     /**
-     * The vbos that this renderer has created.
+     * The completed VBOs that this renderer has received.
      */
-    private final Map<List<Integer>, VertexBufferObject> chunkVbos;
+    private final Map<List<Integer>, VertexBufferObject> completedVBOs;
+
+    /**
+     * The empty VBOs that this renderer has created.
+     */
+    private final Deque<VertexBufferObject> emptyVBOs;
 
     /**
      * Create a renderer.
@@ -137,8 +149,27 @@ public class Renderer extends Worker {
     public Renderer(final World world, final long windowHandle, final int[] windowDimensions) {
         this.world = world;
         this.windowHandle = windowHandle;
-        // TODO
         this.windowDimensions = windowDimensions;
+        this.completedVBOs = new ConcurrentHashMap<>();
+        this.emptyVBOs = new ConcurrentLinkedDeque<>();
+    }
+
+    /**
+     * Return an empty VBO created by this renderer, or null if there is none.
+     * @return An empty VBO created by this renderer, or null if there is none.
+     */
+    public VertexBufferObject getEmptyVBO() {
+        return this.emptyVBOs.pollFirst();
+    }
+
+    /**
+     * Receive a completed VBO for some chunk.
+     * @param pos The position of the anchor point of the chunk.
+     * @param vbo The VBO.
+     */
+    public void receiveCompletedVBO(final int[] pos, final VertexBufferObject vbo) {
+        final List<Integer> posList = ArrayUtilities.toList(pos);
+        this.completedVBOs.put(posList, vbo);
     }
 
     /**
@@ -149,19 +180,24 @@ public class Renderer extends Worker {
         GLFW.glfwMakeContextCurrent(this.windowHandle);
         Renderer.configureOpenGL();
         Renderer.setProjection(this.windowDimensions);
+        this.refillEmptyVBOs();
     }
 
     /**
      * Render the world.
      */
     public void tick() {
+        this.refillEmptyVBOs();
         this.setPerspective();
         Renderer.setLighting();
         Renderer.clear();
         final double[] playerPos = this.world.getPlayer().getPosition();
         final int[] playerChunkPos = PositionUtilities.toChunkPosition(playerPos);
         for (final int[] renderChunkPos : PositionUtilities.getNearbyChunkPositions(playerChunkPos, Renderer.RENDER_DISTANCE)) {
-            // TODO
+            final List<Integer> renderChunkPosList = ArrayUtilities.toList(renderChunkPos);
+            if (this.completedVBOs.containsKey(renderChunkPosList)) {
+                this.completedVBOs.get(renderChunkPosList).render();
+            }
         }
         GLFW.glfwSwapBuffers(this.windowHandle);
     }
@@ -198,10 +234,11 @@ public class Renderer extends Worker {
     }
 
     /**
-     * Render a chunk.
-     * @param position The position of the anchor point of the chunk.
+     * Refill this renderer's empty VBO list.
      */
-    private void renderChunk(final int[] position) {
-        // TODO
+    private void refillEmptyVBOs() {
+        while (this.emptyVBOs.size() < Renderer.TARGET_NUM_EMPTY_VBOS) {
+            this.emptyVBOs.addLast(new VertexBufferObject());
+        }
     }
 }
