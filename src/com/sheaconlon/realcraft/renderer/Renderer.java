@@ -168,8 +168,19 @@ public class Renderer extends Worker {
      * @param vbo The VBO.
      */
     public void receiveCompletedVBO(final int[] pos, final VertexBufferObject vbo) {
+        System.out.printf("Receiving VBO for chunk at (%d, %d, %d)...\n", pos[0], pos[1], pos[2]);
         final List<Integer> posList = ArrayUtilities.toList(pos);
         this.completedVBOs.put(posList, vbo);
+    }
+
+    /**
+     * Return whether this renderer has a completed VBO for some chunk.
+     * @param pos The position of the anchor point of the chunk.
+     * @return Whether this renderer has a completed VBO for the chunk.
+     */
+    public boolean hasCompletedVBO(final int[] pos) {
+        final List<Integer> posList = ArrayUtilities.toList(pos);
+        return this.completedVBOs.containsKey(posList);
     }
 
     /**
@@ -199,6 +210,8 @@ public class Renderer extends Worker {
                 final VertexBufferObject vbo = this.completedVBOs.get(renderChunkPosList);
                 final boolean success = vbo.send();
                 if (success) {
+                    System.out.printf("Rendering chunk at (%d, %d, %d)...\n", renderChunkPos[0], renderChunkPos[1],
+                            renderChunkPos[2]);
                     vbo.render();
                 } else {
                     this.completedVBOs.remove(renderChunkPosList);
