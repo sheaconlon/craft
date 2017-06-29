@@ -102,6 +102,22 @@ class VertexBufferObject {
     }
 
     /**
+     * Write one vertex's data to this VBO.
+     *
+     * An OpenGL context must be current. Can be called only before sending this VBO.
+     * @param vertexData The vertex's data.
+     */
+    void write(final float[][] vertexData) {
+        if (this.sent) {
+            throw new RuntimeException("Attempted to call VertexBufferObject#write() after calling #send().");
+        }
+        this.numVertices++;
+        for (final float[] piece : vertexData) {
+            this.mappedBuffer.put(piece);
+        }
+    }
+
+    /**
      * Finalize this VBO and send it to the GPU.
      *
      * An OpenGL context must be current. This method may be called only by the thread that owns the OpenGL VBO
