@@ -1,7 +1,6 @@
 package com.sheaconlon.realcraft.renderer;
 
 import com.sheaconlon.realcraft.Worker;
-import com.sheaconlon.realcraft.ui.Window;
 import com.sheaconlon.realcraft.utilities.ArrayUtilities;
 import com.sheaconlon.realcraft.utilities.PositionUtilities;
 import com.sheaconlon.realcraft.world.Chunk;
@@ -48,10 +47,7 @@ public class Prerenderer extends Worker {
      */
     @Override
     public void inThreadInitialize() {
-        final boolean initSuccess = GLFW.glfwInit();
-        final long windowHandle = GLFW.glfwCreateWindow(1, 1, "q", MemoryUtil.NULL, MemoryUtil.NULL);
-        GLFW.glfwMakeContextCurrent(windowHandle);
-        GL.createCapabilities();
+
     }
 
     /**
@@ -62,16 +58,22 @@ public class Prerenderer extends Worker {
         final double[] playerPos = this.world.getPlayer().getPosition();
         final int[] playerChunkPos = PositionUtilities.toChunkPosition(playerPos);
         for (final int[] renderChunkPos : PositionUtilities.getNearbyChunkPositions(playerChunkPos, Prerenderer.PRERENDER_DISTANCE)) {
-            // TODO
+            if (world.chunkLoaded(renderChunkPos) && !renderer.hasCompletedVBO(renderChunkPos)) {
+                final VertexBufferObject vbo = this.renderer.getEmptyVBO();
+                if (vbo != null) {
+                    this.prerenderChunk(renderChunkPos, vbo);
+                    this.renderer.receiveCompletedVBO(renderChunkPos, vbo);
+                }
+            }
         }
     }
 
     /**
-     * Pre-render a chunk.
+     * Pre-render a chunk into a VBO.
      * @param pos The position of the anchor point of the chunk.
-     * @return A VBO for the chunk.
+     * @param vbo The VBO.
      */
-    private VertexBufferObject prerenderChunk(final int[] pos) {
+    private void prerenderChunk(final int[] pos, final VertexBufferObject vbo) {
         final Chunk chunk = this.world.getChunk(pos);
         final List<float[][]> vertexDataList = new ArrayList<>();
         for (final Iterator<WorldObject> iterator = chunk.getContents(); iterator.hasNext(); ) {
@@ -86,8 +88,6 @@ public class Prerenderer extends Worker {
             }
         }
         final float[][][] vertexData = vertexDataList.toArray(new float[][][]{});
-        final VertexBufferObject vbo = new VertexBufferObject();
         vbo.write(vertexData);
-        return vbo;
     }
 }
