@@ -111,16 +111,6 @@ public class UserInterface extends Worker {
     private double[] cursorPosition;
 
     /**
-     * The 20 most recent elapsed times in calls to {@link #respond(World, double)}.
-     */
-    private Deque<Double> elapsedTimes;
-
-    /**
-     * The sum of the elements of {@link #elapsedTimes}.
-     */
-    private double elapsedTimesSum;
-
-    /**
      * The time of the last call to {@link #tick()}, in nanoseconds since some arbitrary point.
      */
     private long lastTickTime;
@@ -141,8 +131,6 @@ public class UserInterface extends Worker {
         this.window.setKeyCallback(this.keyCallback);
         this.shouldClose = false;
         this.cursorPosition = this.window.getCursorPosition();
-        this.elapsedTimes = new LinkedList<Double>();
-        this.elapsedTimesSum = 0;
     }
 
     /**
@@ -221,22 +209,7 @@ public class UserInterface extends Worker {
      */
     public void tick() {
         double elapsedTime = (System.nanoTime() - this.lastTickTime) / UserInterface.NANOSECONDS_PER_SECOND;
-        if (elapsedTime < 1.0/120) {
-            try {
-                Thread.sleep((long) ((1.0 / 120 - elapsedTime) * Math.pow(10, 3)));
-            } catch (final InterruptedException e) {};
-            elapsedTime = (System.nanoTime() - this.lastTickTime) / UserInterface.NANOSECONDS_PER_SECOND;
-        }
         lastTickTime = System.nanoTime();
-        if (this.elapsedTimes.size() == 20) {
-            this.elapsedTimesSum -= this.elapsedTimes.removeFirst();
-            this.elapsedTimes.addLast(elapsedTime);
-            this.elapsedTimesSum += elapsedTime;
-            System.out.println(20 / this.elapsedTimesSum);
-        } else {
-            this.elapsedTimes.addLast(elapsedTime);
-            this.elapsedTimesSum += elapsedTime;
-        }
         window.runCallbacks();
         this.respondToMovement(elapsedTime);
         this.respondToLooking(elapsedTime);
