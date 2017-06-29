@@ -46,6 +46,7 @@ public abstract class Worker implements Runnable {
         final double targetTickPeriod = 1 / (double)this.getTargetTickRate() * Worker.NANOSECONDS_PER_SECOND;
         while (!Thread.interrupted()) {
             final double timeRemaining = targetTickPeriod - (System.nanoTime() - this.lastTickTime);
+            this.lastTickTime = System.nanoTime();
             if (timeRemaining > 0) {
                 try {
                     Thread.sleep((int)(timeRemaining / Worker.NANOSECONDS_PER_MILLISECOND),
