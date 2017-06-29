@@ -79,7 +79,9 @@ class VertexBufferObject {
         this.handle = handleBuffer.get();
         this.numVertices = 0;
         this.owner = Thread.currentThread();
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, this.handle);
         this.mappedBuffer = GL15.glMapBuffer(GL15.GL_ARRAY_BUFFER, GL15.GL_STATIC_DRAW).asFloatBuffer();
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         this.sent = false;
     }
 
