@@ -61,7 +61,7 @@ class VertexBufferObject {
     /**
      * A mapped buffer for the OpenGL VBO underlying this VBO.
      */
-    private final FloatBuffer mappedBuffer;
+    private FloatBuffer mappedBuffer;
 
     /**
      * Whether this VBO has been finalized and sent to the GPU.
@@ -80,7 +80,8 @@ class VertexBufferObject {
         this.numVertices = 0;
         this.owner = Thread.currentThread();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, this.handle);
-        this.mappedBuffer = GL15.glMapBuffer(GL15.GL_ARRAY_BUFFER, GL15.GL_STATIC_DRAW).asFloatBuffer();
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, BufferUtils.createFloatBuffer(108000000), GL15.GL_STATIC_DRAW);
+        this.mappedBuffer = GL15.glMapBuffer(GL15.GL_ARRAY_BUFFER, GL15.GL_WRITE_ONLY).asFloatBuffer();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         this.sent = false;
     }
@@ -132,7 +133,11 @@ class VertexBufferObject {
             return true;
         }
         this.sent = true;
-        return GL15.glUnmapBuffer(GL15.GL_ARRAY_BUFFER);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, this.handle);
+        final boolean success = GL15.glUnmapBuffer(GL15.GL_ARRAY_BUFFER);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+        this.mappedBuffer = null;
+        return success;
     }
 
     /**
@@ -156,6 +161,7 @@ class VertexBufferObject {
                 (VertexBufferObject.FLOATS_PER_POSITION + VertexBufferObject.FLOATS_PER_COLOR)
                         * VertexBufferObject.BYTES_PER_FLOAT);
         GL11.glDrawArrays(GL11.GL_QUADS, 0, this.numVertices);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
     }
 
     /**
