@@ -1,6 +1,7 @@
 package com.sheaconlon.realcraft.ui;
 
 import com.sheaconlon.realcraft.Worker;
+import com.sheaconlon.realcraft.renderer.Renderer;
 import com.sheaconlon.realcraft.world.World;
 
 import org.lwjgl.glfw.GLFW;
@@ -19,6 +20,12 @@ import java.util.List;
  * A user interface for Realcraft.
  */
 public class UserInterface extends Worker {
+    // TODO: Detect screen FPS and use that as the target tick rate of UserInterface.
+    /**
+     * The target tick rate of a user interface, in ticks per second.
+     */
+    private static final int TARGET_TICK_RATE = 60;
+
     /**
      * The number of nanoseconds in a second.
      */
@@ -136,6 +143,14 @@ public class UserInterface extends Worker {
         this.cursorPosition = this.window.getCursorPosition();
         this.elapsedTimes = new LinkedList<Double>();
         this.elapsedTimesSum = 0;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected int getTargetTickRate() {
+        return UserInterface.TARGET_TICK_RATE;
     }
 
     /**

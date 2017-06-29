@@ -23,6 +23,14 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  */
 public class Renderer extends Worker {
     /**
+     * The target tick rate of a renderer, in ticks per second.
+     *
+     * The target tick rate of a renderer should be essentially infinite because a renderer synchronizes itself with
+     * screen refreshes and should not be artificially slowed down.
+     */
+    private static final int TARGET_TICK_RATE = Integer.MAX_VALUE;
+
+    /**
      * The number of VBOs that a renderer should stock its empty VBO list with on each refill.
      */
     private static final int TARGET_NUM_EMPTY_VBOS = 2;
@@ -152,6 +160,14 @@ public class Renderer extends Worker {
         this.windowDimensions = windowDimensions;
         this.completedVBOs = new ConcurrentHashMap<>();
         this.emptyVBOs = new ConcurrentLinkedDeque<>();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected int getTargetTickRate() {
+        return Renderer.TARGET_TICK_RATE;
     }
 
     /**

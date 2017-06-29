@@ -19,6 +19,11 @@ import java.util.List;
  */
 public class Prerenderer extends Worker {
     /**
+     * The target tick rate of a pre-renderer, in ticks per second.
+     */
+    private static final int TARGET_TICK_RATE = 3;
+
+    /**
      * The number of chunks in each direction from the player's chunk that pre-renderers should pre-render.
      */
     private static final int PRERENDER_DISTANCE = Renderer.RENDER_DISTANCE;
@@ -40,6 +45,14 @@ public class Prerenderer extends Worker {
     public Prerenderer(final World world, final Renderer renderer) {
         this.world = world;
         this.renderer = renderer;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected int getTargetTickRate() {
+        return Prerenderer.TARGET_TICK_RATE;
     }
 
     /**

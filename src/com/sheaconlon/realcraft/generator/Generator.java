@@ -16,6 +16,11 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class Generator extends Worker {
     /**
+     * The target tick rate of a generator, in ticks per second.
+     */
+    private static final int TARGET_TICK_RATE = 3;
+
+    /**
      * The y-coordinate of the highest ground blocks.
      */
     public static final int GROUND_LEVEL = 50;
@@ -37,6 +42,14 @@ public class Generator extends Worker {
      */
     public Generator(final World world) {
         this.world = world;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected int getTargetTickRate() {
+        return Generator.TARGET_TICK_RATE;
     }
 
     /**
