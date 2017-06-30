@@ -7,12 +7,12 @@ public abstract class Worker implements Runnable {
     /**
      * The number of nanoseconds in a second.
      */
-    private static final int NANOSECONDS_PER_SECOND = 1_000_000_000;
+    public static final int NANOSECONDS_PER_SECOND = 1_000_000_000;
 
     /**
      * The number of nanoseconds in a millisecond
      */
-    private static final int NANOSECONDS_PER_MILLISECOND = 1_000_000;
+    public static final int NANOSECONDS_PER_MILLISECOND = 1_000_000;
 
     /**
      * The time of the last tick of this worker, in nanoseconds since some fixed, arbitrary point.
@@ -26,7 +26,7 @@ public abstract class Worker implements Runnable {
     /**
      * Get the target tick rate of this worker, in ticks per second.
      */
-    protected abstract int getTargetTickRate();
+    protected abstract double getTargetTickRate();
 
     /**
      * Do some work.
@@ -43,18 +43,18 @@ public abstract class Worker implements Runnable {
      */
     public void run() {
         this.inThreadInitialize();
-        final double targetTickPeriod = 1 / (double)this.getTargetTickRate() * Worker.NANOSECONDS_PER_SECOND;
+        final double targetTickPeriod = (1 / this.getTargetTickRate()) * Worker.NANOSECONDS_PER_SECOND;
         while (!Thread.interrupted()) {
             final double timeRemaining = targetTickPeriod - (System.nanoTime() - this.lastTickTime);
             this.lastTickTime = System.nanoTime();
             if (timeRemaining > 0) {
                 try {
-                    Thread.sleep((int)(timeRemaining / Worker.NANOSECONDS_PER_MILLISECOND),
-                            (int)(timeRemaining % Worker.NANOSECONDS_PER_MILLISECOND));
+                    Thread.sleep((int)(timeRemaining / Worker.NANOSECONDS_PER_MILLISECOND));
                 } catch (final InterruptedException e) {
                     return;
                 }
             }
+            System.out.println("Doing tick for " + this.getClass().getSimpleName() + ".");
             this.tick();
         }
     }

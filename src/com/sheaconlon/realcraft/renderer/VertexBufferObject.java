@@ -1,5 +1,6 @@
 package com.sheaconlon.realcraft.renderer;
 
+import com.sheaconlon.realcraft.world.Chunk;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
@@ -80,7 +81,7 @@ class VertexBufferObject {
         this.numVertices = 0;
         this.owner = Thread.currentThread();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, this.handle);
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, BufferUtils.createFloatBuffer(108000000), GL15.GL_STATIC_DRAW);
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, BufferUtils.createFloatBuffer(Chunk.SIZE * Chunk.SIZE * Chunk.SIZE * 6 * 4 * (3 + 3 + 3)), GL15.GL_STATIC_DRAW);
         this.mappedBuffer = GL15.glMapBuffer(GL15.GL_ARRAY_BUFFER, GL15.GL_WRITE_ONLY).asFloatBuffer();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         this.sent = false;

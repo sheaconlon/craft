@@ -26,7 +26,7 @@ public class Renderer extends Worker {
     /**
      * The number of frames to wait between sends of VBOs.
      */
-    private static final int SEND_INTERVAL = 30;
+    private static final int SEND_INTERVAL = 60;
 
     /**
      * The target tick rate of a renderer, in ticks per second.
@@ -34,12 +34,12 @@ public class Renderer extends Worker {
      * The target tick rate of a renderer should be essentially infinite because a renderer synchronizes itself with
      * screen refreshes and should not be artificially slowed down.
      */
-    private static final int TARGET_TICK_RATE = Integer.MAX_VALUE;
+    private static final double TARGET_TICK_RATE = Double.MAX_VALUE;
 
     /**
      * The number of VBOs that a renderer should stock its empty VBO list with on each refill.
      */
-    private static final int TARGET_NUM_EMPTY_VBOS = 2;
+    private static final int TARGET_NUM_EMPTY_VBOS = 10;
 
     /**
      * The world.
@@ -184,7 +184,7 @@ public class Renderer extends Worker {
      * {@inheritDoc}
      */
     @Override
-    protected int getTargetTickRate() {
+    protected double getTargetTickRate() {
         return Renderer.TARGET_TICK_RATE;
     }
 
@@ -202,7 +202,6 @@ public class Renderer extends Worker {
      * @param vbo The VBO.
      */
     public void receiveWrittenVBO(final int[] pos, final VertexBufferObject vbo) {
-        System.out.printf("Receiving VBO for chunk at (%d, %d, %d)...\n", pos[0], pos[1], pos[2]);
         final List<Integer> posList = ArrayUtilities.toList(pos);
         this.writtenVBOs.put(posList, vbo);
     }
@@ -243,8 +242,6 @@ public class Renderer extends Worker {
             final List<Integer> renderChunkPosList = ArrayUtilities.toList(renderChunkPos);
             if (this.sentVBOs.containsKey(renderChunkPosList)) {
                 final VertexBufferObject vbo = this.sentVBOs.get(renderChunkPosList);
-                System.out.printf("Rendering chunk at (%d, %d, %d)...\n", renderChunkPos[0], renderChunkPos[1],
-                            renderChunkPos[2]);
                 vbo.render();
             }
         }

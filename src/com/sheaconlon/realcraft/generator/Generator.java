@@ -18,7 +18,7 @@ public class Generator extends Worker {
     /**
      * The target tick rate of a generator, in ticks per second.
      */
-    private static final int TARGET_TICK_RATE = 3;
+    private static final double TARGET_TICK_RATE = 1;
 
     /**
      * The y-coordinate of the highest ground blocks.
@@ -28,7 +28,7 @@ public class Generator extends Worker {
     /**
      * The number of extra chunks in each direction from the player's chunk to keep loaded.
      */
-    private static final int LOAD_DISTANCE = Renderer.RENDER_DISTANCE + 1;
+    private static final int LOAD_DISTANCE = Renderer.RENDER_DISTANCE;
 
     /**
      * The world which this generator must generate chunks for.
@@ -48,7 +48,7 @@ public class Generator extends Worker {
      * {@inheritDoc}
      */
     @Override
-    protected int getTargetTickRate() {
+    protected double getTargetTickRate() {
         return Generator.TARGET_TICK_RATE;
     }
 
@@ -66,10 +66,14 @@ public class Generator extends Worker {
     @Override
     public void tick() {
         final int[] playerChunkPos = PositionUtilities.toChunkPosition(this.world.getPlayer().getPosition());
+        int numberDone = 0;
         for (final int[] chunkPos : PositionUtilities.getNearbyChunkPositions(playerChunkPos, Generator.LOAD_DISTANCE)) {
             if (!world.chunkLoaded(chunkPos)) {
                 world.loadChunk(chunkPos, this.generateChunk(chunkPos));
-                return;
+                numberDone++;
+                if (numberDone == 3) {
+                    return;
+                }
             }
         }
     }

@@ -138,7 +138,6 @@ public class World {
      * @param chunk The chunk.
      */
     public void loadChunk(final int[] pos, final Chunk chunk) {
-        System.out.printf("Loading chunk at (%d, %d, %d)...\n", pos[0], pos[1], pos[2]);
         final List<Integer> posList = ArrayUtilities.toList(pos);
         this.chunks.put(posList, chunk);
     }

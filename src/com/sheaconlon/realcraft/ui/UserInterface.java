@@ -24,7 +24,7 @@ public class UserInterface extends Worker {
     /**
      * The target tick rate of a user interface, in ticks per second.
      */
-    private static final int TARGET_TICK_RATE = 60;
+    private static final double TARGET_TICK_RATE = 60;
 
     /**
      * The number of nanoseconds in a second.
@@ -137,7 +137,7 @@ public class UserInterface extends Worker {
      * {@inheritDoc}
      */
     @Override
-    protected int getTargetTickRate() {
+    protected double getTargetTickRate() {
         return UserInterface.TARGET_TICK_RATE;
     }
 
@@ -208,7 +208,7 @@ public class UserInterface extends Worker {
      * Respond to input.
      */
     public void tick() {
-        double elapsedTime = (System.nanoTime() - this.lastTickTime) / UserInterface.NANOSECONDS_PER_SECOND;
+        final double elapsedTime = (double)(System.nanoTime() - this.lastTickTime) / UserInterface.NANOSECONDS_PER_SECOND;
         lastTickTime = System.nanoTime();
         window.runCallbacks();
         this.respondToMovement(elapsedTime);
@@ -236,7 +236,18 @@ public class UserInterface extends Worker {
     @Override
     public void run() {
         this.inThreadInitialize();
-        while (!this.shouldClose()) {
+        final double targetTickPeriod = 1 / (double)this.getTargetTickRate() * Worker.NANOSECONDS_PER_SECOND;
+        while (!this.shouldClose() && !Thread.interrupted()) {
+            final double timeRemaining = targetTickPeriod - (System.nanoTime() - this.lastTickTime);
+            this.lastTickTime = System.nanoTime();
+            if (timeRemaining > 0) {
+                try {
+                    Thread.sleep((int)(timeRemaining / Worker.NANOSECONDS_PER_MILLISECOND));
+                } catch (final InterruptedException e) {
+                    return;
+                }
+            }
+            System.out.println("Doing tick for " + this.getClass().getSimpleName() + ".");
             this.tick();
         }
     }

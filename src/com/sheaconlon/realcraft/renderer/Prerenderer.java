@@ -21,7 +21,7 @@ public class Prerenderer extends Worker {
     /**
      * The target tick rate of a pre-renderer, in ticks per second.
      */
-    private static final int TARGET_TICK_RATE = 3;
+    private static final double TARGET_TICK_RATE = 1;
 
     /**
      * The number of chunks in each direction from the player's chunk that pre-renderers should pre-render.
@@ -51,7 +51,7 @@ public class Prerenderer extends Worker {
      * {@inheritDoc}
      */
     @Override
-    protected int getTargetTickRate() {
+    protected double getTargetTickRate() {
         return Prerenderer.TARGET_TICK_RATE;
     }
 
@@ -70,6 +70,7 @@ public class Prerenderer extends Worker {
     public void tick() {
         final double[] playerPos = this.world.getPlayer().getPosition();
         final int[] playerChunkPos = PositionUtilities.toChunkPosition(playerPos);
+        int numberDone = 0;
         for (final int[] renderChunkPos : PositionUtilities.getNearbyChunkPositions(playerChunkPos, Prerenderer.PRERENDER_DISTANCE)) {
             if (world.chunkLoaded(renderChunkPos) && !renderer.hasWrittenVBO(renderChunkPos)) {
                 final VertexBufferObject vbo = this.renderer.getEmptyVBO();
@@ -77,7 +78,10 @@ public class Prerenderer extends Worker {
                     this.prerenderChunk(renderChunkPos, vbo);
                     this.renderer.receiveWrittenVBO(renderChunkPos, vbo);
                 }
-                return;
+                numberDone++;
+                if (numberDone == 3) {
+                    return;
+                }
             }
         }
     }
