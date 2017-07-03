@@ -5,7 +5,7 @@ import com.sheaconlon.realcraft.utilities.ArrayUtilities;
 /**
  * A worker.
  */
-abstract class Worker implements Runnable {
+public abstract class Worker implements Runnable {
     /**
      * The number of recent ticks that a worker should consider for short-term statistics.
      */
