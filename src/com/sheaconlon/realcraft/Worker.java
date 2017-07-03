@@ -165,9 +165,9 @@ public abstract class Worker implements Runnable {
         final long interval = currentTime - this.lastTickTime;
         this.lastTickTime = currentTime;
         this.shortTermIntervals[this.currShortTermIndex] = interval;
-        this.currShortTermIndex++;
+        this.currShortTermIndex = (this.currShortTermIndex + 1) % this.shortTermIntervals.length;
         this.longTermIntervals[this.currLongTermIndex] = interval;
-        this.currLongTermIndex++;
+        this.currLongTermIndex = (this.currLongTermIndex + 1) % this.longTermIntervals.length;
         this.ticks++;
     }
 
