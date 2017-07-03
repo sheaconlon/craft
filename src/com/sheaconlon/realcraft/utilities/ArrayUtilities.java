@@ -115,4 +115,17 @@ public class ArrayUtilities {
         }
         return lst;
     }
+
+    /**
+     * Get the maximum of an array of longs.
+     * @param arr The array, which must be of length at least 1.
+     * @return The maximum.
+     */
+    public static long max(final long[] arr) {
+        long max = arr[0];
+        for (int i = 1; i < arr.length; i++) {
+            max = Math.max(max, arr[i]);
+        }
+        return max;
+    }
 }
