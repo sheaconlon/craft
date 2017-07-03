@@ -127,7 +127,9 @@ public abstract class Worker implements Runnable {
      * Return whether this worker should stop running.
      * @return Whether this worker should stop running.
      */
-    protected abstract boolean shouldStop();
+    protected boolean shouldStop() {
+        return Thread.interrupted();
+    }
 
     /**
      * Run this worker.
