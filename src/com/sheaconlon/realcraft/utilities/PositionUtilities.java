@@ -41,7 +41,7 @@ public class PositionUtilities {
         /**
          * Weights for the distance metric used by a chunk position comparator.
          */
-        private static final double[] WEIGHTS = new double[]{1, 2, 1};
+        private static final double[] WEIGHTS = new double[]{1, 1.5, 1};
 
         /**
          * The position of the anchor point of the chunk of interest.
