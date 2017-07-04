@@ -100,7 +100,7 @@ public abstract class Worker implements Runnable {
      * Get the value of {@link #minInterval}.
      * @return The value of {@link #minInterval}.
      */
-    long getMinInterval() {
+    public long getMinInterval() {
         if (this.ticks < Worker.BEGINNING_TICKS) {
             return 0;
         }
