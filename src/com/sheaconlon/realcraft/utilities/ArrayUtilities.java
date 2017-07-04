@@ -118,6 +118,19 @@ public class ArrayUtilities {
     }
 
     /**
+     * Get the absolute value of an array of integers.
+     * @param arr The array.
+     * @return The array that is the elementwise absolute value of the input array.
+     */
+    public static int[] abs(final int[] arr) {
+        final int[] absArr = new int[arr.length];
+        for (int i = 0; i < arr.length; i++) {
+            absArr[i] = Math.abs(arr[i]);
+        }
+        return absArr;
+    }
+
+    /**
      * Get the sum of an array of doubles.
      * @param arr The array, which must be of length at least 1.
      * @return The sum.
