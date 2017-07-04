@@ -104,6 +104,20 @@ public class ArrayUtilities {
     }
 
     /**
+     * Multiply an integer array with a double array.
+     * @param a The integer array.
+     * @param b The double array.
+     * @return The array that is the elementwise product of the input arrays.
+     */
+    public static double[] multiply(final int[] a, final double[] b) {
+        final double[] result = new double[a.length];
+        for (int i = 0; i < a.length; i++) {
+            result[i] = a[i] * b[i];
+        }
+        return result;
+    }
+
+    /**
      * Multiply an integer array by an integer factor.
      * @param arr The array.
      * @param c The factor.
