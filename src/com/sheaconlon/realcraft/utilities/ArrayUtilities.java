@@ -118,6 +118,19 @@ public class ArrayUtilities {
     }
 
     /**
+     * Get the sum of an array of doubles.
+     * @param arr The array, which must be of length at least 1.
+     * @return The sum.
+     */
+    public static long sum(final double[] arr) {
+        double sum = arr[0];
+        for (int i = 1; i < arr.length; i++) {
+            sum = sum + arr[i];
+        }
+        return sum;
+    }
+
+    /**
      * Multiply an integer array by an integer factor.
      * @param arr The array.
      * @param c The factor.
