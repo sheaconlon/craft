@@ -122,7 +122,7 @@ public class ArrayUtilities {
      * @param arr The array, which must be of length at least 1.
      * @return The sum.
      */
-    public static long sum(final double[] arr) {
+    public static double sum(final double[] arr) {
         double sum = arr[0];
         for (int i = 1; i < arr.length; i++) {
             sum = sum + arr[i];
