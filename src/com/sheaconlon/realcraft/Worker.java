@@ -7,6 +7,11 @@ import com.sheaconlon.realcraft.utilities.ArrayUtilities;
  */
 public abstract class Worker implements Runnable {
     /**
+     * The number of ticks that should be considered "beginning" ticks.
+     */
+    protected static final int BEGINNING_TICKS = 1500;
+
+    /**
      * The number of recent ticks that a worker should consider for short-term statistics.
      */
     private static final int SHORT_TERM_TICKS = 10;
@@ -67,7 +72,7 @@ public abstract class Worker implements Runnable {
     /**
      * The number of times this worker's {@link #tick()} method has been called.
      */
-    private long ticks;
+    protected long ticks;
 
     /**
      * Create a worker.
@@ -96,6 +101,12 @@ public abstract class Worker implements Runnable {
      * @return The value of {@link #minInterval}.
      */
     long getMinInterval() {
+        if (this.ticks < Worker.BEGINNING_TICKS) {
+            return 0;
+        }
+        if (this.ticks == Worker.BEGINNING_TICKS) {
+            System.out.println(this.getClass().getSimpleName());
+        }
         return this.minInterval;
     }
 
