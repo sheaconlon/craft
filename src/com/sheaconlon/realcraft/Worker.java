@@ -9,7 +9,7 @@ public abstract class Worker implements Runnable {
     /**
      * The number of ticks that should be considered "beginning" ticks.
      */
-    protected static final int BEGINNING_TICKS = 1500;
+    protected static final int BEGINNING_TICKS = 1000;
 
     /**
      * The number of recent ticks that a worker should consider for short-term statistics.
