@@ -26,7 +26,7 @@ public class Renderer extends Worker {
     /**
      * The number of frames to wait between sends of VBOs.
      */
-    private static final int SEND_INTERVAL = 10;
+    private static final int SEND_INTERVAL = 60;
 
     /**
      * A renderer's return value for {@link #getInitialMinInterval()}.
@@ -296,14 +296,19 @@ public class Renderer extends Worker {
         if (this.framesSinceVBOSend < Renderer.SEND_INTERVAL && this.ticks >= Worker.BEGINNING_TICKS) {
             return;
         }
-        for (final List<Integer> posList : this.writtenVBOs.keySet()) {
-            final VertexBufferObject vbo = this.writtenVBOs.remove(posList);
-            final boolean success = vbo.send();
-            if (success) {
-                this.sentVBOs.put(posList, vbo);
+        final double[] playerPos = this.world.getPlayer().getPosition();
+        final int[] playerChunkPos = PositionUtilities.toChunkPosition(playerPos);
+        for (final int[] chunkPos : PositionUtilities.getNearbyChunkPositions(playerChunkPos, Renderer.RENDER_DISTANCE)) {
+            final List<Integer> chunkPosList = ArrayUtilities.toList(chunkPos);
+            if (this.writtenVBOs.containsKey(chunkPosList)) {
+                final VertexBufferObject vbo = this.writtenVBOs.remove(chunkPosList);
+                final boolean success = vbo.send();
+                if (success) {
+                    this.sentVBOs.put(chunkPosList, vbo);
+                }
+                this.framesSinceVBOSend = 0;
+                return;
             }
-            this.framesSinceVBOSend = 0;
-            return;
         }
     }
 }
