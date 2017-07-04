@@ -16,9 +16,9 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class Generator extends Worker {
     /**
-     * The target tick rate of a generator, in ticks per second.
+     * A generator's return value for {@link #getInitialMinInterval()}.
      */
-    private static final double TARGET_TICK_RATE = 1;
+    private static final long INITIAL_MIN_INTERVAL = 1_000_000_000 / 1;
 
     /**
      * The y-coordinate of the highest ground blocks.
@@ -48,15 +48,15 @@ public class Generator extends Worker {
      * {@inheritDoc}
      */
     @Override
-    protected double getTargetTickRate() {
-        return Generator.TARGET_TICK_RATE;
+    protected long getInitialMinInterval() {
+        return Generator.INITIAL_MIN_INTERVAL;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void inThreadInitialize() {
+    public void initInThread() {
         return;
     }
 

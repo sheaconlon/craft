@@ -19,9 +19,9 @@ import java.util.List;
  */
 public class Prerenderer extends Worker {
     /**
-     * The target tick rate of a pre-renderer, in ticks per second.
+     * A pre-renderer's return value for {@link #getInitialMinInterval()}.
      */
-    private static final double TARGET_TICK_RATE = 1;
+    private static final long INITIAL_MIN_INTERVAL = 1_000_000_000 / 1;
 
     /**
      * The number of chunks in each direction from the player's chunk that pre-renderers should pre-render.
@@ -51,15 +51,15 @@ public class Prerenderer extends Worker {
      * {@inheritDoc}
      */
     @Override
-    protected double getTargetTickRate() {
-        return Prerenderer.TARGET_TICK_RATE;
+    protected long getInitialMinInterval() {
+        return Prerenderer.INITIAL_MIN_INTERVAL;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void inThreadInitialize() {
+    public void initInThread() {
 
     }
 

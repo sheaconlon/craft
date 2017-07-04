@@ -22,9 +22,9 @@ import java.util.List;
 public class UserInterface extends Worker {
     // TODO: Detect screen FPS and use that as the target tick rate of UserInterface.
     /**
-     * The target tick rate of a user interface, in ticks per second.
+     * A user interface's return value for {@link #getInitialMinInterval()}.
      */
-    private static final double TARGET_TICK_RATE = 60;
+    private static final long INITIAL_MIN_INTERVAL = 1_000_000_000 / 60;
 
     /**
      * The number of nanoseconds in a second.
@@ -137,15 +137,15 @@ public class UserInterface extends Worker {
      * {@inheritDoc}
      */
     @Override
-    protected double getTargetTickRate() {
-        return UserInterface.TARGET_TICK_RATE;
+    protected long getInitialMinInterval() {
+        return UserInterface.INITIAL_MIN_INTERVAL;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void inThreadInitialize() {
+    public void initInThread() {
 
     }
 
@@ -216,10 +216,10 @@ public class UserInterface extends Worker {
     }
 
     /**
-     * Return whether the user interface should close.
-     * @return Whether the user interface should close.
+     * {@inheritDoc}
      */
-    public boolean shouldClose() {
+    @Override
+    protected boolean shouldStop() {
         return this.shouldClose;
     }
 
@@ -228,28 +228,6 @@ public class UserInterface extends Worker {
      */
     public void close() {
         this.window.close();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void run() {
-        this.inThreadInitialize();
-        final double targetTickPeriod = 1 / (double)this.getTargetTickRate() * Worker.NANOSECONDS_PER_SECOND;
-        while (!this.shouldClose() && !Thread.interrupted()) {
-            final double timeRemaining = targetTickPeriod - (System.nanoTime() - this.lastTickTime);
-            this.lastTickTime = System.nanoTime();
-            if (timeRemaining > 0) {
-                try {
-                    Thread.sleep((int)(timeRemaining / Worker.NANOSECONDS_PER_MILLISECOND));
-                } catch (final InterruptedException e) {
-                    return;
-                }
-            }
-            System.out.println("Doing tick for " + this.getClass().getSimpleName() + ".");
-            this.tick();
-        }
     }
 
     /**

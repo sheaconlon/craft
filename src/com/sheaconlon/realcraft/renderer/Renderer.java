@@ -26,15 +26,15 @@ public class Renderer extends Worker {
     /**
      * The number of frames to wait between sends of VBOs.
      */
-    private static final int SEND_INTERVAL = 60;
+    private static final int SEND_INTERVAL = 10;
 
     /**
-     * The target tick rate of a renderer, in ticks per second.
+     * A renderer's return value for {@link #getInitialMinInterval()}.
      *
-     * The target tick rate of a renderer should be essentially infinite because a renderer synchronizes itself with
-     * screen refreshes and should not be artificially slowed down.
+     * The value is 0 because a renderer synchronizes itself with screen refreshes and should not be artificially
+     * slowed down.
      */
-    private static final double TARGET_TICK_RATE = Double.MAX_VALUE;
+    private static final long INITIAL_MIN_INTERVAL = 0;
 
     /**
      * The number of VBOs that a renderer should stock its empty VBO list with on each refill.
@@ -80,7 +80,7 @@ public class Renderer extends Worker {
     /**
      * The number of extra chunks to render in each direction from the player's chunk.
      */
-    public static final int RENDER_DISTANCE = 1;
+    public static final int RENDER_DISTANCE = 2;
 
     /**
      * The color of the sky, in RGBA format.
@@ -184,8 +184,8 @@ public class Renderer extends Worker {
      * {@inheritDoc}
      */
     @Override
-    protected double getTargetTickRate() {
-        return Renderer.TARGET_TICK_RATE;
+    protected long getInitialMinInterval() {
+        return Renderer.INITIAL_MIN_INTERVAL;
     }
 
     /**
@@ -220,7 +220,7 @@ public class Renderer extends Worker {
      * {@inheritDoc}
      */
     @Override
-    public void inThreadInitialize() {
+    public void initInThread() {
         GLFW.glfwMakeContextCurrent(this.windowHandle);
         Renderer.configureOpenGL();
         Renderer.setProjection(this.windowDimensions);
@@ -293,7 +293,7 @@ public class Renderer extends Worker {
      * Possibly send a VBO, depending on how many frames have passed since a VBO was last sent.
      */
     private void sendVBO() {
-        if (this.framesSinceVBOSend < Renderer.SEND_INTERVAL) {
+        if (this.framesSinceVBOSend < Renderer.SEND_INTERVAL && this.ticks >= Worker.BEGINNING_TICKS) {
             return;
         }
         for (final List<Integer> posList : this.writtenVBOs.keySet()) {
