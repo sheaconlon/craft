@@ -90,6 +90,20 @@ public class ArrayUtilities {
     }
 
     /**
+     * Subtract two integer arrays.
+     * @param a The first array.
+     * @param b The second array.
+     * @return The array that is the elementwise difference of the input arrays ({@code a} - {@code b}).
+     */
+    public static int[] subtract(final int[] a, final int[] b) {
+        final int[] result = new int[a.length];
+        for (int i = 0; i < a.length; i++) {
+            result[i] = a[i] - b[i];
+        }
+        return result;
+    }
+
+    /**
      * Multiply an integer array by an integer factor.
      * @param arr The array.
      * @param c The factor.
