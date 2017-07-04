@@ -76,7 +76,7 @@ public class Chunk extends Container {
     /**
      * The side length of a chunk, in blocks.
      */
-    public static final int SIZE = 30;
+    public static final int SIZE = 20;
 
     /**
      * The blocks in this chunk.
