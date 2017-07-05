@@ -212,4 +212,32 @@ public class ArrayUtilities {
         }
         return max;
     }
+
+    /**
+     * Add two arrays elementwise.
+     * @param a An array.
+     * @param b An array.
+     * @return The elementwise sum of {@code a} and {@code b}.
+     */
+    public static double[] add(final double[] a, final double[] b) {
+        final double[] result = new double[a.length];
+        for (int i = 0; i < a.length; i++) {
+            result[i] = a[i] + b[i];
+        }
+        return result;
+    }
+
+    /**
+     * Multiply two arrays elementwise.
+     * @param a An array.
+     * @param b An array.
+     * @return The elementwise product of {@code a} and {@code b}.
+     */
+    public static double[] multiply(final double[] a, final double[] b) {
+        final double[] result = new double[a.length];
+        for (int i = 0; i < a.length; i++) {
+            result[i] = a[i] * b[i];
+        }
+        return result;
+    }
 }

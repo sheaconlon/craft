@@ -1,6 +1,7 @@
 package com.sheaconlon.realcraft.utilities;
 
 import com.sheaconlon.realcraft.world.Chunk;
+import com.sheaconlon.realcraft.world.WorldObject;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -116,5 +117,54 @@ public class PositionUtilities {
         }
         positions.sort(new PositionUtilities.ChunkPositionComparator(pos));
         return positions;
+    }
+
+    /**
+     * Translate some positions.
+     * @param positions The positions.
+     * @param translation The translation vector.
+     * @return New positions which are {@code positions} translated by {@code translation}.
+     */
+    public static double[][] translatePositions(final double[][] positions, final double[] translation) {
+        final double[][] translatedPositions = new double[positions.length][];
+        for (int i = 0; i < positions.length; i++) {
+            translatedPositions[i] = ArrayUtilities.add(translation, positions[i]);
+        }
+        return translatedPositions;
+    }
+
+    /**
+     * Scale some positions.
+     * @param positions The positions.
+     * @param scalars The scaling factors along the x, y, and z dimensions.
+     * @return New positions which are {@code positions} scaled by {@code scalars}.
+     */
+    public static double[][] scalePositions(final double[][] positions, final double[] scalars) {
+        final double[][] scaledPositions = new double[positions.length][];
+        for (int i = 0; i < positions.length; i++) {
+            positions[i] = ArrayUtilities.multiply(scalars, positions[i]);
+        }
+        return scaledPositions;
+    }
+
+    /**
+     * Rotate some positions.
+     * @param positions The positions.
+     * @param xzOrientationDelta See {@link WorldObject#xzOrientation}.
+     * @param xzCrossOrientationDelta See {@link WorldObject#xzCrossOrientation}.
+     * @return New positions which are {@code positions} rotated by {@code xzOrientationDelta} and
+     * {@code xzCrossOrientationDelta}.
+     */
+    public static double[][] rotatePositions(final double[][] positions, final double xzOrientationDelta,
+                                             final double xzCrossOrientationDelta) {
+        final double[][] rotatedPositions = new double[positions.length][];
+        for (int i = 0; i < positions.length; i++) {
+            positions[i] = new double[]{
+                    positions[i][0] * Math.cos(xzOrientationDelta) * Math.cos(xzCrossOrientationDelta),
+                    positions[i][1] * Math.sin(xzCrossOrientationDelta),
+                    positions[i][2] * Math.sin(xzOrientationDelta) * Math.cos(xzCrossOrientationDelta)
+            };
+        }
+        return rotatedPositions;
     }
 }
