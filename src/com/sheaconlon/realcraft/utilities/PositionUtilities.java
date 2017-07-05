@@ -12,6 +12,19 @@ import java.util.List;
  */
 public class PositionUtilities {
     /**
+     * Get the position of the anchor point of the block containing some position.
+     * @param pos The position.
+     * @return The position of the anchor point of the block containing the position.
+     */
+    public static int[] toBlockPosition(final double[] pos) {
+        final int[] blockPos = new int[3];
+        for (int i = 0; i < 3; i++) {
+            blockPos[i] = PositionUtilities.floorCoordinate(pos[i]);
+        }
+        return blockPos;
+    }
+
+    /**
      * Get the position of the anchor point of the chunk containing some position.
      * @return The position of the anchor point of the chunk containing some position.
      */
