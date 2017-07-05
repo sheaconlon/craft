@@ -7,6 +7,11 @@ import com.sheaconlon.realcraft.world.Chunk;
  */
 public class AirBlock extends Block {
     /**
+     * An air block's return value for {@link #getHitBoxDims()}}.
+     */
+    private static final double[] HIT_BOX_DIMS = null;
+
+    /**
      * Create an air block.
      * @param chunk The chunk containing the air block.
      * @param position The position of the air block relative to the anchor point of the chunk containing it.
@@ -29,6 +34,11 @@ public class AirBlock extends Block {
     @Override
     public float[][] getFaceColors() {
         return new float[][]{};
+    }
+
+    @Override
+    public double[] getHitBoxDims() {
+        return AirBlock.HIT_BOX_DIMS;
     }
 }
 

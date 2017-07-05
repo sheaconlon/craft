@@ -66,8 +66,9 @@ public abstract class WorldObject {
      * Get the dimensions of this world object's hit box.
      *
      * An array of side lengths along the x-, y-, and z-axes, in blocks. The hit box is a rectangular prism extending
-     * from the world object's anchor point towards the positive x, y, and z directions.
-     * @return The dimensions of this world object's hit box.
+     * from the world object's anchor point towards the positive x, y, and z directions. Null if the world object
+     * has no hit box.
+     * @return The dimensions of this world object's hit box, or null if it has none.
      */
     public abstract double[] getHitBoxDims();
 
