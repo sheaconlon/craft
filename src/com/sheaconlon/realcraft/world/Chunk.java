@@ -3,10 +3,13 @@ package com.sheaconlon.realcraft.world;
 import com.sheaconlon.realcraft.blocks.AirBlock;
 import com.sheaconlon.realcraft.blocks.Block;
 import com.sheaconlon.realcraft.utilities.ArrayUtilities;
+import com.sheaconlon.realcraft.entities.Entity;
 
 import java.lang.reflect.Array;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.List;
+import java.util.LinkedList;
 
 /**
  * A cubical subset of the world.
@@ -84,6 +87,11 @@ public class Chunk extends Container {
     private final Block[][][] blocks;
 
     /**
+     * The entities in this chunk.
+     */
+    private final List<Entity> entities;
+
+    /**
      * An integer version of {@link Container#position}.
      */
     private final int[] position;
@@ -95,6 +103,7 @@ public class Chunk extends Container {
     public Chunk(final int[] position) {
         super(null, ArrayUtilities.toDoubleArray(position));
         this.blocks = new Block[Chunk.SIZE][Chunk.SIZE][Chunk.SIZE];
+        this.entities = new LinkedList<>();
         this.position = ArrayUtilities.copy(position);
         final int[] blockPosition = new int[]{0, 0, 0};
         for (blockPosition[0] = 0; blockPosition[0] < Chunk.SIZE; blockPosition[0]++) {
@@ -123,5 +132,29 @@ public class Chunk extends Container {
     public void putBlock(final int[] blockPosition, final Block block) {
         this.blocks[blockPosition[0] - this.position[0]][blockPosition[1] - this.position[1]]
                 [blockPosition[2] - this.position[2]] = block;
+    }
+
+    /**
+     * Add an entity to this chunk.
+     * @param entity The entity.
+     */
+    public void addEntity(final Entity entity) {
+        this.entities.add(entity);
+    }
+
+    /**
+     * Remove an entity from this chunk.
+     * @param entity The entity.
+     */
+    public void removeEntity(final Entity entity) {
+        this.entities.remove(entity);
+    }
+
+    /**
+     * Get the entities in this chunk.
+     * @return The entities in this chunk.
+     */
+    public Iterable<Entity> getEntites() {
+        return this.entities;
     }
 }
