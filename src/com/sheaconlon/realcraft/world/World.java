@@ -9,6 +9,7 @@ import com.sheaconlon.realcraft.blocks.DirtBlock;
 import com.sheaconlon.realcraft.entities.Player;
 import com.sheaconlon.realcraft.generator.Generator;
 import com.sheaconlon.realcraft.utilities.ArrayUtilities;
+import com.sheaconlon.realcraft.utilities.PositionUtilities;
 
 /**
  * The world.
@@ -140,5 +141,19 @@ public class World {
     public void loadChunk(final int[] pos, final Chunk chunk) {
         final List<Integer> posList = ArrayUtilities.toList(pos);
         this.chunks.put(posList, chunk);
+    }
+
+    /**
+     * Get the block at some position.
+     * @param pos The position.
+     * @return The block at {@code pos}, or null if the chunk containing {@code pos} is not loaded.
+     */
+    public Block getBlock(final int[] pos) {
+        final int[] chunkPos = PositionUtilities.toChunkPosition(pos);
+        final Chunk chunk = this.getChunk(chunkPos);
+        if (chunk == null) {
+            return null;
+        }
+        return chunk.getBlock(pos);
     }
 }
