@@ -23,12 +23,12 @@ public class World {
     /**
      * The initial orientation of the player.
      */
-    private static final double PLAYER_SPAWN_ORIENTATION = Math.PI / 2;
+    private static final double PLAYER_SPAWN_XZ_ORIENTATION = Math.PI / 2;
 
     /**
      * The initial look direction of the player.
      */
-    private static final double PLAYER_SPAWN_LOOK_DIRECTION = 0;
+    private static final double PLAYER_SPAWN_XZ_CROSS_ORIENTATION = 0;
 
     /**
      * The number of nanoseconds in a second.
@@ -100,8 +100,8 @@ public class World {
                 Generator.GROUND_LEVEL + 1,
                 distance * Math.sin(direction)
         };
-        final Player player = new Player(playerPosition, World.PLAYER_SPAWN_ORIENTATION,
-                World.PLAYER_SPAWN_LOOK_DIRECTION);
+        final Player player = new Player(playerPosition, World.PLAYER_SPAWN_XZ_ORIENTATION,
+                World.PLAYER_SPAWN_XZ_CROSS_ORIENTATION);
         return player;
     }
 

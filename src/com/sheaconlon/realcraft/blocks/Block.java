@@ -9,6 +9,11 @@ import com.sheaconlon.realcraft.world.Chunk;
  */
 public abstract class Block extends WorldObject {
     /**
+     * A block's return value for {@link #getHitBoxDims()}}.
+     */
+    private static final double[] HIT_BOX_DIMS = new double[]{1, 1, 1};
+
+    /**
      * The normal vector for the front face of a block.
      */
     private static final float[] FRONT_NORMAL = new float[]{0, 0, 1};
@@ -133,12 +138,23 @@ public abstract class Block extends WorldObject {
     private static final double[] INITIAL_VELOCITY = new double[]{0, 0, 0};
 
     /**
+     * The initial xz orientation of a block.
+     */
+    private static final double INITIAL_XZ_ORIENATION = 0;
+
+    /**
+     * The initial xz-cross orientation of a block.
+     */
+    private static final double INITIAL_XZ_CROSS_ORIENTATION = 0;
+
+    /**
      * Create a block.
      * @param chunk The chunk containing the block.
      * @param position The position of the block relative to the anchor point of the chunk containing it.
      */
     public Block(final Chunk chunk, final int[] position) {
-        super(chunk, ArrayUtilities.toDoubleArray(position), Block.INITIAL_VELOCITY);
+        super(chunk, ArrayUtilities.toDoubleArray(position), Block.INITIAL_XZ_ORIENATION,
+                Block.INITIAL_XZ_CROSS_ORIENTATION, Block.INITIAL_VELOCITY);
     }
 
     /**
@@ -168,4 +184,9 @@ public abstract class Block extends WorldObject {
      * @return The colors of the faces of this block.
      */
     protected abstract float[][] getFaceColors();
+
+    @Override
+    public double[] getHitBoxDims() {
+        return Block.HIT_BOX_DIMS;
+    }
 }

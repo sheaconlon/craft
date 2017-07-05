@@ -255,7 +255,7 @@ public class UserInterface extends Worker {
             relativeDirectionZ += 1;
         }
         if (relativeDirectionX != 0 || relativeDirectionZ != 0) {
-            final double orientation =  this.world.getPlayer().getOrientation();
+            final double orientation =  this.world.getPlayer().getXzOrientation();
             double directionX = relativeDirectionX * Math.cos(orientation);
             directionX += relativeDirectionZ * -Math.sin(orientation);
             double directionZ = relativeDirectionZ * Math.cos(orientation);
@@ -280,12 +280,12 @@ public class UserInterface extends Worker {
      */
     private void respondToLooking(final double elapsedTime) {
         final double[] cursorPositionDelta = this.getCursorPositionDelta();
-        double orientationDelta = cursorPositionDelta[0] * UserInterface.LOOKING_FACTOR;
-        double lookDirectionDelta = -cursorPositionDelta[1] * UserInterface.LOOKING_FACTOR;
+        double xzOrientationDelta = cursorPositionDelta[0] * UserInterface.LOOKING_FACTOR;
+        double xzCrossOrientationDelta = -cursorPositionDelta[1] * UserInterface.LOOKING_FACTOR;
         final double limit = UserInterface.LOOKING_MAX_SPEED * elapsedTime;
-        orientationDelta = Math.signum(orientationDelta) * Math.min(limit, Math.abs(orientationDelta));
-        lookDirectionDelta = Math.signum(lookDirectionDelta) * Math.min(limit, Math.abs(lookDirectionDelta));
-        this.world.getPlayer().changeOrientation(orientationDelta);
-        this.world.getPlayer().changeLookDirection(lookDirectionDelta);
+        xzOrientationDelta = Math.signum(xzOrientationDelta) * Math.min(limit, Math.abs(xzOrientationDelta));
+        xzCrossOrientationDelta = Math.signum(xzCrossOrientationDelta) * Math.min(limit, Math.abs(xzCrossOrientationDelta));
+        this.world.getPlayer().changeXzOrientation(xzOrientationDelta);
+        this.world.getPlayer().changeXzCrossOrientation(xzCrossOrientationDelta);
     }
 }

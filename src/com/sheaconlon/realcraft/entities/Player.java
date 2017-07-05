@@ -22,8 +22,7 @@ public class Player extends Animal {
      * @param xzOrientation See {@link WorldObject#xzOrientation}.
      * @param xzCrossOrientation See {@link WorldObject#xzCrossOrientation}.
      */
-    public Player(final double[] position, final double xzOrientation, final double xzCrossOrientation,
-                  final double lookDirection) {
+    public Player(final double[] position, final double xzOrientation, final double xzCrossOrientation) {
         super(position, Player.INITIAL_VELOCITY, xzOrientation, xzCrossOrientation);
     }
 
