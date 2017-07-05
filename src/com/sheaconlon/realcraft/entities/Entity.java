@@ -9,9 +9,12 @@ public abstract class Entity extends WorldObject {
     /**
      * Create an entities.
      * @param position See {@link WorldObject#position}.
+     * @param xzOrientation See {@link WorldObject#xzOrientation}.
+     * @param xzCrossOrientation See {@link WorldObject#xzCrossOrientation}.
      * @param velocity See {@link WorldObject#velocity}.
      */
-    public Entity(final double[] position, final double[] velocity) {
-        super(null, position, velocity);
+    public Entity(final double[] position, final double xzOrientation, final double xzCrossOrientation,
+                  final double[] velocity) {
+        super(null, position, xzOrientation, xzCrossOrientation, velocity);
     }
 }

@@ -1,5 +1,7 @@
 package com.sheaconlon.realcraft.entities;
 
+import com.sheaconlon.realcraft.world.WorldObject;
+
 /**
  * The player, the avatar of the user.
  */
@@ -17,11 +19,12 @@ public class Player extends Animal {
     /**
      * Create a player.
      * @param position The position of the player.
-     * @param orientation See {@link Animal#orientation}.
-     * @param lookDirection See {@link Animal#lookDirection}.
+     * @param xzOrientation See {@link WorldObject#xzOrientation}.
+     * @param xzCrossOrientation See {@link WorldObject#xzCrossOrientation}.
      */
-    public Player(final double[] position, final double orientation, final double lookDirection) {
-        super(position, Player.INITIAL_VELOCITY, orientation, lookDirection);
+    public Player(final double[] position, final double xzOrientation, final double xzCrossOrientation,
+                  final double lookDirection) {
+        super(position, Player.INITIAL_VELOCITY, xzOrientation, xzCrossOrientation);
     }
 
     /**

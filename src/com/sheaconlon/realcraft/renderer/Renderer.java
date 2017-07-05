@@ -255,8 +255,8 @@ public class Renderer extends Worker {
     private void setPerspective() {
         final Player player = this.world.getPlayer();
         final double[] position = player.getPosition();
-        final double orientation = player.getOrientation();
-        final double lookDirection = player.getLookDirection();
+        final double orientation = player.getXzOrientation();
+        final double lookDirection = player.getXzCrossOrientation();
         final double[] eyePosition = new double[]{
                 position[0] + Renderer.PLAYER_EYE_POSITION[0],
                 position[1] + Renderer.PLAYER_EYE_POSITION[1],

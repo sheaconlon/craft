@@ -18,6 +18,18 @@ public abstract class WorldObject {
     private final double[] position;
 
     /**
+     * The angle between the "forward" direction of this world object and the positive x-axis, within the
+     * xz-plane, where towards negative z is positive and towards positive z is negative.
+     */
+    protected double xzOrientation;
+
+    /**
+     * The angle between the "forward" direction of this world object and the xz-plane, where upward is positive
+     * and downward is negative.
+     */
+    protected double xzCrossOrientation;
+
+    /**
      * The velocity of this world object.
      */
     private final double[] velocity;
@@ -28,9 +40,12 @@ public abstract class WorldObject {
      * @param position See {@link #position}.
      * @param velocity See {@link #velocity}.
      */
-    public WorldObject(final Container container, final double[] position, final double[] velocity) {
+    public WorldObject(final Container container, final double[] position, final double xzOrientation,
+                       final double xzCrossOrientation, final double[] velocity) {
         this.container = container;
         this.position = ArrayUtilities.copy(position);
+        this.xzOrientation = xzOrientation;
+        this.xzCrossOrientation = xzCrossOrientation;
         this.velocity = ArrayUtilities.copy(velocity);
     }
 
@@ -70,5 +85,37 @@ public abstract class WorldObject {
         for (int i = 0; i < this.position.length; i++) {
             this.position[i] += delta[i];
         }
+    }
+
+    /**
+     * Get the value of {@link #xzOrientation}.
+     * @return The value of {@link #xzOrientation}.
+     */
+    public double getXzOrientation() {
+        return this.xzOrientation;
+    }
+
+    /**
+     * Change the value of {@link #xzOrientation}.
+     * @param delta The amount by which to change the value of {@link #xzOrientation}.
+     */
+    public void changeXzOrientation(final double delta) {
+        this.xzOrientation += delta;
+    }
+
+    /**
+     * Get the value of {@link #xzCrossOrientation}.
+     * @return The value of {@link #xzCrossOrientation}.
+     */
+    public double getXzCrossOrientation() {
+        return this.xzCrossOrientation;
+    }
+
+    /**
+     * Change the value of {@link #xzCrossOrientation}.
+     * @param delta The amount by which to change the value of {@link #xzCrossOrientation}.
+     */
+    public void changeXzCrossOrientation(final double delta) {
+        this.xzCrossOrientation += delta;
     }
 }
