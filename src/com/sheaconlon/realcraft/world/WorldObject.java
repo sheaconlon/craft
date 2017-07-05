@@ -48,6 +48,15 @@ public abstract class WorldObject {
     public abstract float[][][] getVertexData();
 
     /**
+     * Get the dimensions of this world object's hit box.
+     *
+     * An array of side lengths along the x-, y-, and z-axes, in blocks. The hit box is a rectangular prism extending
+     * from the world object's anchor point towards the positive x, y, and z directions.
+     * @return The dimensions of this world object's hit box.
+     */
+    public abstract double[] getHitBoxDims();
+
+    /**
      * Getter for {@link #position}.
      */
     public double[] getPosition() {
