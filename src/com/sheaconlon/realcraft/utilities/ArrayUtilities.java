@@ -182,4 +182,34 @@ public class ArrayUtilities {
         }
         return max;
     }
+
+    /**
+     * Get the minimum of an array across the first dimension.
+     * @param arr The array.
+     * @return The minimum of the array across the first dimension.
+     */
+    public static double[] min(final double[][] arr) {
+        final double[] min = new double[arr[0].length];
+        for (int i = 0; i < arr.length; i++) {
+            for (int j = 0; j < arr[0].length; j++) {
+                min[j] = Math.min(min[j], arr[i][j]);
+            }
+        }
+        return min;
+    }
+
+    /**
+     * Get the maximum of an array across the first dimension.
+     * @param arr The array.
+     * @return The maximum of the array across the first dimension.
+     */
+    public static double[] max(final double[][] arr) {
+        final double[] max = new double[arr[0].length];
+        for (int i = 0; i < arr.length; i++) {
+            for (int j = 0; j < arr[0].length; j++) {
+                max[j] = Math.max(max[j], arr[i][j]);
+            }
+        }
+        return max;
+    }
 }
