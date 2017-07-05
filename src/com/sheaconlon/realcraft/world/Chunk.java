@@ -157,4 +157,13 @@ public class Chunk extends Container {
     public Iterable<Entity> getEntites() {
         return this.entities;
     }
+
+    /**
+     * Get a block at some position.
+     * @param pos The position.
+     * @return The block at {@code pos}.
+     */
+    public Block getBlock(final int[] pos) {
+        return this.blocks[pos[0] - this.position[0]][pos[1] - this.position[1]][pos[2] - this.position[2]];
+    }
 }
