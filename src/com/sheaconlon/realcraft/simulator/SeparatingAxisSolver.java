@@ -34,17 +34,47 @@ public class SeparatingAxisSolver {
     };
 
     /**
-     * Calculate the minimum translation vector of an object of interest with some other object.
+     * Calculate the minimum translation vector for a pair of objects.
      *
-     * If the object of interest is penetrating the other object, then the minimum translation vector gives the
-     * translation of minimal magnitude that can be applied to the object of interest to make it stop penetrating
-     * the other object. If the object of interest is not penetrating the other object, then null is returned.
-     * @param a The object of interest.
-     * @param b The other object.
-     * @return The minimum translation vector of {@code a} with {@code b}, or null if there is none.
+     * If a pair of objects are colliding, then the minimum translation vector gives the amount and direction that the first
+     * object must be moved so the pair of objects no longer collide.
+     * @param first The first object.
+     * @param other The other object.
+     * @return The minimum translation vector of {@code first} with {@code other} if they are colliding, or null if they are
+     * not colliding.
      */
-    public static double[] calcMTV(final WorldObject a, final WorldObject b) {
-        // TODO
+    public static double[] calcMTV(final WorldObject first, final WorldObject other) {
+        final double[][] hitBoxFirst = SeparatingAxisSolver.calcHitBox(first);
+        final double[][] hitBoxOther = SeparatingAxisSolver.calcHitBox(other);
+        final double[][] edgeNormalsFirst = SeparatingAxisSolver.calcEdgeNormals(first);
+        final double[][] edgeNormalsOther = SeparatingAxisSolver.calcEdgeNormals(other);
+        double[] mtvDirection = null;
+        double mtvMagnitude = Double.POSITIVE_INFINITY;
+        for (final double[] edgeNormal : ArrayUtilities.concat(edgeNormalsFirst, edgeNormalsOther)) {
+            final double[] projectionFirst = SeparatingAxisSolver.calcProjection(hitBoxFirst, edgeNormal);
+            final double[] projectionOther = SeparatingAxisSolver.calcProjection(hitBoxOther, edgeNormal);
+            final double firstOtherOverlap = projectionFirst[1] - projectionOther[0];
+            if (firstOtherOverlap > 0) {
+                if (firstOtherOverlap < mtvMagnitude) {
+                    mtvDirection = ArrayUtilities.multiply(edgeNormal, -1);
+                    mtvMagnitude = firstOtherOverlap;
+                }
+                continue;
+            }
+            final double otherFirstOverlap = projectionOther[1] - projectionFirst[0];
+            if (otherFirstOverlap > 0) {
+                if (otherFirstOverlap < mtvMagnitude) {
+                    mtvDirection = ArrayUtilities.copy(edgeNormal);
+                    mtvMagnitude = otherFirstOverlap;
+                }
+                continue;
+            }
+            return null;
+        }
+        if (mtvDirection == null) {
+            return null;
+        }
+        return ArrayUtilities.multiply(mtvDirection, Math.sqrt(mtvMagnitude));
     }
 
     /**
