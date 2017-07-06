@@ -1,5 +1,6 @@
 package com.sheaconlon.realcraft.simulator;
 
+import com.sheaconlon.realcraft.utilities.ArrayUtilities;
 import com.sheaconlon.realcraft.utilities.PositionUtilities;
 import com.sheaconlon.realcraft.world.WorldObject;
 
@@ -78,5 +79,22 @@ public class SeparatingAxisSolver {
                 o.getXzOrientation(),
                 o.getXzCrossOrientation()
         );
+    }
+
+    /**
+     * Calculate the projection of some hit box onto some axis.
+     * @param hitBox The hit box, represented as an array of vertex positions. Must have at least one vertex.
+     * @param axis The axis, represented as a unit-length vector.
+     * @return The projection of {@code hitBox} onto {@code axis}, as an array with the start and end positions
+     * of the projection. The start and end positions are represented as distances along {@code axis} from the origin.
+     */
+    private static double[] calcProjection(final double[][] hitBox, final double[] axis) {
+        final double[] hitBoxProjection = ArrayUtilities.multiply(hitBox[0], axis);
+        for (int i = 1; i < hitBox.length; i++) {
+            final double[] vertexProjection = ArrayUtilities.multiply(hitBox[i], axis);
+            hitBoxProjection[0] = Math.min(hitBoxProjection[0], vertexProjection[0]);
+            hitBoxProjection[1] = Math.max(hitBoxProjection[1], vertexProjection[1]);
+        }
+        return hitBoxProjection;
     }
 }
