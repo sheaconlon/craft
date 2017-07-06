@@ -258,11 +258,11 @@ public class Renderer extends Worker {
         final double xzOrientation = player.getXzOrientation();
         final double xzCrossOrientation = player.getXzCrossOrientation();
         final double[] eyePosition = ArrayUtilities.add(position, Renderer.PLAYER_EYE_POSITION);
-        final double[] lookDisplacement = PositionUtilities.rotatePosition(new double[]{0, 0, -1}, xzOrientation,
+        final double[] lookDisplacement = PositionUtilities.rotatePosition(new double[]{1, 0, 0}, xzOrientation,
                 xzCrossOrientation);
         final double[] lookPosition = ArrayUtilities.add(eyePosition, lookDisplacement);
         final double[] upDirection = PositionUtilities.rotatePosition(new double[]{0, 1, 0}, xzOrientation,
-                xzCrossOrientation + Math.PI / 2);
+                xzCrossOrientation);
         final FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
         final Matrix4f matrix = new Matrix4f();
         matrix.setLookAt((float)eyePosition[0], (float)eyePosition[1], (float)eyePosition[2],

@@ -23,7 +23,7 @@ public class World {
     /**
      * The initial orientation of the player.
      */
-    private static final double PLAYER_SPAWN_XZ_ORIENTATION = Math.PI / 2;
+    private static final double PLAYER_SPAWN_XZ_ORIENTATION = 0;
 
     /**
      * The initial look direction of the player.

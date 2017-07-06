@@ -158,9 +158,15 @@ public class PositionUtilities {
     public static double[] rotatePosition(final double[] position, final double xzOrientationDelta,
                                           final double xzCrossOrientationDelta) {
         return new double[]{
-                position[0] * Math.cos(xzOrientationDelta) * Math.cos(xzCrossOrientationDelta),
-                position[1] * Math.sin(xzCrossOrientationDelta),
-                position[2] * Math.sin(xzOrientationDelta) * Math.cos(xzCrossOrientationDelta)
+                position[0] * Math.cos(xzOrientationDelta) * Math.cos(xzCrossOrientationDelta)
+                    + position[2] * Math.sin(xzOrientationDelta) * Math.cos(xzCrossOrientationDelta)
+                    + position[1] * Math.cos(xzOrientationDelta) * Math.sin(xzCrossOrientationDelta),
+                position[0] * Math.sin(xzCrossOrientationDelta)
+                    + position[2] * Math.sin(xzCrossOrientationDelta)
+                    + position[1] * Math.cos(xzCrossOrientationDelta),
+                position[0] * Math.sin(xzOrientationDelta) * Math.cos(xzCrossOrientationDelta)
+                        + position[2] * Math.cos(xzOrientationDelta) * Math.cos(xzCrossOrientationDelta)
+                        + position[1] * Math.sin(xzOrientationDelta) * Math.sin(xzCrossOrientationDelta),
         };
     }
 
