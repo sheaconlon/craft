@@ -81,6 +81,9 @@ public class Simulator extends Worker {
             }
             final List<Integer> chunkPosList = ArrayUtilities.toList(chunkPos);
             final Set<WorldObject> activeObjectsChunk = this.activeObjects.get(chunkPosList);
+            if (activeObjectsChunk == null) {
+                continue;
+            }
             for (final WorldObject obj : activeObjectsChunk) {
                 for (final Block block : this.getIntersectingBlocks(obj)) {
                     final double[] mtv = SeparatingAxisSolver.calcMTV(obj, block);
