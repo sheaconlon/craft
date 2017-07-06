@@ -85,12 +85,8 @@ public class Simulator extends Worker {
                 continue;
             }
             for (final WorldObject obj : activeObjectsChunk) {
-                for (final Block block : this.getIntersectingBlocks(obj)) {
-                    final double[] mtv = SeparatingAxisSolver.calcMTV(obj, block);
-                    if (mtv != null) {
-                        obj.changePosition(mtv);
-                    }
-                }
+                this.simulateGravity(obj);
+                this.simulateCollision(obj);
             }
         }
     }
@@ -140,5 +136,26 @@ public class Simulator extends Worker {
             }
         }
         return intersectingBlocks;
+    }
+
+    /**
+     * Simulate the effects of collision on an object.
+     * @param obj The object.
+     */
+    private void simulateCollision(final WorldObject obj) {
+        for (final Block block : this.getIntersectingBlocks(obj)) {
+            final double[] mtv = SeparatingAxisSolver.calcMTV(obj, block);
+            if (mtv != null) {
+                obj.changePosition(mtv);
+            }
+        }
+    }
+
+    /**
+     * Simulate the effects of gravity on an object.
+     * @param obj The object.
+     */
+    private void simulateGravity(final WorldObject obj) {
+        obj.changePosition(new double[]{0, -0.1, 0});
     }
 }
