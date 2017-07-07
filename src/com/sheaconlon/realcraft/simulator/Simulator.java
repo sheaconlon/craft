@@ -2,6 +2,7 @@ package com.sheaconlon.realcraft.simulator;
 
 import com.sheaconlon.realcraft.Worker;
 import com.sheaconlon.realcraft.renderer.Renderer;
+import com.sheaconlon.realcraft.world.Chunk;
 import com.sheaconlon.realcraft.world.World;
 import com.sheaconlon.realcraft.world.WorldObject;
 import com.sheaconlon.realcraft.utilities.PositionUtilities;
@@ -24,7 +25,7 @@ public class Simulator extends Worker {
     /**
      * The probability that a simulator scans a chunk for active objects on a given tick.
      */
-    private static final double SCAN_PROBABILITY = 1 / 10;
+    private static final double SCAN_PROBABILITY = (double)1 / 10;
 
     /**
      * The number of chunks in each direction from the player's chunk that a simulator will simulate the effects of
@@ -35,7 +36,7 @@ public class Simulator extends Worker {
     /**
      * A simulator's minimum tick interval. In nanoseconds.
      */
-    private static final int MIN_INTERVAL = 1_000_000_000 / 60;
+    private static final int MIN_INTERVAL = 1_000_000_000 / 120;
 
     /**
      * The world in which this simulator should simulate the effects of physics.
@@ -76,17 +77,24 @@ public class Simulator extends Worker {
         final int[] playerChunkPos = PositionUtilities.toChunkPosition(this.world.getPlayer().getPosition());
         for (final int[] chunkPos : PositionUtilities.getNearbyChunkPositions(playerChunkPos,
                 Simulator.SIMULATION_DISTANCE)) {
-            if (ThreadLocalRandom.current().nextDouble() < Simulator.SCAN_PROBABILITY) {
-                this.scanChunk(chunkPos);
-            }
-            final List<Integer> chunkPosList = ArrayUtilities.toList(chunkPos);
-            final Set<WorldObject> activeObjectsChunk = this.activeObjects.get(chunkPosList);
-            if (activeObjectsChunk == null) {
-                continue;
-            }
-            for (final WorldObject obj : activeObjectsChunk) {
-                this.simulateGravity(obj);
-                this.simulateCollision(obj);
+            if (this.world.chunkLoaded(chunkPos)) {
+                if (ThreadLocalRandom.current().nextDouble() < Simulator.SCAN_PROBABILITY) {
+                    this.scanChunk(chunkPos);
+                }
+                final List<Integer> chunkPosList = ArrayUtilities.toList(chunkPos);
+                final Set<WorldObject> activeObjectsChunk = this.activeObjects.get(chunkPosList);
+                if (activeObjectsChunk == null) {
+                    continue;
+                }
+                for (final WorldObject obj : activeObjectsChunk) {
+                    this.simulateGravity(obj);
+                    this.simulateCollision(obj);
+                }
+                final Chunk chunk = this.world.getChunk(chunkPos);
+                for (final WorldObject obj : chunk.getEntites()) {
+                    this.simulateGravity(obj);
+                    this.simulateCollision(obj);
+                }
             }
         }
     }
@@ -99,10 +107,6 @@ public class Simulator extends Worker {
         final List<Integer> posList = ArrayUtilities.toList(pos);
         if (!this.activeObjects.containsKey(posList)) {
             this.activeObjects.put(posList, new HashSet<>());
-        }
-        final Set<WorldObject> chunkEntities = this.activeObjects.get(posList);
-        for (final Entity entity : this.world.getChunk(pos).getEntites()) {
-            chunkEntities.add(entity);
         }
     }
 
@@ -124,8 +128,8 @@ public class Simulator extends Worker {
                 new double[]{pos[0] + hitBoxDims[0], pos[1] + hitBoxDims[1], pos[2]                },
                 new double[]{pos[0] + hitBoxDims[0], pos[1] + hitBoxDims[1], pos[2] + hitBoxDims[2]}
         };
-        final int[] minHitBoxBlockCoords = PositionUtilities.toBlockPosition(ArrayUtilities.min(hitBoxVertices));
-        final int[] maxHitBoxBlockCoords = PositionUtilities.toBlockPosition(ArrayUtilities.max(hitBoxVertices));
+        final int[] minHitBoxBlockCoords = PositionUtilities.toBlockPosition(pos);
+        final int[] maxHitBoxBlockCoords = PositionUtilities.toBlockPosition(new double[]{pos[0] + hitBoxDims[0], pos[1] + hitBoxDims[1], pos[2] + hitBoxDims[2]});
         final List<Block> intersectingBlocks = new LinkedList<>();
         final int[] blockPos = new int[3];
         for (blockPos[0] = minHitBoxBlockCoords[0]; blockPos[0] <= maxHitBoxBlockCoords[0]; blockPos[0]++) {
@@ -143,7 +147,13 @@ public class Simulator extends Worker {
      * @param obj The object.
      */
     private void simulateCollision(final WorldObject obj) {
+        if (obj.getHitBoxDims() == null) {
+            return;
+        }
         for (final Block block : this.getIntersectingBlocks(obj)) {
+            if (block.getHitBoxDims() == null) {
+                continue;
+            }
             final double[] mtv = SeparatingAxisSolver.calcMTV(obj, block);
             if (mtv != null) {
                 obj.changePosition(mtv);

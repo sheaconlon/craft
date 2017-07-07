@@ -56,7 +56,7 @@ public class SeparatingAxisSolver {
             final double firstOtherOverlap = projectionFirst[1] - projectionOther[0];
             if (firstOtherOverlap > 0) {
                 if (firstOtherOverlap < mtvMagnitude) {
-                    mtvDirection = ArrayUtilities.multiply(edgeNormal, -1);
+                    mtvDirection = ArrayUtilities.copy(edgeNormal);
                     mtvMagnitude = firstOtherOverlap;
                 }
                 continue;
@@ -64,7 +64,7 @@ public class SeparatingAxisSolver {
             final double otherFirstOverlap = projectionOther[1] - projectionFirst[0];
             if (otherFirstOverlap > 0) {
                 if (otherFirstOverlap < mtvMagnitude) {
-                    mtvDirection = ArrayUtilities.copy(edgeNormal);
+                    mtvDirection = ArrayUtilities.multiply(edgeNormal, -1);
                     mtvMagnitude = otherFirstOverlap;
                 }
                 continue;
@@ -95,7 +95,6 @@ public class SeparatingAxisSolver {
         if (mtvDirection == null) {
             return null;
         }
-        System.out.println("collision");
         return ArrayUtilities.multiply(mtvDirection, Math.sqrt(mtvMagnitude));
     }
 
@@ -141,11 +140,11 @@ public class SeparatingAxisSolver {
      * of the projection. The start and end positions are represented as distances along {@code axis} from the origin.
      */
     private static double[] calcProjection(final double[][] hitBox, final double[] axis) {
-        final double[] hitBoxProjection = ArrayUtilities.multiply(hitBox[0], axis);
-        for (int i = 1; i < hitBox.length; i++) {
-            final double[] vertexProjection = ArrayUtilities.multiply(hitBox[i], axis);
-            hitBoxProjection[0] = Math.min(hitBoxProjection[0], vertexProjection[0]);
-            hitBoxProjection[1] = Math.max(hitBoxProjection[1], vertexProjection[1]);
+        final double[] hitBoxProjection = new double[]{Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY};
+        for (int i = 0; i < hitBox.length; i++) {
+            final double vertexProjection = ArrayUtilities.sum(ArrayUtilities.multiply(hitBox[i], axis));
+            hitBoxProjection[0] = Math.min(hitBoxProjection[0], vertexProjection);
+            hitBoxProjection[1] = Math.max(hitBoxProjection[1], vertexProjection);
         }
         return hitBoxProjection;
     }
