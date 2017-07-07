@@ -16,15 +16,12 @@ public class Launcher {
         final Thread rendererThread = new Thread(renderer);
         final Thread generatorThread = new Thread(new Generator(world));
         final Thread prerendererThread = new Thread(new Prerenderer(world, renderer));
-        final Thread simulatorThread = new Thread(new Simulator(world));
         rendererThread.start();
         generatorThread.start();
         prerendererThread.start();
-        simulatorThread.start();
         ui.run();
         rendererThread.interrupt();
         generatorThread.interrupt();
         prerendererThread.interrupt();
-        simulatorThread.interrupt();
     }
 }
