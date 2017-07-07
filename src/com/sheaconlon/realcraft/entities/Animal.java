@@ -9,12 +9,12 @@ public abstract class Animal extends Entity {
     /**
      * The minimum allowed xz-cross orientation for an animal.
      */
-    private static final double XZ_CROSS_ORIENTATION_MINIMUM = 0.9 * -Math.PI / 2;
+    private static final double XZ_CROSS_ORIENTATION_MINIMUM = 0.999 * -Math.PI / 2;
 
     /**
      * The maximum allowed xz-cross orientation for an animal.
      */
-    private static final double XZ_CROSS_ORIENTATION_MAXIMUM = 0.9 * Math.PI / 2;
+    private static final double XZ_CROSS_ORIENTATION_MAXIMUM = 0.999 * Math.PI / 2;
 
     /**
      * The angle change, in radians, which represents a full revolution.
