@@ -50,7 +50,28 @@ public class SeparatingAxisSolver {
         final double[][] edgeNormalsOther = SeparatingAxisSolver.calcEdgeNormals(other);
         double[] mtvDirection = null;
         double mtvMagnitude = Double.POSITIVE_INFINITY;
-        for (final double[] edgeNormal : ArrayUtilities.concat(edgeNormalsFirst, edgeNormalsOther)) {
+        for (final double[] edgeNormal : edgeNormalsFirst) {
+            final double[] projectionFirst = SeparatingAxisSolver.calcProjection(hitBoxFirst, edgeNormal);
+            final double[] projectionOther = SeparatingAxisSolver.calcProjection(hitBoxOther, edgeNormal);
+            final double firstOtherOverlap = projectionFirst[1] - projectionOther[0];
+            if (firstOtherOverlap > 0) {
+                if (firstOtherOverlap < mtvMagnitude) {
+                    mtvDirection = ArrayUtilities.multiply(edgeNormal, -1);
+                    mtvMagnitude = firstOtherOverlap;
+                }
+                continue;
+            }
+            final double otherFirstOverlap = projectionOther[1] - projectionFirst[0];
+            if (otherFirstOverlap > 0) {
+                if (otherFirstOverlap < mtvMagnitude) {
+                    mtvDirection = ArrayUtilities.copy(edgeNormal);
+                    mtvMagnitude = otherFirstOverlap;
+                }
+                continue;
+            }
+            return null;
+        }
+        for (final double[] edgeNormal : edgeNormalsOther) {
             final double[] projectionFirst = SeparatingAxisSolver.calcProjection(hitBoxFirst, edgeNormal);
             final double[] projectionOther = SeparatingAxisSolver.calcProjection(hitBoxOther, edgeNormal);
             final double firstOtherOverlap = projectionFirst[1] - projectionOther[0];
@@ -74,6 +95,7 @@ public class SeparatingAxisSolver {
         if (mtvDirection == null) {
             return null;
         }
+        System.out.println("collision");
         return ArrayUtilities.multiply(mtvDirection, Math.sqrt(mtvMagnitude));
     }
 
