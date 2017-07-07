@@ -4,8 +4,10 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
+import com.sheaconlon.realcraft.blocks.AirBlock;
 import com.sheaconlon.realcraft.blocks.Block;
 import com.sheaconlon.realcraft.blocks.DirtBlock;
+import com.sheaconlon.realcraft.blocks.UnloadedBlock;
 import com.sheaconlon.realcraft.entities.Player;
 import com.sheaconlon.realcraft.generator.Generator;
 import com.sheaconlon.realcraft.utilities.ArrayUtilities;
@@ -155,7 +157,7 @@ public class World {
         final int[] chunkPos = PositionUtilities.toChunkPosition(pos);
         final Chunk chunk = this.getChunk(chunkPos);
         if (chunk == null) {
-            return null;
+            return new UnloadedBlock(pos);
         }
         return chunk.getBlock(pos);
     }
