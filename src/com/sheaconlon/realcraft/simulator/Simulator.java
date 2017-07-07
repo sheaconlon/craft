@@ -72,7 +72,7 @@ public class Simulator extends Worker {
     }
 
     @Override
-    protected void tick() {
+    protected void tick(final double elapsedTim) {
         final int[] playerChunkPos = PositionUtilities.toChunkPosition(this.world.getPlayer().getPosition());
         for (final int[] chunkPos : PositionUtilities.getNearbyChunkPositions(playerChunkPos,
                 Simulator.SIMULATION_DISTANCE)) {

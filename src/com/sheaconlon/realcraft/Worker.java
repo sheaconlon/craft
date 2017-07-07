@@ -38,17 +38,17 @@ public abstract class Worker implements Runnable {
             / Worker.MILLISECONDS_PER_SECOND;
 
     /**
-     * The time that this worker's {@link #tick()} method was last called, in nanoseconds since some origin.
+     * The time that this worker's {@link #tick(double)} method was last called, in nanoseconds since some origin.
      */
     private long lastTickTime;
 
     /**
-     * The minimum interval that should pass between calls of {@link #tick()}, in nanoseconds.
+     * The minimum interval that should pass between calls of {@link #tick(double)}, in nanoseconds.
      */
     private long minInterval;
 
     /**
-     * The actual intervals that have passed before calls of {@link #tick()}, for the last {@link #SHORT_TERM_TICKS}
+     * The actual intervals that have passed before calls of {@link #tick(double)}, for the last {@link #SHORT_TERM_TICKS}
      * calls.
      */
     private long[] shortTermIntervals;
@@ -59,7 +59,7 @@ public abstract class Worker implements Runnable {
     private int currShortTermIndex;
 
     /**
-     * The actual intervals that have passed before calls of {@link #tick()}, for the last {@link #LONG_TERM_TICKS}
+     * The actual intervals that have passed before calls of {@link #tick(double)}, for the last {@link #LONG_TERM_TICKS}
      * calls.
      */
     private long[] longTermIntervals;
@@ -70,14 +70,14 @@ public abstract class Worker implements Runnable {
     private int currLongTermIndex;
 
     /**
-     * The number of times this worker's {@link #tick()} method has been called.
+     * The number of times this worker's {@link #tick(double)} method has been called.
      */
     protected long ticks;
 
     /**
      * Create a worker.
      *
-     * The worker will pretend that its {@link #tick()} method was called when it was created, though it actually was
+     * The worker will pretend that its {@link #tick(double)} method was called when it was created, though it actually was
      * not.
      */
     protected Worker() {
@@ -126,8 +126,9 @@ public abstract class Worker implements Runnable {
 
     /**
      * Do some small amount of work.
+     * @param elapsedTime The amount of wall time that has passed since the last call to this method, in seconds.
      */
-    protected abstract void tick();
+    protected abstract void tick(final double elapsedTime);
 
     /**
      * Do initialization work in the thread this worker runs in.
@@ -145,14 +146,13 @@ public abstract class Worker implements Runnable {
     /**
      * Run this worker.
      *
-     * Do initialization work, then repeatedly call {@link #tick()} with no less than {@link #getMinInterval()}}
+     * Do initialization work, then repeatedly call {@link #tick(double)} with no less than {@link #getMinInterval()}}
      * nanoseconds between each call. Return when {@link #shouldStop()} returns true.
      */
     public void run() {
         this.initInThread();
         while (!this.shouldStop()) {
             final long interval = System.nanoTime() - this.lastTickTime;
-            this.lastTickTime = System.nanoTime();
             final long intervalRemaining = this.getMinInterval() - interval;
             if (intervalRemaining > 0) {
                 final int milliseconds = (int)(intervalRemaining / Worker.NANOSECONDS_PER_MILLISECOND);
@@ -163,15 +163,16 @@ public abstract class Worker implements Runnable {
                     return;
                 }
             }
-            this.recordInterval();
-            this.tick();
+            final double elapsedTime = (double)this.recordInterval() / Worker.NANOSECONDS_PER_SECOND;
+            this.tick(elapsedTime);
         }
     }
 
     /**
-     * Record the interval that passed between the last call to {@link #tick()} and one occurring right now.
+     * Record the interval that passed between the last call to {@link #tick(double)} and one occurring right now.
+     * @return The length of the interval, in nanoseconds.
      */
-    private void recordInterval() {
+    private long recordInterval() {
         final long currentTime = System.nanoTime();
         final long interval = currentTime - this.lastTickTime;
         this.lastTickTime = currentTime;
@@ -180,6 +181,7 @@ public abstract class Worker implements Runnable {
         this.longTermIntervals[this.currLongTermIndex] = interval;
         this.currLongTermIndex = (this.currLongTermIndex + 1) % this.longTermIntervals.length;
         this.ticks++;
+        return interval;
     }
 
     /**

@@ -111,18 +111,12 @@ public class UserInterface extends Worker {
     private double[] cursorPosition;
 
     /**
-     * The time of the last call to {@link #tick()}, in nanoseconds since some arbitrary point.
-     */
-    private long lastTickTime;
-
-    /**
      * Construct a user interface.
      *
      * The user interface will not be visible, but can be made visible by a call to {@link #show()}.
      */
     public UserInterface(final World world) {
         this.world = world;
-        this.lastTickTime = System.nanoTime();
         this.window = new Window();
         // Save a strong reference to the callback so that it is not garbage collected.
         this.windowCloseCallback = new UserInterface.WindowCloseCallback();
@@ -207,9 +201,7 @@ public class UserInterface extends Worker {
     /**
      * Respond to input.
      */
-    public void tick() {
-        final double elapsedTime = (double)(System.nanoTime() - this.lastTickTime) / UserInterface.NANOSECONDS_PER_SECOND;
-        lastTickTime = System.nanoTime();
+    public void tick(final double elapsedTime) {
         window.runCallbacks();
         this.respondToMovement(elapsedTime);
         this.respondToLooking(elapsedTime);

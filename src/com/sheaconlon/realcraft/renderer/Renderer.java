@@ -230,7 +230,7 @@ public class Renderer extends Worker {
     /**
      * Render the world.
      */
-    public void tick() {
+    public void tick(final double elapsedTime) {
         this.refillEmptyVBOs();
         this.setPerspective();
         Renderer.setLighting();

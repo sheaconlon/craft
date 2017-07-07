@@ -67,7 +67,7 @@ public class Prerenderer extends Worker {
      * {@inheritDoc}
      */
     @Override
-    public void tick() {
+    public void tick(final double elapsedTime) {
         final double[] playerPos = this.world.getPlayer().getPosition();
         final int[] playerChunkPos = PositionUtilities.toChunkPosition(playerPos);
         int numberDone = 0;

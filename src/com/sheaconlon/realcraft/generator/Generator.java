@@ -64,7 +64,7 @@ public class Generator extends Worker {
      * If necessary, generate any unloaded chunks near the player and load them into the world.
      */
     @Override
-    public void tick() {
+    public void tick(final double elapsedTime) {
         final int[] playerChunkPos = PositionUtilities.toChunkPosition(this.world.getPlayer().getPosition());
         int numberDone = 0;
         for (final int[] chunkPos : PositionUtilities.getNearbyChunkPositions(playerChunkPos, Generator.LOAD_DISTANCE)) {
