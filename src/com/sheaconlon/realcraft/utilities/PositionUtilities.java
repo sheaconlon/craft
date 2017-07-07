@@ -142,7 +142,7 @@ public class PositionUtilities {
     public static double[][] scalePositions(final double[][] positions, final double[] scalars) {
         final double[][] scaledPositions = new double[positions.length][];
         for (int i = 0; i < positions.length; i++) {
-            positions[i] = ArrayUtilities.multiply(scalars, positions[i]);
+            scaledPositions[i] = ArrayUtilities.multiply(scalars, positions[i]);
         }
         return scaledPositions;
     }
@@ -182,7 +182,7 @@ public class PositionUtilities {
                                              final double xzCrossOrientationDelta) {
         final double[][] rotatedPositions = new double[positions.length][];
         for (int i = 0; i < positions.length; i++) {
-            positions[i] = PositionUtilities.rotatePosition(positions[i], xzOrientationDelta, xzCrossOrientationDelta);
+            rotatedPositions[i] = PositionUtilities.rotatePosition(positions[i], xzOrientationDelta, xzCrossOrientationDelta);
         }
         return rotatedPositions;
     }
