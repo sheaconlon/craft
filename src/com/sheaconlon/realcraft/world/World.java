@@ -140,9 +140,7 @@ public class World {
      */
     public void loadChunk(final int[] pos, final Chunk chunk) {
         final List<Integer> posList = ArrayUtilities.toList(pos);
-        final List<Integer> playerChunkPosList =
-                ArrayUtilities.toList(PositionUtilities.toChunkPosition(this.player.getPosition()));
-        if (posList.equals(playerChunkPosList)) {
+        if (Arrays.equals(pos, PositionUtilities.toChunkPosition(this.player.getPosition()))) {
             chunk.addEntity(this.player);
         }
         this.chunks.put(posList, chunk);
