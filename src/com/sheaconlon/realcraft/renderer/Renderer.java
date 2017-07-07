@@ -7,12 +7,14 @@ import com.sheaconlon.realcraft.utilities.PositionUtilities;
 import com.sheaconlon.realcraft.world.Chunk;
 import com.sheaconlon.realcraft.world.World;
 import com.sheaconlon.realcraft.world.WorldObject;
+import org.joml.Matrix4d;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
+import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -264,13 +266,13 @@ public class Renderer extends Worker {
         final double[] lookPosition = ArrayUtilities.add(eyePosition, lookDisplacement);
         final double[] upDirection = PositionUtilities.rotatePosition(new double[]{0, 1, 0}, xzOrientation,
                 xzCrossOrientation);
-        final FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
-        final Matrix4f matrix = new Matrix4f();
-        matrix.setLookAt((float)eyePosition[0], (float)eyePosition[1], (float)eyePosition[2],
-                (float)lookPosition[0], (float)lookPosition[1], (float)lookPosition[2],
-                (float)upDirection[0], (float)upDirection[1], (float)upDirection[2]);
+        final DoubleBuffer buffer = BufferUtils.createDoubleBuffer(16);
+        final Matrix4d matrix = new Matrix4d();
+        matrix.setLookAt(eyePosition[0], eyePosition[1], eyePosition[2],
+                lookPosition[0], lookPosition[1], lookPosition[2],
+                upDirection[0], upDirection[1], upDirection[2]);
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
-        GL11.glLoadMatrixf(matrix.get(buffer));
+        GL11.glLoadMatrixd(matrix.get(buffer));
     }
 
     /**
