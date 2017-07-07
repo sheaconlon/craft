@@ -9,7 +9,7 @@ public class Player extends Animal {
     /**
      * A player's return value for {@link #getHitBoxDims()}.
      */
-    private static final double[] HIT_BOX_DIMS = new double[]{0.4, 1.75, 0.4};
+    private static final double[] HIT_BOX_DIMS = new double[]{0.8, 1.75, 0.8};
 
     /**
      * The initial velocity of a player.
