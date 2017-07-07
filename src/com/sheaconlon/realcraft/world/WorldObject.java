@@ -2,10 +2,18 @@ package com.sheaconlon.realcraft.world;
 
 import com.sheaconlon.realcraft.utilities.ArrayUtilities;
 
+import java.util.Deque;
+import java.util.concurrent.ConcurrentLinkedDeque;
+
 /**
  * A world object.
  */
 public abstract class WorldObject {
+    /**
+     * The number of rewinds that a world object is capable of.
+     */
+    private static final int REWIND_COUNT = 1000;
+
     /**
      * The container of this world object.
      */
@@ -35,6 +43,13 @@ public abstract class WorldObject {
     private final double[] velocity;
 
     /**
+     * The {@link #REWIND_COUNT} previous configurations that this world object has been in. A configuration
+     * consists of the x component of the position, the y component of the position, the z component of the
+     * position, the xz orientation, and the xz-cross orientation.
+     */
+    private final Deque<double[]> prevConfigs;
+
+    /**
      * Create a world object.
      * @param container See {@link #container}.
      * @param position See {@link #position}.
@@ -47,6 +62,7 @@ public abstract class WorldObject {
         this.xzOrientation = xzOrientation;
         this.xzCrossOrientation = xzCrossOrientation;
         this.velocity = ArrayUtilities.copy(velocity);
+        this.prevConfigs = new ConcurrentLinkedDeque<>();
     }
 
     /**
@@ -83,6 +99,7 @@ public abstract class WorldObject {
      * Changer for {@link #position}.
      */
     public void changePosition(final double[] delta) {
+        this.recordConfig();
         for (int i = 0; i < this.position.length; i++) {
             this.position[i] += delta[i];
         }
@@ -101,6 +118,7 @@ public abstract class WorldObject {
      * @param delta The amount by which to change the value of {@link #xzOrientation}.
      */
     public void changeXzOrientation(final double delta) {
+        this.recordConfig();
         this.xzOrientation += delta;
     }
 
@@ -117,6 +135,38 @@ public abstract class WorldObject {
      * @param delta The amount by which to change the value of {@link #xzCrossOrientation}.
      */
     public void changeXzCrossOrientation(final double delta) {
+        this.recordConfig();
         this.xzCrossOrientation += delta;
+    }
+
+    /**
+     * Rewind this world object's position, xz orientation, and xz-cross orientation to their previous values.
+     */
+    public void rewind() {
+        if (this.prevConfigs.size() == 0) {
+            return;
+        }
+        final double[] config = this.prevConfigs.removeLast();
+        this.position[0] = config[0];
+        this.position[1] = config[1];
+        this.position[2] = config[2];
+        this.xzOrientation = config[3];
+        this.xzCrossOrientation = config[4];
+    }
+
+    /**
+     * Record the current configuration of this world object in {@link #prevConfigs}.
+     */
+    private void recordConfig() {
+        if (this.prevConfigs.size() == WorldObject.REWIND_COUNT) {
+            this.prevConfigs.removeFirst();
+        }
+        this.prevConfigs.addLast(new double[]{
+                this.position[0],
+                this.position[1],
+                this.position[2],
+                this.xzOrientation,
+                this.xzCrossOrientation
+        });
     }
 }

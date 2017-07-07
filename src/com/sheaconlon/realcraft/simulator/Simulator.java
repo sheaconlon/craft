@@ -36,7 +36,7 @@ public class Simulator extends Worker {
     /**
      * A simulator's minimum tick interval. In nanoseconds.
      */
-    private static final int MIN_INTERVAL = 1_000_000_000 / 120;
+    private static final int MIN_INTERVAL = 1_000_000_000 / 60;
 
     /**
      * The world in which this simulator should simulate the effects of physics.
@@ -154,9 +154,13 @@ public class Simulator extends Worker {
             if (block.getHitBoxDims() == null) {
                 continue;
             }
-            final double[] mtv = SeparatingAxisSolver.calcMTV(obj, block);
-            if (mtv != null) {
-                obj.changePosition(mtv);
+            while (true) {
+                final double[] mtv = SeparatingAxisSolver.calcMTV(obj, block);
+                if (mtv != null && (Math.abs(mtv[0]) > 0.01 || Math.abs(mtv[1]) > 0.01 || Math.abs(mtv[2]) > 0.01)) {
+                    obj.rewind();
+                } else {
+                    break;
+                }
             }
         }
     }
@@ -166,6 +170,6 @@ public class Simulator extends Worker {
      * @param obj The object.
      */
     private void simulateGravity(final WorldObject obj) {
-        obj.changePosition(new double[]{0, -0.1, 0});
+        obj.changePosition(new double[]{0, -0.01, 0});
     }
 }

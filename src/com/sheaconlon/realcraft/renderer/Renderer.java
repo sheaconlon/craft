@@ -75,7 +75,7 @@ public class Renderer extends Worker {
     /**
      * The position of the player's eye, relative to the player's anchor point.
      */
-    private static final double[] PLAYER_EYE_POSITION = new double[]{0.5, 1.2, 0.5};
+    private static final double[] PLAYER_EYE_POSITION = new double[]{0.2, 1.5, 0.2};
 
     /**
      * The number of extra chunks to render in each direction from the player's chunk.
