@@ -281,4 +281,15 @@ public class ArrayUtilities {
         }
         return result;
     }
+
+    /**
+     * Normalize a vector, mutatively.
+     * @param vec The vector.
+     */
+    public static void normalize(final double[] vec) {
+        final double mag = Math.sqrt(ArrayUtilities.squaredMagnitude(vec));
+        for (int i = 0; i < vec.length; i++) {
+            vec[i] /= mag;
+        }
+    }
 }
