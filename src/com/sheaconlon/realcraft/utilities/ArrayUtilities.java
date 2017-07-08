@@ -104,6 +104,20 @@ public class ArrayUtilities {
     }
 
     /**
+     * Subtract two arrays.
+     * @param a An array.
+     * @param b An array.
+     * @return The array that is the elementwise difference {@code a} - {@code b}.
+     */
+    public static double[] subtract(final double[] a, final double[] b) {
+        final double[] result = new double[a.length];
+        for (int i = 0; i < a.length; i++) {
+            result[i] = a[i] - b[i];
+        }
+        return result;
+    }
+
+    /**
      * Multiply an integer array with a double array.
      * @param a The integer array.
      * @param b The double array.
