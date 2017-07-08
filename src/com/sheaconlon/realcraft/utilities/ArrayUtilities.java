@@ -268,4 +268,17 @@ public class ArrayUtilities {
         }
         return result;
     }
+
+    /**
+     * Get the squared magnitude of a vector.
+     * @param vec The vector.
+     * @return The squared magnitude of {@code vec}.
+     */
+    public static double squaredMagnitude(final double[] vec) {
+        double result = 0;
+        for (final double x : vec) {
+            result += x * x;
+        }
+        return result;
+    }
 }
