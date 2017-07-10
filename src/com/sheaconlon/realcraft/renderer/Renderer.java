@@ -2,11 +2,7 @@ package com.sheaconlon.realcraft.renderer;
 
 import com.sheaconlon.realcraft.Worker;
 import com.sheaconlon.realcraft.entities.Player;
-import com.sheaconlon.realcraft.utilities.ArrayUtilities;
-import com.sheaconlon.realcraft.utilities.PositionUtilities;
-import com.sheaconlon.realcraft.world.Chunk;
 import com.sheaconlon.realcraft.world.World;
-import com.sheaconlon.realcraft.world.WorldObject;
 import org.joml.Matrix4d;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
@@ -19,7 +15,6 @@ import java.nio.FloatBuffer;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * A renderer.

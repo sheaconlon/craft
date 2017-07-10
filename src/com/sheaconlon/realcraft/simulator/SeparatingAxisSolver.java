@@ -1,7 +1,5 @@
 package com.sheaconlon.realcraft.simulator;
 
-import com.sheaconlon.realcraft.utilities.ArrayUtilities;
-import com.sheaconlon.realcraft.utilities.PositionUtilities;
 import com.sheaconlon.realcraft.world.WorldObject;
 
 /**

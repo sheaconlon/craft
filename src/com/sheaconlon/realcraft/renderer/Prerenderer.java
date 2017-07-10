@@ -1,14 +1,9 @@
 package com.sheaconlon.realcraft.renderer;
 
 import com.sheaconlon.realcraft.Worker;
-import com.sheaconlon.realcraft.utilities.ArrayUtilities;
-import com.sheaconlon.realcraft.utilities.PositionUtilities;
 import com.sheaconlon.realcraft.world.Chunk;
 import com.sheaconlon.realcraft.world.World;
 import com.sheaconlon.realcraft.world.WorldObject;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL;
-import org.lwjgl.system.MemoryUtil;
 
 import java.util.ArrayList;
 import java.util.Iterator;

@@ -1,7 +1,5 @@
 package com.sheaconlon.realcraft;
 
-import com.sheaconlon.realcraft.utilities.ArrayUtilities;
-
 /**
  * A worker.
  */

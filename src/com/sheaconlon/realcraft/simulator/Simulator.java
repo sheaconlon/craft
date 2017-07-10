@@ -5,9 +5,6 @@ import com.sheaconlon.realcraft.renderer.Renderer;
 import com.sheaconlon.realcraft.world.Chunk;
 import com.sheaconlon.realcraft.world.World;
 import com.sheaconlon.realcraft.world.WorldObject;
-import com.sheaconlon.realcraft.utilities.PositionUtilities;
-import com.sheaconlon.realcraft.utilities.ArrayUtilities;
-import com.sheaconlon.realcraft.entities.Entity;
 import com.sheaconlon.realcraft.blocks.Block;
 
 import java.util.Map;
