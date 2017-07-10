@@ -2,6 +2,7 @@ package com.sheaconlon.realcraft.ui;
 
 import com.sheaconlon.realcraft.Worker;
 import com.sheaconlon.realcraft.renderer.Renderer;
+import com.sheaconlon.realcraft.utilities.Vector;
 import com.sheaconlon.realcraft.world.World;
 
 import org.lwjgl.glfw.GLFW;
@@ -228,40 +229,28 @@ public class UserInterface extends Worker {
      *                    seconds.
      */
     private void respondToMovement(final double elapsedTime) {
-        double relativeDirectionX = 0;
-        double relativeDirectionZ = 0;
+        Vector displacement = new Vector(0, 0, 0);
         if (this.window.wKeyIsPressed()) {
-            // towards negative z
-            relativeDirectionX += 1;
+            // towards positive x
+            displacement = Vector.add(displacement, new Vector(1, 0, 0));
         }
         if (this.window.aKeyIsPressed()) {
-            // towards negative x
-            relativeDirectionZ += -1;
+            // towards negative z
+            displacement = Vector.add(displacement, new Vector(0, 0, -1));
         }
         if (this.window.sKeyIsPressed()) {
-            // towards positive z
-            relativeDirectionX += -1;
+            // towards negative x
+            displacement = Vector.add(displacement, new Vector(-1, 0, 0));
         }
         if (this.window.dKeyIsPressed()) {
-            // towards positive x
-            relativeDirectionZ += 1;
+            // towards positive z
+            displacement = Vector.add(displacement, new Vector(0, 0, 1));
         }
-        if (relativeDirectionX != 0 || relativeDirectionZ != 0) {
-            final double orientation =  this.world.getPlayer().getXzOrientation();
-            double directionX = relativeDirectionX * Math.cos(orientation);
-            directionX += relativeDirectionZ * -Math.sin(orientation);
-            double directionZ = relativeDirectionZ * Math.cos(orientation);
-            directionZ += relativeDirectionX * Math.sin(orientation);
-            final double magnitude = Math.sqrt(directionX*directionX + directionZ*directionZ);
-            directionX /= magnitude;
-            directionZ /= magnitude;
+        if (!displacement.equals(Vector.ZERO_VECTOR)) {
+            displacement = Vector.rotateHorizontal(displacement, this.world.getPlayer().getHorizontalOrientation());
             final double distance = UserInterface.SPEED_OF_MOVEMENT * elapsedTime;
-            final double[] deltaPosition = new double[]{
-                    directionX * distance,
-                    0,
-                    directionZ * distance
-            };
-            this.world.getPlayer().changePosition(deltaPosition);
+            displacement = Vector.scale(displacement, distance / displacement.mag());
+            this.world.getPlayer().changePosition(displacement);
         }
     }
 
@@ -272,12 +261,12 @@ public class UserInterface extends Worker {
      */
     private void respondToLooking(final double elapsedTime) {
         final double[] cursorPositionDelta = this.getCursorPositionDelta();
-        double xzOrientationDelta = cursorPositionDelta[0] * UserInterface.LOOKING_FACTOR;
-        double xzCrossOrientationDelta = -cursorPositionDelta[1] * UserInterface.LOOKING_FACTOR;
+        double horizontalOrientationDelta = cursorPositionDelta[0] * UserInterface.LOOKING_FACTOR;
+        double verticalOrientationDelta = -cursorPositionDelta[1] * UserInterface.LOOKING_FACTOR;
         final double limit = UserInterface.LOOKING_MAX_SPEED * elapsedTime;
-        xzOrientationDelta = Math.signum(xzOrientationDelta) * Math.min(limit, Math.abs(xzOrientationDelta));
-        xzCrossOrientationDelta = Math.signum(xzCrossOrientationDelta) * Math.min(limit, Math.abs(xzCrossOrientationDelta));
-        this.world.getPlayer().changeXzOrientation(xzOrientationDelta);
-        this.world.getPlayer().changeXzCrossOrientation(xzCrossOrientationDelta);
+        horizontalOrientationDelta = Math.signum(horizontalOrientationDelta) * Math.min(limit, Math.abs(horizontalOrientationDelta));
+        verticalOrientationDelta = Math.signum(verticalOrientationDelta) * Math.min(limit, Math.abs(verticalOrientationDelta));
+        this.world.getPlayer().changeHorizontalOrientation(horizontalOrientationDelta);
+        this.world.getPlayer().changeVerticalOrientation(verticalOrientationDelta);
     }
 }
