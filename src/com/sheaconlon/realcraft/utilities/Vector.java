@@ -9,6 +9,11 @@ import java.util.Formatter;
  */
 public class Vector {
     /**
+     * The vector whose components are all zero.
+     */
+    public static final Vector ZERO_VECTOR = new Vector(0, 0, 0);
+
+    /**
      * The x-component of this vector.
      */
     private final double x;
