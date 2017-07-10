@@ -171,7 +171,7 @@ public class Chunk extends Container {
      * @param pos The position.
      * @return The position of the anchor point of the chunk containing {@code pos}.
      */
-    public Vector toChunkPos(final Vector pos) {
+    public static Vector toChunkPos(final Vector pos) {
         return Vector.scale(Vector.round(Vector.scale(pos, 1.0 / Chunk.SIZE)), Chunk.SIZE);
     }
 }
