@@ -127,8 +127,8 @@ public class Vector {
      * @param v The vector.
      * @return A vector whose *-component is the largest integer that is no larger than {@code v}'s *-component.
      */
-    public Vector round(final Vector v) {
-        return new Vector(Math.floor(this.x), Math.floor(this.y), Math.floor(this.z));
+    public static Vector round(final Vector v) {
+        return new Vector(Math.floor(v.x), Math.floor(v.y), Math.floor(v.z));
     }
 
     /**
