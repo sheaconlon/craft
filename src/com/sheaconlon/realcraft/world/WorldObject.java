@@ -107,7 +107,7 @@ public abstract class WorldObject {
      * Get the value of {@link #horizontalOrientation}.
      * @return The value of {@link #horizontalOrientation}.
      */
-    public double getXzOrientation() {
+    public double getHorizontalOrientation() {
         return this.horizontalOrientation;
     }
 
