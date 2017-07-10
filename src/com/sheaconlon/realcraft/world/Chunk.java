@@ -91,25 +91,25 @@ public class Chunk extends Container {
     private final List<Entity> entities;
 
     /**
-     * An integer version of {@link Container#position}.
+     * The position of the anchor point of this chunk.
      */
-    private final int[] position;
+    private final Vector position;
 
     /**
      * Create a chunk.
      * @param position The anchor point of the chunk.
      */
-    public Chunk(final int[] position) {
-        super(null, ArrayUtilities.toDoubleArray(position));
+    public Chunk(final Vector position) {
+        super(null, position);
         this.blocks = new Block[Chunk.SIZE][Chunk.SIZE][Chunk.SIZE];
         this.entities = new LinkedList<>();
-        this.position = ArrayUtilities.copy(position);
+        this.position = position;
         final int[] blockPosition = new int[]{0, 0, 0};
         for (blockPosition[0] = 0; blockPosition[0] < Chunk.SIZE; blockPosition[0]++) {
             for (blockPosition[1] = 0; blockPosition[1] < Chunk.SIZE; blockPosition[1]++) {
                 for (blockPosition[2] = 0; blockPosition[2] < Chunk.SIZE; blockPosition[2]++) {
                     this.blocks[blockPosition[0]][blockPosition[1]][blockPosition[2]] =
-                            new AirBlock(this, blockPosition);
+                            new AirBlock(this, new Vector(blockPosition[0], blockPosition[1], blockPosition[2]));
                 }
             }
         }
@@ -128,9 +128,10 @@ public class Chunk extends Container {
      * @param blockPosition The position.
      * @param block The block.
      */
-    public void putBlock(final int[] blockPosition, final Block block) {
-        this.blocks[blockPosition[0] - this.position[0]][blockPosition[1] - this.position[1]]
-                [blockPosition[2] - this.position[2]] = block;
+    public void putBlock(final Vector blockPosition, final Block block) {
+        final Vector relativeBlockPosition = Vector.subtract(blockPosition, this.position);
+        this.blocks[(int)relativeBlockPosition.getX()][(int)relativeBlockPosition.getY()]
+                [(int)relativeBlockPosition.getZ()] = block;
     }
 
     /**
@@ -162,8 +163,9 @@ public class Chunk extends Container {
      * @param pos The position.
      * @return The block at {@code pos}.
      */
-    public Block getBlock(final int[] pos) {
-        return this.blocks[pos[0] - this.position[0]][pos[1] - this.position[1]][pos[2] - this.position[2]];
+    public Block getBlock(final Vector pos) {
+        final Vector relativePosition = Vector.subtract(pos, this.position);
+        return this.blocks[(int)relativePosition.getX()][(int)relativePosition.getY()][(int)relativePosition.getZ()];
     }
 
     /**

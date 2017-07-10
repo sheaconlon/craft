@@ -8,6 +8,7 @@ import com.sheaconlon.realcraft.blocks.Block;
 import com.sheaconlon.realcraft.blocks.UnloadedBlock;
 import com.sheaconlon.realcraft.entities.Player;
 import com.sheaconlon.realcraft.generator.Generator;
+import com.sheaconlon.realcraft.utilities.Vector;
 
 /**
  * The world.
@@ -21,12 +22,12 @@ public class World {
     /**
      * The initial orientation of the player.
      */
-    private static final double PLAYER_SPAWN_XZ_ORIENTATION = 0;
+    private static final double PLAYER_SPAWN_HORIZONTAL_ORIENTATION = 0;
 
     /**
      * The initial look direction of the player.
      */
-    private static final double PLAYER_SPAWN_XZ_CROSS_ORIENTATION = 0;
+    private static final double PLAYER_SPAWN_VERTICAL_ORIENTATION = 0;
 
     /**
      * The number of nanoseconds in a second.
@@ -51,7 +52,7 @@ public class World {
     /**
      * The chunks of the world.
      */
-    private final Map<List<Integer>, Chunk> chunks;
+    private final Map<Vector, Chunk> chunks;
 
     /**
      * The wall time at which the world was created, in nanoseconds since some arbitrary fixed point.
@@ -77,9 +78,8 @@ public class World {
      * @param position The position.
      * @return The chunk at the position.
      */
-    public Chunk getChunk(final int[] position) {
-        final List<Integer> positionList = ArrayUtilities.toList(position);
-        return this.chunks.get(positionList);
+    public Chunk getChunk(final Vector position) {
+        return this.chunks.get(position);
     }
 
     /**
@@ -93,13 +93,12 @@ public class World {
         final ThreadLocalRandom random = ThreadLocalRandom.current();
         final double distance = random.nextGaussian() * World.PLAYER_SPAWN_DISTANCE_STDEV;
         final double direction = random.nextDouble(Math.PI * 2);
-        final double[] playerPosition = new double[]{
-                distance * Math.cos(direction),
-                Generator.GROUND_LEVEL + 1,
-                distance * Math.sin(direction)
-        };
-        final Player player = new Player(playerPosition, World.PLAYER_SPAWN_XZ_ORIENTATION,
-                World.PLAYER_SPAWN_XZ_CROSS_ORIENTATION);
+        Vector playerPosition = new Vector(1, 0, 0);
+        playerPosition = Vector.scale(playerPosition, distance);
+        playerPosition = Vector.rotateHorizontal(playerPosition, direction);
+        playerPosition = Vector.add(playerPosition, new Vector(0, Generator.GROUND_LEVEL + 1, 0));
+        final Player player = new Player(playerPosition, World.PLAYER_SPAWN_HORIZONTAL_ORIENTATION,
+                World.PLAYER_SPAWN_VERTICAL_ORIENTATION);
         return player;
     }
 
@@ -126,9 +125,8 @@ public class World {
      * @param pos The position of the anchor point of the chunk.
      * @return Whether the chunk is loaded.
      */
-    public boolean chunkLoaded(final int[] pos) {
-        final List<Integer> posList = ArrayUtilities.toList(pos);
-        return this.chunks.containsKey(posList);
+    public boolean chunkLoaded(final Vector pos) {
+        return this.chunks.containsKey(pos);
     }
 
     /**
@@ -136,12 +134,11 @@ public class World {
      * @param pos The position of the anchor point of the chunk.
      * @param chunk The chunk.
      */
-    public void loadChunk(final int[] pos, final Chunk chunk) {
-        final List<Integer> posList = ArrayUtilities.toList(pos);
-        if (Arrays.equals(pos, PositionUtilities.toChunkPosition(this.player.getPosition()))) {
+    public void loadChunk(final Vector pos, final Chunk chunk) {
+        if (pos.equals(Chunk.toChunkPos(this.player.getPosition()))) {
             chunk.addEntity(this.player);
         }
-        this.chunks.put(posList, chunk);
+        this.chunks.put(pos, chunk);
     }
 
     /**
@@ -149,9 +146,8 @@ public class World {
      * @param pos The position.
      * @return The block at {@code pos}, or null if the chunk containing {@code pos} is not loaded.
      */
-    public Block getBlock(final int[] pos) {
-        final int[] chunkPos = PositionUtilities.toChunkPosition(pos);
-        final Chunk chunk = this.getChunk(chunkPos);
+    public Block getBlock(final Vector pos) {
+        final Chunk chunk = this.getChunk(Chunk.toChunkPos(pos));
         if (chunk == null) {
             return new UnloadedBlock(pos);
         }

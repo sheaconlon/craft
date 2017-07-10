@@ -1,5 +1,7 @@
 package com.sheaconlon.realcraft.world;
 
+import com.sheaconlon.realcraft.utilities.Vector;
+
 import java.util.Deque;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
@@ -21,24 +23,24 @@ public abstract class WorldObject {
      * The position of the anchor point of this world object, relative to the position of the anchor point of
      * this world object's container.
      */
-    private final double[] position;
+    private Vector position;
 
     /**
      * The angle between the "forward" direction of this world object and the positive x-axis, within the
      * xz-plane, where towards negative z is positive and towards positive z is negative.
      */
-    protected double xzOrientation;
+    protected double horizontalOrientation;
 
     /**
      * The angle between the "forward" direction of this world object and the xz-plane, where upward is positive
      * and downward is negative.
      */
-    protected double xzCrossOrientation;
+    protected double verticalOrientation;
 
     /**
      * The velocity of this world object.
      */
-    private final double[] velocity;
+    private final Vector velocity;
 
     /**
      * The {@link #REWIND_COUNT} previous configurations that this world object has been in. A configuration
@@ -53,13 +55,13 @@ public abstract class WorldObject {
      * @param position See {@link #position}.
      * @param velocity See {@link #velocity}.
      */
-    public WorldObject(final Container container, final double[] position, final double xzOrientation,
-                       final double xzCrossOrientation, final double[] velocity) {
+    public WorldObject(final Container container, final Vector position, final double horizontalOrientation,
+                       final double verticalOrientation, final Vector velocity) {
         this.container = container;
-        this.position = ArrayUtilities.copy(position);
-        this.xzOrientation = xzOrientation;
-        this.xzCrossOrientation = xzCrossOrientation;
-        this.velocity = ArrayUtilities.copy(velocity);
+        this.position = position;
+        this.horizontalOrientation = horizontalOrientation;
+        this.verticalOrientation = verticalOrientation;
+        this.velocity = velocity;
         this.prevConfigs = new ConcurrentLinkedDeque<>();
     }
 
@@ -89,52 +91,50 @@ public abstract class WorldObject {
     /**
      * Getter for {@link #position}.
      */
-    public double[] getPosition() {
-        return ArrayUtilities.copy(this.position);
+    public Vector getPosition() {
+        return this.position;
     }
 
     /**
      * Changer for {@link #position}.
      */
-    public void changePosition(final double[] delta) {
+    public void changePosition(final Vector delta) {
         this.recordConfig();
-        for (int i = 0; i < this.position.length; i++) {
-            this.position[i] += delta[i];
-        }
+        this.position = Vector.add(this.position, delta);
     }
 
     /**
-     * Get the value of {@link #xzOrientation}.
-     * @return The value of {@link #xzOrientation}.
+     * Get the value of {@link #horizontalOrientation}.
+     * @return The value of {@link #horizontalOrientation}.
      */
     public double getXzOrientation() {
-        return this.xzOrientation;
+        return this.horizontalOrientation;
     }
 
     /**
-     * Change the value of {@link #xzOrientation}.
-     * @param delta The amount by which to change the value of {@link #xzOrientation}.
+     * Change the value of {@link #horizontalOrientation}.
+     * @param delta The amount by which to change the value of {@link #horizontalOrientation}.
      */
-    public void changeXzOrientation(final double delta) {
+    public void changeHorizontalOrientation(final double delta) {
         this.recordConfig();
-        this.xzOrientation += delta;
+        this.horizontalOrientation += delta;
     }
 
     /**
-     * Get the value of {@link #xzCrossOrientation}.
-     * @return The value of {@link #xzCrossOrientation}.
+     * Get the value of {@link #verticalOrientation}.
+     * @return The value of {@link #verticalOrientation}.
      */
-    public double getXzCrossOrientation() {
-        return this.xzCrossOrientation;
+    public double getVerticalOrientation() {
+        return this.verticalOrientation;
     }
 
     /**
-     * Change the value of {@link #xzCrossOrientation}.
-     * @param delta The amount by which to change the value of {@link #xzCrossOrientation}.
+     * Change the value of {@link #verticalOrientation}.
+     * @param delta The amount by which to change the value of {@link #verticalOrientation}.
      */
-    public void changeXzCrossOrientation(final double delta) {
+    public void changeVerticalOrientation(final double delta) {
         this.recordConfig();
-        this.xzCrossOrientation += delta;
+        this.verticalOrientation += delta;
     }
 
     /**
@@ -145,11 +145,9 @@ public abstract class WorldObject {
             return;
         }
         final double[] config = this.prevConfigs.removeLast();
-        this.position[0] = config[0];
-        this.position[1] = config[1];
-        this.position[2] = config[2];
-        this.xzOrientation = config[3];
-        this.xzCrossOrientation = config[4];
+        this.position = new Vector(config[0], config[1], config[2]);
+        this.horizontalOrientation = config[3];
+        this.verticalOrientation = config[4];
     }
 
     /**
@@ -160,11 +158,11 @@ public abstract class WorldObject {
             this.prevConfigs.removeFirst();
         }
         this.prevConfigs.addLast(new double[]{
-                this.position[0],
-                this.position[1],
-                this.position[2],
-                this.xzOrientation,
-                this.xzCrossOrientation
+                this.position.getX(),
+                this.position.getY(),
+                this.position.getZ(),
+                this.horizontalOrientation,
+                this.verticalOrientation
         });
     }
 }
