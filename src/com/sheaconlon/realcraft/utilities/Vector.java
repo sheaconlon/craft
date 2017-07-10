@@ -36,6 +36,27 @@ public class Vector {
     }
 
     /**
+     * @return The value of {@link #x}.
+     */
+    public double getX() {
+        return this.x;
+    }
+
+    /**
+     * @return The value of {@link #y}.
+     */
+    public double getY() {
+        return this.y;
+    }
+
+    /**
+     * @return The value of {@link #z}.
+     */
+    public double getZ() {
+        return this.z;
+    }
+
+    /**
      * Get the maximum component of this vector.
      * @return The maximum component of this vector.
      */
