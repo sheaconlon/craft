@@ -3,6 +3,7 @@ package com.sheaconlon.realcraft.world;
 import com.sheaconlon.realcraft.blocks.AirBlock;
 import com.sheaconlon.realcraft.blocks.Block;
 import com.sheaconlon.realcraft.entities.Entity;
+import com.sheaconlon.realcraft.utilities.Vector;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -163,5 +164,14 @@ public class Chunk extends Container {
      */
     public Block getBlock(final int[] pos) {
         return this.blocks[pos[0] - this.position[0]][pos[1] - this.position[1]][pos[2] - this.position[2]];
+    }
+
+    /**
+     * Return the position of the anchor point of the chunk containing some position.
+     * @param pos The position.
+     * @return The position of the anchor point of the chunk containing {@code pos}.
+     */
+    public Vector toChunkPos(final Vector pos) {
+        return Vector.scale(Vector.round(Vector.scale(pos, 1.0 / Chunk.SIZE)), Chunk.SIZE);
     }
 }
