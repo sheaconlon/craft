@@ -1,6 +1,8 @@
 package com.sheaconlon.realcraft.utilities;
 
 import java.util.Formatter;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * A 3-vector.
@@ -189,5 +191,25 @@ public class Vector {
                 v.x * Math.sin(theta) + v.y * Math.cos(theta) + v.z * Math.sin(theta),
                 v.x * Math.cos(theta) + v.z * Math.cos(theta)
         );
+    }
+
+    /**
+     * Get the vectors which are "nearby" some vector and at integer displacements from it.
+     * @param v The vector.
+     * @param distance The maximum distance at which a vector will be considered nearby {@code v}.
+     * @return The vectors which are "nearby" {@code v} and at integer displacements from it.
+     */
+    public static Iterable<Vector> getNearby(final Vector v, final double distance) {
+        final List<Vector> nearby = new LinkedList<>();
+        for (double radius = 0; radius <= distance; radius++) {
+            for (double x = v.getX() - radius; x <= v.getX() + radius; x++) {
+                for (double y = v.getY() - radius; y <= v.getY() + radius; y++) {
+                    for (double z = v.getZ() - radius; z <= v.getZ() + radius; z++) {
+                        nearby.add(new Vector(x, y, z));
+                    }
+                }
+            }
+        }
+        return nearby;
     }
 }
