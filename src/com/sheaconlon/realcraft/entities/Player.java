@@ -1,5 +1,6 @@
 package com.sheaconlon.realcraft.entities;
 
+import com.sheaconlon.realcraft.utilities.Vector;
 import com.sheaconlon.realcraft.world.WorldObject;
 
 /**
@@ -14,16 +15,16 @@ public class Player extends Animal {
     /**
      * The initial velocity of a player.
      */
-    private static final double[] INITIAL_VELOCITY = new double[]{0, 0, 0};
+    private static final Vector INITIAL_VELOCITY = new Vector(0, 0, 0);
 
     /**
      * Create a player.
      * @param position The position of the player.
-     * @param xzOrientation See {@link WorldObject#xzOrientation}.
-     * @param xzCrossOrientation See {@link WorldObject#xzCrossOrientation}.
+     * @param horizontalOrientation See {@link WorldObject#horizontalOrientation}.
+     * @param verticalOrientation See {@link WorldObject#verticalOrientation}.
      */
-    public Player(final double[] position, final double xzOrientation, final double xzCrossOrientation) {
-        super(position, Player.INITIAL_VELOCITY, xzOrientation, xzCrossOrientation);
+    public Player(final Vector position, final double horizontalOrientation, final double verticalOrientation) {
+        super(position, Player.INITIAL_VELOCITY, horizontalOrientation, verticalOrientation);
     }
 
     /**

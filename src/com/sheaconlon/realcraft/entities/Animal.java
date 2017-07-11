@@ -1,5 +1,6 @@
 package com.sheaconlon.realcraft.entities;
 
+import com.sheaconlon.realcraft.utilities.Vector;
 import com.sheaconlon.realcraft.world.WorldObject;
 
 /**
@@ -7,14 +8,14 @@ import com.sheaconlon.realcraft.world.WorldObject;
  */
 public abstract class Animal extends Entity {
     /**
-     * The minimum allowed xz-cross orientation for an animal.
+     * The minimum allowed vertical orientation for an animal.
      */
-    private static final double XZ_CROSS_ORIENTATION_MINIMUM = 0.999 * -Math.PI / 2;
+    private static final double VERTICAL_ORIENTATION_MINIMUM = 0.999 * -Math.PI / 2;
 
     /**
-     * The maximum allowed xz-cross orientation for an animal.
+     * The maximum allowed vertical orientation for an animal.
      */
-    private static final double XZ_CROSS_ORIENTATION_MAXIMUM = 0.999 * Math.PI / 2;
+    private static final double VERTICAL_ORIENTATION_MAXIMUM = 0.999 * Math.PI / 2;
 
     /**
      * The angle change, in radians, which represents a full revolution.
@@ -25,24 +26,24 @@ public abstract class Animal extends Entity {
      * Create an animal.
      * @param position See {@link WorldObject#position}.
      * @param velocity See {@link WorldObject#velocity}.
-     * @param xzOrientation See {@link WorldObject#xzOrientation}.
-     * @param xzCrossOrientation See {@link WorldObject#xzCrossOrientation}.
+     * @param xzOrientation See {@link WorldObject#horizontalOrientation}.
+     * @param xzCrossOrientation See {@link WorldObject#verticalOrientation}.
      */
-    public Animal(final double[] position, final double[] velocity, final double xzOrientation,
+    public Animal(final Vector position, final Vector velocity, final double xzOrientation,
                   final double xzCrossOrientation) {
         super(position, xzOrientation, xzCrossOrientation, velocity);
     }
 
     @Override
-    public void changeXzOrientation(final double delta) {
-        super.changeXzOrientation(delta);
-        this.xzOrientation = this.xzOrientation % Animal.FULL_REVOLUTION_ANGLE;
+    public void changeHorizontalOrientation(final double delta) {
+        super.changeHorizontalOrientation(delta);
+        this.horizontalOrientation = this.horizontalOrientation % Animal.FULL_REVOLUTION_ANGLE;
     }
 
     @Override
-    public void changeXzCrossOrientation(final double delta) {
-        super.changeXzCrossOrientation(delta);
-        this.xzCrossOrientation = Math.max(Animal.XZ_CROSS_ORIENTATION_MINIMUM, this.xzCrossOrientation);
-        this.xzCrossOrientation = Math.min(Animal.XZ_CROSS_ORIENTATION_MAXIMUM, this.xzCrossOrientation);
+    public void changeVerticalOrientation(final double delta) {
+        super.changeVerticalOrientation(delta);
+        this.verticalOrientation = Math.max(Animal.VERTICAL_ORIENTATION_MINIMUM, this.verticalOrientation);
+        this.verticalOrientation = Math.min(Animal.VERTICAL_ORIENTATION_MAXIMUM, this.verticalOrientation);
     }
 }

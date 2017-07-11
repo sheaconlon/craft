@@ -1,5 +1,6 @@
 package com.sheaconlon.realcraft.entities;
 
+import com.sheaconlon.realcraft.utilities.Vector;
 import com.sheaconlon.realcraft.world.WorldObject;
 
 /**
@@ -9,12 +10,12 @@ public abstract class Entity extends WorldObject {
     /**
      * Create an entities.
      * @param position See {@link WorldObject#position}.
-     * @param xzOrientation See {@link WorldObject#xzOrientation}.
-     * @param xzCrossOrientation See {@link WorldObject#xzCrossOrientation}.
+     * @param xzOrientation See {@link WorldObject#horizontalOrientation}.
+     * @param xzCrossOrientation See {@link WorldObject#verticalOrientation}.
      * @param velocity See {@link WorldObject#velocity}.
      */
-    public Entity(final double[] position, final double xzOrientation, final double xzCrossOrientation,
-                  final double[] velocity) {
+    public Entity(final Vector position, final double xzOrientation, final double xzCrossOrientation,
+                  final Vector velocity) {
         super(null, position, xzOrientation, xzCrossOrientation, velocity);
     }
 }
