@@ -67,7 +67,7 @@ public class Prerenderer extends Worker {
         final Vector playerPos = this.world.getPlayer().getPosition();
         final Vector playerChunkPos = Chunk.toChunkPos(playerPos);
         int numberDone = 0;
-        for (final Vector renderChunkPos : Vector.getNearby(playerChunkPos, Chunk.SIZE * Prerenderer.PRERENDER_DISTANCE)) {
+        for (final Vector renderChunkPos : Chunk.getChunkPosNearby(playerChunkPos, Prerenderer.PRERENDER_DISTANCE)) {
             if (world.chunkLoaded(renderChunkPos) && !renderer.hasWrittenVBO(renderChunkPos)) {
                 final VertexBufferObject vbo = this.renderer.getEmptyVBO();
                 if (vbo != null) {

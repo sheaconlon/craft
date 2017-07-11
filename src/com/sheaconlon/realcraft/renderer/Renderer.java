@@ -236,7 +236,7 @@ public class Renderer extends Worker {
         this.sendVBO();
         final Vector playerPos = this.world.getPlayer().getPosition();
         final Vector playerChunkPos = Chunk.toChunkPos(playerPos);
-        for (final Vector renderChunkPos : Vector.getNearby(playerChunkPos, Chunk.SIZE * Renderer.RENDER_DISTANCE)) {
+        for (final Vector renderChunkPos : Chunk.getChunkPosNearby(playerChunkPos, Renderer.RENDER_DISTANCE)) {
             if (this.sentVBOs.containsKey(renderChunkPos)) {
                 final VertexBufferObject vbo = this.sentVBOs.get(renderChunkPos);
                 vbo.render();
@@ -298,7 +298,7 @@ public class Renderer extends Worker {
         }
         final Vector playerPos = this.world.getPlayer().getPosition();
         final Vector playerChunkPos = Chunk.toChunkPos(playerPos);
-        for (final Vector chunkPos : Vector.getNearby(playerChunkPos, Chunk.SIZE * Renderer.RENDER_DISTANCE)) {
+        for (final Vector chunkPos : Chunk.getChunkPosNearby(playerChunkPos, Renderer.RENDER_DISTANCE)) {
             if (this.writtenVBOs.containsKey(chunkPos)) {
                 final VertexBufferObject vbo = this.writtenVBOs.remove(chunkPos);
                 final boolean success = vbo.send();

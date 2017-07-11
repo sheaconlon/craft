@@ -67,7 +67,7 @@ public class Generator extends Worker {
     public void tick(final double elapsedTime) {
         final Vector playerChunkPos = Chunk.toChunkPos(this.world.getPlayer().getPosition());
         int numberDone = 0;
-        for (final Vector chunkPos : Vector.getNearby(playerChunkPos, Chunk.SIZE * Generator.LOAD_DISTANCE)) {
+        for (final Vector chunkPos : Chunk.getChunkPosNearby(playerChunkPos, Generator.LOAD_DISTANCE)) {
             if (!world.chunkLoaded(chunkPos)) {
                 world.loadChunk(chunkPos, this.generateChunk(chunkPos));
                 numberDone++;

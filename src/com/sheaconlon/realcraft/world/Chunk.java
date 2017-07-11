@@ -176,4 +176,20 @@ public class Chunk extends Container {
     public static Vector toChunkPos(final Vector pos) {
         return Vector.scale(Vector.round(Vector.scale(pos, 1.0 / Chunk.SIZE)), Chunk.SIZE);
     }
+
+    /**
+     * Get the chunk positions which are "nearby" some chunk position.
+     * @param pos The chunk position.
+     * @param distance The maximum number of chunks away at which a chunk position will be considered nearby
+     * {@code pos}.
+     * @return The chunk positions which are "nearby" {@code pos}.
+     */
+    public static Iterable<Vector> getChunkPosNearby(final Vector pos, final int distance) {
+        final Iterable<Vector> nearbyDisplacements = Vector.getNearby(Vector.ZERO_VECTOR, distance);
+        final List<Vector> nearbyChunkPos = new LinkedList<>();
+        for (final Vector disp : nearbyDisplacements) {
+            nearbyChunkPos.add(Vector.add(Vector.scale(disp, Chunk.SIZE), pos));
+        }
+        return nearbyChunkPos;
+    }
 }
