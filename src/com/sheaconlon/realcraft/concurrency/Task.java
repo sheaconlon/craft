@@ -10,6 +10,12 @@ public abstract class Task implements Comparable<Task> {
     public abstract void run();
 
     /**
+     * Return whether this task is done being run.
+     * @return See above.
+     */
+    public abstract boolean done();
+
+    /**
      * "Smaller" tasks are higher priority tasks.
      */
     @Override

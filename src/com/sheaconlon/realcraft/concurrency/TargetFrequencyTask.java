@@ -22,6 +22,11 @@ public abstract class TargetFrequencyTask extends Task {
         this.run();
     }
 
+    @Override
+    public boolean done() {
+        return false;
+    }
+
     /**
      * Get the target frequency of this target frequency task.
      * @return See above. In Hertz.
