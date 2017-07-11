@@ -185,9 +185,9 @@ public class Vector {
      */
     public static Vector rotateVertical(final Vector v, final double theta) {
         return new Vector(
-                v.x * Math.cos(theta) + v.z * Math.cos(theta),
-                v.x * Math.sin(theta) + v.y * Math.cos(theta) + v.z * Math.sin(theta),
-                v.x * Math.cos(theta) + v.z * Math.cos(theta)
+                v.x * Math.cos(theta),
+                v.y * Math.cos(theta) + (new Vector(v.x, 0, v.z).mag()) * Math.sin(theta),
+                v.z * Math.cos(theta)
         );
     }
 
