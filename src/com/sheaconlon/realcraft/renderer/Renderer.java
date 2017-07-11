@@ -2,7 +2,9 @@ package com.sheaconlon.realcraft.renderer;
 
 import com.sheaconlon.realcraft.Worker;
 import com.sheaconlon.realcraft.entities.Player;
+import com.sheaconlon.realcraft.world.Chunk;
 import com.sheaconlon.realcraft.world.World;
+import com.sheaconlon.realcraft.utilities.Vector;
 import org.joml.Matrix4d;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
@@ -72,8 +74,8 @@ public class Renderer extends Worker {
     /**
      * The position of the player's eye, relative to the player's anchor point.
      */
-    private static final double[] PLAYER_EYE_POSITION =
-            new double[]{Player.HIT_BOX_DIMS[0] / 2, Player.HIT_BOX_DIMS[1] * 0.9, Player.HIT_BOX_DIMS[2] / 2};
+    private static final Vector PLAYER_EYE_POSITION =
+            new Vector(Player.HIT_BOX_DIMS[0] / 2, Player.HIT_BOX_DIMS[1] * 0.9, Player.HIT_BOX_DIMS[2] / 2);
 
     /**
      * The number of extra chunks to render in each direction from the player's chunk.
@@ -151,12 +153,12 @@ public class Renderer extends Worker {
     /**
      * The written VBOs that this renderer has.
      */
-    private final Map<List<Integer>, VertexBufferObject> writtenVBOs;
+    private final Map<Vector, VertexBufferObject> writtenVBOs;
 
     /**
      * The sent VBOs that this renderer has.
      */
-    private final Map<List<Integer>, VertexBufferObject> sentVBOs;
+    private final Map<Vector, VertexBufferObject> sentVBOs;
 
     /**
      * The number of frames that have been shown since the last VBO was sent.
@@ -199,9 +201,8 @@ public class Renderer extends Worker {
      * @param pos The position of the anchor point of the chunk.
      * @param vbo The VBO.
      */
-    public void receiveWrittenVBO(final int[] pos, final VertexBufferObject vbo) {
-        final List<Integer> posList = ArrayUtilities.toList(pos);
-        this.writtenVBOs.put(posList, vbo);
+    public void receiveWrittenVBO(final Vector pos, final VertexBufferObject vbo) {
+        this.writtenVBOs.put(pos, vbo);
     }
 
     /**
@@ -209,9 +210,8 @@ public class Renderer extends Worker {
      * @param pos The position of the anchor point of the chunk.
      * @return Whether this renderer has a written VBO for the chunk.
      */
-    public boolean hasWrittenVBO(final int[] pos) {
-        final List<Integer> posList = ArrayUtilities.toList(pos);
-        return this.sentVBOs.containsKey(posList) || this.writtenVBOs.containsKey(posList);
+    public boolean hasWrittenVBO(final Vector pos) {
+        return this.sentVBOs.containsKey(pos) || this.writtenVBOs.containsKey(pos);
     }
 
     /**
@@ -234,12 +234,11 @@ public class Renderer extends Worker {
         Renderer.setLighting();
         Renderer.clear();
         this.sendVBO();
-        final double[] playerPos = this.world.getPlayer().getPosition();
-        final int[] playerChunkPos = PositionUtilities.toChunkPosition(playerPos);
-        for (final int[] renderChunkPos : PositionUtilities.getNearbyChunkPositions(playerChunkPos, Renderer.RENDER_DISTANCE)) {
-            final List<Integer> renderChunkPosList = ArrayUtilities.toList(renderChunkPos);
-            if (this.sentVBOs.containsKey(renderChunkPosList)) {
-                final VertexBufferObject vbo = this.sentVBOs.get(renderChunkPosList);
+        final Vector playerPos = this.world.getPlayer().getPosition();
+        final Vector playerChunkPos = Chunk.toChunkPos(playerPos);
+        for (final Vector renderChunkPos : Vector.getNearby(playerChunkPos, Chunk.SIZE * Renderer.RENDER_DISTANCE)) {
+            if (this.sentVBOs.containsKey(renderChunkPos)) {
+                final VertexBufferObject vbo = this.sentVBOs.get(renderChunkPos);
                 vbo.render();
             }
         }
@@ -252,20 +251,31 @@ public class Renderer extends Worker {
      */
     private void setPerspective() {
         final Player player = this.world.getPlayer();
-        final double[] position = player.getPosition();
-        final double xzOrientation = player.getXzOrientation();
-        final double xzCrossOrientation = player.getXzCrossOrientation();
-        final double[] eyePosition = ArrayUtilities.add(position, Renderer.PLAYER_EYE_POSITION);
-        final double[] lookDisplacement = PositionUtilities.rotatePosition(new double[]{1, 0, 0}, xzOrientation,
-                xzCrossOrientation);
-        final double[] lookPosition = ArrayUtilities.add(eyePosition, lookDisplacement);
-        final double[] upDirection = PositionUtilities.rotatePosition(new double[]{0, 1, 0}, xzOrientation,
-                xzCrossOrientation);
+        final Vector position = player.getPosition();
+        final double xzCrossOrientation = player.getVerticalOrientation();
+        final Vector eyePosition = Vector.add(position, Renderer.PLAYER_EYE_POSITION);
+        final Vector lookDisplacement =
+                Vector.rotateVertical(
+                    Vector.rotateHorizontal(
+                        new Vector(1, 0, 0),
+                        player.getHorizontalOrientation()
+                    ),
+                    player.getVerticalOrientation()
+                );
+        final Vector lookPosition = Vector.add(eyePosition, lookDisplacement);
+        final Vector upDirection =
+                Vector.rotateVertical(
+                        Vector.rotateHorizontal(
+                                new Vector(0, 1, 0),
+                                player.getHorizontalOrientation()
+                        ),
+                        player.getVerticalOrientation()
+                );
         final DoubleBuffer buffer = BufferUtils.createDoubleBuffer(16);
         final Matrix4d matrix = new Matrix4d();
-        matrix.setLookAt(eyePosition[0], eyePosition[1], eyePosition[2],
-                lookPosition[0], lookPosition[1], lookPosition[2],
-                upDirection[0], upDirection[1], upDirection[2]);
+        matrix.setLookAt(eyePosition.getX(), eyePosition.getY(), eyePosition.getZ(),
+                lookPosition.getX(), lookPosition.getY(), lookPosition.getZ(),
+                upDirection.getX(), upDirection.getY(), upDirection.getZ());
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
         GL11.glLoadMatrixd(matrix.get(buffer));
     }
@@ -286,15 +296,14 @@ public class Renderer extends Worker {
         if (this.framesSinceVBOSend < Renderer.SEND_INTERVAL && this.ticks >= Worker.BEGINNING_TICKS) {
             return;
         }
-        final double[] playerPos = this.world.getPlayer().getPosition();
-        final int[] playerChunkPos = PositionUtilities.toChunkPosition(playerPos);
-        for (final int[] chunkPos : PositionUtilities.getNearbyChunkPositions(playerChunkPos, Renderer.RENDER_DISTANCE)) {
-            final List<Integer> chunkPosList = ArrayUtilities.toList(chunkPos);
-            if (this.writtenVBOs.containsKey(chunkPosList)) {
-                final VertexBufferObject vbo = this.writtenVBOs.remove(chunkPosList);
+        final Vector playerPos = this.world.getPlayer().getPosition();
+        final Vector playerChunkPos = Chunk.toChunkPos(playerPos);
+        for (final Vector chunkPos : Vector.getNearby(playerChunkPos, Chunk.SIZE * Renderer.RENDER_DISTANCE)) {
+            if (this.writtenVBOs.containsKey(chunkPos)) {
+                final VertexBufferObject vbo = this.writtenVBOs.remove(chunkPos);
                 final boolean success = vbo.send();
                 if (success) {
-                    this.sentVBOs.put(chunkPosList, vbo);
+                    this.sentVBOs.put(chunkPos, vbo);
                 }
                 this.framesSinceVBOSend = 0;
                 return;

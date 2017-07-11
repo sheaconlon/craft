@@ -1,6 +1,7 @@
 package com.sheaconlon.realcraft.renderer;
 
 import com.sheaconlon.realcraft.Worker;
+import com.sheaconlon.realcraft.utilities.Vector;
 import com.sheaconlon.realcraft.world.Chunk;
 import com.sheaconlon.realcraft.world.World;
 import com.sheaconlon.realcraft.world.WorldObject;
@@ -63,10 +64,10 @@ public class Prerenderer extends Worker {
      */
     @Override
     public void tick(final double elapsedTime) {
-        final double[] playerPos = this.world.getPlayer().getPosition();
-        final int[] playerChunkPos = PositionUtilities.toChunkPosition(playerPos);
+        final Vector playerPos = this.world.getPlayer().getPosition();
+        final Vector playerChunkPos = Chunk.toChunkPos(playerPos);
         int numberDone = 0;
-        for (final int[] renderChunkPos : PositionUtilities.getNearbyChunkPositions(playerChunkPos, Prerenderer.PRERENDER_DISTANCE)) {
+        for (final Vector renderChunkPos : Vector.getNearby(playerChunkPos, Chunk.SIZE * Prerenderer.PRERENDER_DISTANCE)) {
             if (world.chunkLoaded(renderChunkPos) && !renderer.hasWrittenVBO(renderChunkPos)) {
                 final VertexBufferObject vbo = this.renderer.getEmptyVBO();
                 if (vbo != null) {
@@ -86,14 +87,18 @@ public class Prerenderer extends Worker {
      * @param pos The position of the anchor point of the chunk.
      * @param vbo The VBO.
      */
-    private void prerenderChunk(final int[] pos, final VertexBufferObject vbo) {
+    private void prerenderChunk(final Vector pos, final VertexBufferObject vbo) {
         final Chunk chunk = this.world.getChunk(pos);
         final List<float[][]> vertexDataList = new ArrayList<>();
         for (final Iterator<WorldObject> iterator = chunk.getContents(); iterator.hasNext(); ) {
             final WorldObject obj = iterator.next();
             for (final float[][] singleVertexData : obj.getVertexData()) {
                 final float[][] singleVertexDataAbsolute = new float[][]{
-                        ArrayUtilities.add(singleVertexData[0], obj.getPosition()),
+                        new float[]{
+                                (float)(singleVertexData[0][0] + pos.getX()),
+                                (float)(singleVertexData[0][1] + pos.getY()),
+                                (float)(singleVertexData[0][2] + pos.getZ())
+                        },
                         singleVertexData[1],
                         singleVertexData[2]
                 };
