@@ -1,8 +1,6 @@
 package com.sheaconlon.realcraft.utilities;
 
-import java.util.Formatter;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * A 3-vector.
@@ -200,7 +198,7 @@ public class Vector {
      * @return The vectors which are "nearby" {@code v} and at integer displacements from it.
      */
     public static Iterable<Vector> getNearby(final Vector v, final double distance) {
-        final List<Vector> nearby = new LinkedList<>();
+        final Set<Vector> nearby = new HashSet<>();
         for (double radius = 0; radius <= distance; radius++) {
             for (double x = v.getX() - radius; x <= v.getX() + radius; x++) {
                 for (double y = v.getY() - radius; y <= v.getY() + radius; y++) {
