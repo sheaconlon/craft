@@ -84,20 +84,21 @@ public class Prerenderer extends Worker {
 
     /**
      * Pre-render a chunk into a VBO.
-     * @param pos The position of the anchor point of the chunk.
+     * @param chunkPos The position of the anchor point of the chunk.
      * @param vbo The VBO.
      */
-    private void prerenderChunk(final Vector pos, final VertexBufferObject vbo) {
-        final Chunk chunk = this.world.getChunk(pos);
+    private void prerenderChunk(final Vector chunkPos, final VertexBufferObject vbo) {
+        final Chunk chunk = this.world.getChunk(chunkPos);
         final List<float[][]> vertexDataList = new ArrayList<>();
         for (final Iterator<WorldObject> iterator = chunk.getContents(); iterator.hasNext(); ) {
             final WorldObject obj = iterator.next();
             for (final float[][] singleVertexData : obj.getVertexData()) {
+                final Vector objPos = obj.getPosition();
                 final float[][] singleVertexDataAbsolute = new float[][]{
                         new float[]{
-                                (float)(singleVertexData[0][0] + pos.getX()),
-                                (float)(singleVertexData[0][1] + pos.getY()),
-                                (float)(singleVertexData[0][2] + pos.getZ())
+                                (float)(singleVertexData[0][0] + objPos.getX()),
+                                (float)(singleVertexData[0][1] + objPos.getY()),
+                                (float)(singleVertexData[0][2] + objPos.getZ())
                         },
                         singleVertexData[1],
                         singleVertexData[2]
