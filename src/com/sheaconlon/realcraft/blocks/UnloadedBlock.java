@@ -1,5 +1,7 @@
 package com.sheaconlon.realcraft.blocks;
 
+import com.sheaconlon.realcraft.utilities.Vector;
+
 /**
  * A placeholder for a block in a chunk which is not yet loaded into the world.
  */
@@ -14,7 +16,7 @@ public class UnloadedBlock extends Block {
      */
     private static final float[][][] VERTEX_DATA = new float[][][]{};
 
-    public UnloadedBlock(final int[] pos) {
+    public UnloadedBlock(final Vector pos) {
         super(null, pos);
     }
 

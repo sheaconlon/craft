@@ -1,5 +1,6 @@
 package com.sheaconlon.realcraft.blocks;
 
+import com.sheaconlon.realcraft.utilities.Vector;
 import com.sheaconlon.realcraft.world.WorldObject;
 import com.sheaconlon.realcraft.world.Chunk;
 
@@ -134,26 +135,26 @@ public abstract class Block extends WorldObject {
     /**
      * The initial velocity of a block.
      */
-    private static final double[] INITIAL_VELOCITY = new double[]{0, 0, 0};
+    private static final Vector INITIAL_VELOCITY = new Vector(0, 0, 0);
 
     /**
      * The initial xz orientation of a block.
      */
-    private static final double INITIAL_XZ_ORIENATION = 0;
+    private static final double INITIAL_HORIZONTAL_ORIENTATION = 0;
 
     /**
      * The initial xz-cross orientation of a block.
      */
-    private static final double INITIAL_XZ_CROSS_ORIENTATION = 0;
+    private static final double INITIAL_VERTICAL_ORIENTATION = 0;
 
     /**
      * Create a block.
      * @param chunk The chunk containing the block.
      * @param position The position of the block relative to the anchor point of the chunk containing it.
      */
-    public Block(final Chunk chunk, final int[] position) {
-        super(chunk, ArrayUtilities.toDoubleArray(position), Block.INITIAL_XZ_ORIENATION,
-                Block.INITIAL_XZ_CROSS_ORIENTATION, Block.INITIAL_VELOCITY);
+    public Block(final Chunk chunk, final Vector position) {
+        super(chunk, position, Block.INITIAL_HORIZONTAL_ORIENTATION,
+                Block.INITIAL_VERTICAL_ORIENTATION, Block.INITIAL_VELOCITY);
     }
 
     /**
@@ -166,9 +167,9 @@ public abstract class Block extends WorldObject {
         for (int vertex = 0; vertex < Block.PARTIAL_VERTEX_DATA.length; vertex++) {
             final int face = vertex / 4;
             vertexData[vertex] = new float[][]{
-                    ArrayUtilities.copy(Block.PARTIAL_VERTEX_DATA[vertex][0]),
-                    ArrayUtilities.copy(faceColors[face]),
-                    ArrayUtilities.copy(Block.PARTIAL_VERTEX_DATA[vertex][2])
+                    Block.PARTIAL_VERTEX_DATA[vertex][0],
+                    faceColors[face],
+                    Block.PARTIAL_VERTEX_DATA[vertex][2]
             };
         }
         return vertexData;

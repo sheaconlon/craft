@@ -1,5 +1,6 @@
 package com.sheaconlon.realcraft.blocks;
 
+import com.sheaconlon.realcraft.utilities.Vector;
 import com.sheaconlon.realcraft.world.Chunk;
 
 /**
@@ -16,7 +17,7 @@ public class DirtBlock extends Block {
      * @param chunk The chunk containing the dirt block.
      * @param position The position of the dirt block relative to the anchor point of the chunk containing it.
      */
-    public DirtBlock(final Chunk chunk, final int[] position) {
+    public DirtBlock(final Chunk chunk, final Vector position) {
         super(chunk, position);
     }
 
