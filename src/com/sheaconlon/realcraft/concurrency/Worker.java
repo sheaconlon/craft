@@ -25,14 +25,6 @@ public abstract class Worker implements Comparable<Worker> {
     protected abstract void run();
 
     /**
-     * Return whether this task is done being run.
-     * @return See above.
-     */
-    public boolean done() {
-        return false;
-    }
-
-    /**
      * "Smaller" tasks are higher priority tasks.
      */
     @Override

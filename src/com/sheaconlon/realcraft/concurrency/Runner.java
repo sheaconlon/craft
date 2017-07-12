@@ -24,9 +24,7 @@ public class Runner implements Runnable {
         while (!Thread.interrupted()) {
             final Worker topTask = this.workerQueue.poll();
             topTask.run();
-            if (!topTask.done()) {
-                this.workerQueue.add(topTask);
-            }
+            this.workerQueue.add(topTask);
         }
     }
 }
