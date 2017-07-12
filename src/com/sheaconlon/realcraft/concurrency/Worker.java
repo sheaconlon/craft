@@ -8,9 +8,9 @@ package com.sheaconlon.realcraft.concurrency;
  * apart. Under load, they would probably be initiated more than that many seconds apart.
  */
 public abstract class Worker implements Comparable<Worker> {
-    private long lastRunTime;
-
     private static final long NANOSECONDS_PER_SECOND = 1_000_000_000;
+
+    private long lastRunTime;
 
     /**
      * Create a worker.
