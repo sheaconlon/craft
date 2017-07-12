@@ -15,7 +15,7 @@ public class TaskRunner implements Runnable {
     @Override
     public void run() {
         while (!Thread.interrupted()) {
-            final Task topTask = queue.poll();
+            final Worker topTask = queue.poll();
             topTask.run();
             if (!topTask.done()) {
                 TaskRunner.enqueueTask(topTask);

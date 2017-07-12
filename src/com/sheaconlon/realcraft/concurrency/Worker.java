@@ -7,7 +7,7 @@ package com.sheaconlon.realcraft.concurrency;
  * {@code 1 / t.getTargetFreq()} seconds apart. Ideally, they would be initiated exactly that many seconds
  * apart. Under load, they would probably be initiated more than that many seconds apart.
  */
-public abstract class TargetFrequencyTask extends Task {
+public abstract class Worker implements Comparable<Worker> {
     private long lastRunTime;
 
     private static final long NANOSECONDS_PER_SECOND = 1_000_000_000;
@@ -17,14 +17,27 @@ public abstract class TargetFrequencyTask extends Task {
      *
      * Its {@link #run()} method will be called once.
      */
-    protected TargetFrequencyTask() {
+    protected Worker() {
         this.lastRunTime = System.nanoTime();
         this.run();
     }
 
-    @Override
+    protected abstract void run();
+
+    /**
+     * Return whether this task is done being run.
+     * @return See above.
+     */
     public boolean done() {
         return false;
+    }
+
+    /**
+     * "Smaller" tasks are higher priority tasks.
+     */
+    @Override
+    public int compareTo(final Worker other) {
+        return -(int)Math.signum(this.priority() - other.priority());
     }
 
     /**
@@ -37,11 +50,11 @@ public abstract class TargetFrequencyTask extends Task {
      * The amount of time until a call to {@link #run()} is due, in seconds.
      */
     protected double priority() {
-        final double elapsedTime = TargetFrequencyTask.nsToS(System.nanoTime() - this.lastRunTime);
+        final double elapsedTime = nsToS(System.nanoTime() - this.lastRunTime);
         return 1 / this.getTargetFreq() - elapsedTime;
     }
 
     private static double nsToS(final long ns) {
-        return (double)ns / (double)TargetFrequencyTask.NANOSECONDS_PER_SECOND;
+        return (double)ns / (double)NANOSECONDS_PER_SECOND;
     }
 }
