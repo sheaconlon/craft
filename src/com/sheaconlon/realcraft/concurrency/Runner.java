@@ -3,21 +3,21 @@ package com.sheaconlon.realcraft.concurrency;
 import java.util.Queue;
 
 /**
- * A runner of tasks.
+ * A runner, which ticks workers.
  */
-public class TaskRunner implements Runnable {
+public class Runner implements Runnable {
     private final Queue<Worker> workerQueue;
 
     /**
-     * Create a task runner.
-     * @param workerQueue The queue of workers which this task runner should draw from.
+     * Create a runner.
+     * @param workerQueue The queue of workers which this runner should draw from.
      */
-    public TaskRunner(final Queue<Worker> workerQueue) {
+    public Runner(final Queue<Worker> workerQueue) {
         this.workerQueue = workerQueue;
     }
 
     /**
-     * Run tasks, high-priority ones first.
+     * Tick workers, following the order of the queue.
      */
     @Override
     public void run() {
