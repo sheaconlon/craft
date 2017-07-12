@@ -1,10 +1,10 @@
 package com.sheaconlon.realcraft.concurrency;
 
 /**
- * A task which should be run repeatedly, with some target frequency.
+ * A worker, which should be ticked repeatedly.
  *
- * Consider a target frequency task {@code t}. Calls to {@code t.run()} should be initiated no less than
- * {@code 1 / t.getTargetFreq()} seconds apart. Ideally, they would be initiated exactly that many seconds
+ * Consider a worker {@code w}. Calls to {@code w.tick()} should be initiated no less than
+ * {@code 1 / w.getTargetFreq()} seconds apart. Ideally, they would be initiated exactly that many seconds
  * apart. Under load, they would probably be initiated more than that many seconds apart.
  */
 public abstract class Worker implements Comparable<Worker> {
@@ -13,19 +13,19 @@ public abstract class Worker implements Comparable<Worker> {
     private static final long NANOSECONDS_PER_SECOND = 1_000_000_000;
 
     /**
-     * Create a target frequency task.
+     * Create a worker.
      *
-     * Its {@link #run()} method will be called once.
+     * Its {@link #tick()} method will be called once.
      */
     protected Worker() {
         this.lastRunTime = System.nanoTime();
-        this.run();
+        this.tick();
     }
 
-    protected abstract void run();
+    protected abstract void tick();
 
     /**
-     * "Smaller" tasks are higher priority tasks.
+     * "Smaller" workers are higher priority workers.
      */
     @Override
     public int compareTo(final Worker other) {
@@ -33,13 +33,13 @@ public abstract class Worker implements Comparable<Worker> {
     }
 
     /**
-     * Get the target frequency of this target frequency task.
+     * Get the target frequency of this worker.
      * @return See above. In Hertz.
      */
     protected abstract double getTargetFreq();
 
     /**
-     * The amount of time until a call to {@link #run()} is due, in seconds.
+     * The amount of time until a call to {@link #tick()} is due, in seconds.
      */
     protected double priority() {
         final double elapsedTime = nsToS(System.nanoTime() - this.lastRunTime);
