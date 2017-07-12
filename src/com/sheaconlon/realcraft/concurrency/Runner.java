@@ -23,7 +23,7 @@ public class Runner implements Runnable {
     public void run() {
         while (!Thread.interrupted()) {
             final Worker topTask = this.workerQueue.poll();
-            topTask.run();
+            topTask.tick();
             this.workerQueue.add(topTask);
         }
     }
