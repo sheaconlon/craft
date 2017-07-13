@@ -45,6 +45,11 @@ public class Generator extends Worker {
     }
 
     @Override
+    public String toString() {
+        return "Generator";
+    }
+
+    @Override
     public boolean needsMainThread() {
         return false;
     }

@@ -29,6 +29,9 @@ public abstract class Worker implements Comparable<Worker> {
         this.lastTickTime = System.nanoTime();
     }
 
+    @Override
+    public abstract String toString();
+
     /**
      * @return Whether this worker needs to be ticked on the main thread.
      */

@@ -44,6 +44,11 @@ public class Prerenderer extends Worker {
     }
 
     @Override
+    public String toString() {
+        return "Prerenderer";
+    }
+
+    @Override
     public boolean needsMainThread() {
         return false;
     }

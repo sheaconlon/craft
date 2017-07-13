@@ -181,6 +181,11 @@ public class Renderer extends Worker {
     }
 
     @Override
+    public String toString() {
+        return "Renderer";
+    }
+
+    @Override
     public boolean needsMainThread() {
         return false;
     }

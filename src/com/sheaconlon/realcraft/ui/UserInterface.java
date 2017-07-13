@@ -124,6 +124,11 @@ public class UserInterface extends Worker {
     }
 
     @Override
+    public String toString() {
+        return "UserInterface";
+    }
+
+    @Override
     public boolean needsMainThread() {
         return true;
     }
