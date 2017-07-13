@@ -6,7 +6,7 @@ import com.sheaconlon.realcraft.renderer.Renderer;
 import com.sheaconlon.realcraft.utilities.Vector;
 import com.sheaconlon.realcraft.world.Chunk;
 import com.sheaconlon.realcraft.world.World;
-import com.sheaconlon.realcraft.Worker;
+import com.sheaconlon.realcraft.concurrency.Worker;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -16,9 +16,9 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class Generator extends Worker {
     /**
-     * A generator's return value for {@link #getInitialMinInterval()}.
+     * A generator's return value for {@link #getTargetFreq()}.
      */
-    private static final long INITIAL_MIN_INTERVAL = 1_000_000_000 / 1;
+    private static final double TARGET_FREQ = 1;
 
     /**
      * The y-coordinate of the highest ground blocks.
@@ -44,18 +44,11 @@ public class Generator extends Worker {
         this.world = world;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    protected long getInitialMinInterval() {
-        return Generator.INITIAL_MIN_INTERVAL;
+    protected double getTargetFreq() {
+        return Generator.TARGET_FREQ;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void initInThread() {
         return;
     }

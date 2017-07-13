@@ -1,6 +1,6 @@
 package com.sheaconlon.realcraft.renderer;
 
-import com.sheaconlon.realcraft.Worker;
+import com.sheaconlon.realcraft.concurrency.Worker;
 import com.sheaconlon.realcraft.entities.Player;
 import com.sheaconlon.realcraft.world.Chunk;
 import com.sheaconlon.realcraft.world.World;
@@ -28,12 +28,12 @@ public class Renderer extends Worker {
     private static final int SEND_INTERVAL = 60;
 
     /**
-     * A renderer's return value for {@link #getInitialMinInterval()}.
+     * A renderer's return value for {@link #getTargetFreq()}.
      *
      * The value is 0 because a renderer synchronizes itself with screen refreshes and should not be artificially
      * slowed down.
      */
-    private static final long INITIAL_MIN_INTERVAL = 0;
+    private static final double TARGET_FREQ = Double.POSITIVE_INFINITY;
 
     /**
      * The number of VBOs that a renderer should stock its empty VBO list with on each refill.
@@ -180,12 +180,9 @@ public class Renderer extends Worker {
         this.framesSinceVBOSend = Renderer.SEND_INTERVAL;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    protected long getInitialMinInterval() {
-        return Renderer.INITIAL_MIN_INTERVAL;
+    protected double getTargetFreq() {
+        return Renderer.TARGET_FREQ;
     }
 
     /**
@@ -214,10 +211,6 @@ public class Renderer extends Worker {
         return this.sentVBOs.containsKey(pos) || this.writtenVBOs.containsKey(pos);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void initInThread() {
         GLFW.glfwMakeContextCurrent(this.windowHandle);
         Renderer.configureOpenGL();

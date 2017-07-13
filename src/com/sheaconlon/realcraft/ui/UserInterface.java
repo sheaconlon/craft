@@ -1,6 +1,6 @@
 package com.sheaconlon.realcraft.ui;
 
-import com.sheaconlon.realcraft.Worker;
+import com.sheaconlon.realcraft.concurrency.Worker;
 import com.sheaconlon.realcraft.renderer.Renderer;
 import com.sheaconlon.realcraft.utilities.Vector;
 import com.sheaconlon.realcraft.world.World;
@@ -23,9 +23,9 @@ import java.util.List;
 public class UserInterface extends Worker {
     // TODO: Detect screen FPS and use that as the target tick rate of UserInterface.
     /**
-     * A user interface's return value for {@link #getInitialMinInterval()}.
+     * A user interface's return value for {@link #getTargetFreq()}.
      */
-    private static final long INITIAL_MIN_INTERVAL = 1_000_000_000 / 60;
+    private static final long TARGET_FREQ = 60;
 
     /**
      * The number of nanoseconds in a second.
@@ -128,18 +128,11 @@ public class UserInterface extends Worker {
         this.cursorPosition = this.window.getCursorPosition();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    protected long getInitialMinInterval() {
-        return UserInterface.INITIAL_MIN_INTERVAL;
+    protected double getTargetFreq() {
+        return UserInterface.TARGET_FREQ;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void initInThread() {
 
     }
