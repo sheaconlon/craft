@@ -126,6 +126,7 @@ public class UserInterface extends Worker {
         this.window.setKeyCallback(this.keyCallback);
         this.shouldClose = false;
         this.cursorPosition = this.window.getCursorPosition();
+        this.window.show();
     }
 
     @Override
@@ -135,13 +136,6 @@ public class UserInterface extends Worker {
 
     public void initInThread() {
 
-    }
-
-    /**
-     * Show the user interface.
-     */
-    public void show() {
-        this.window.show();
     }
 
     /**
