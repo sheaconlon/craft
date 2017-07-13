@@ -130,6 +130,16 @@ public class UserInterface extends Worker {
     }
 
     @Override
+    public boolean needsMainThread() {
+        return true;
+    }
+
+    @Override
+    public boolean needsDedicatedThread() {
+        return true;
+    }
+
+    @Override
     protected double getTargetFreq() {
         return UserInterface.TARGET_FREQ;
     }

@@ -30,6 +30,16 @@ public abstract class Worker implements Comparable<Worker> {
     }
 
     /**
+     * @return Whether this worker needs to be ticked on the main thread.
+     */
+    public abstract boolean needsMainThread();
+
+    /**
+     * @return Whether this worker needs to be ticked on a single, consistent thread.
+     */
+    public abstract boolean needsDedicatedThread();
+
+    /**
      * Record the interval that has passed since the last call to this method and do some bit of work.
      */
     void tick() {

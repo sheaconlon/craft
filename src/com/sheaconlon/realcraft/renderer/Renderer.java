@@ -181,6 +181,16 @@ public class Renderer extends Worker {
     }
 
     @Override
+    public boolean needsMainThread() {
+        return false;
+    }
+
+    @Override
+    public boolean needsDedicatedThread() {
+        return true;
+    }
+
+    @Override
     protected double getTargetFreq() {
         return Renderer.TARGET_FREQ;
     }

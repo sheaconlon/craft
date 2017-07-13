@@ -45,6 +45,16 @@ public class Generator extends Worker {
     }
 
     @Override
+    public boolean needsMainThread() {
+        return false;
+    }
+
+    @Override
+    public boolean needsDedicatedThread() {
+        return false;
+    }
+
+    @Override
     protected double getTargetFreq() {
         return Generator.TARGET_FREQ;
     }
