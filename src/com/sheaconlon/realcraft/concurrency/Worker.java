@@ -1,5 +1,7 @@
 package com.sheaconlon.realcraft.concurrency;
 
+import com.sheaconlon.realcraft.utilities.RollingAverager;
+
 /**
  * A worker, which should be ticked repeatedly.
  *
@@ -8,9 +10,13 @@ package com.sheaconlon.realcraft.concurrency;
  * apart. Under load, they would probably be initiated more than that many seconds apart.
  */
 public abstract class Worker implements Comparable<Worker> {
+    private static final int AVERAGE_TICK_INTERVAL_SAMPLE_SIZE = 1000;
+
     private static final long NANOSECONDS_PER_SECOND = 1_000_000_000;
 
     private long lastRunTime;
+
+    private final RollingAverager tickIntervalAverager;
 
     /**
      * Create a worker.
@@ -19,7 +25,24 @@ public abstract class Worker implements Comparable<Worker> {
      */
     protected Worker() {
         this.lastRunTime = System.nanoTime();
+        this.tickIntervalAverager = new RollingAverager(Worker.AVERAGE_TICK_INTERVAL_SAMPLE_SIZE);
         this.tick();
+    }
+
+    /**
+     * Record the interval that has passed since the last call to {@link #tick()} and call {@link #tick()}.
+     */
+    void tickAndRecord() {
+        this.tickIntervalAverager.add(nsToS(System.nanoTime() - this.lastRunTime));
+        this.tick();
+    }
+
+    /**
+     * @return The average of the last {@link #AVERAGE_TICK_INTERVAL_SAMPLE_SIZE} intervals that has passed
+     * between calls to {@link #tick()}.
+     */
+    double averageTickInterval() {
+        return this.tickIntervalAverager.average();
     }
 
     protected abstract void tick();
