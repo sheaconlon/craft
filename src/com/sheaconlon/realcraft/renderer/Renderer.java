@@ -296,7 +296,7 @@ public class Renderer extends Worker {
      * Possibly send a VBO, depending on how many frames have passed since a VBO was last sent.
      */
     private void sendVBO() {
-        if (this.framesSinceVBOSend < Renderer.SEND_INTERVAL && this.ticks >= Worker.BEGINNING_TICKS) {
+        if (this.framesSinceVBOSend < Renderer.SEND_INTERVAL) {
             return;
         }
         final Vector playerPos = this.world.getPlayer().getPosition();
