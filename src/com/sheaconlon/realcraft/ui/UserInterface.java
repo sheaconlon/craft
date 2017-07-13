@@ -70,7 +70,7 @@ public class UserInterface extends Worker {
         @Override
         public void invoke(long window, int key, int scancode, int action, int mods) {
             if (key == GLFW.GLFW_KEY_ESCAPE) {
-                UserInterface.this.shouldClose = true;
+                Thread.currentThread().interrupt();
             }
         }
     }
@@ -102,11 +102,6 @@ public class UserInterface extends Worker {
     private World world;
 
     /**
-     * Whether the user interface should close.
-     */
-    private boolean shouldClose;
-
-    /**
      * The most recently recorded cursor position, as an array with x- and y-coordinates.
      */
     private double[] cursorPosition;
@@ -124,7 +119,6 @@ public class UserInterface extends Worker {
         this.keyCallback = new UserInterface.KeyCallback();
         this.window.setWindowCloseCallback(this.windowCloseCallback);
         this.window.setKeyCallback(this.keyCallback);
-        this.shouldClose = false;
         this.cursorPosition = this.window.getCursorPosition();
         this.window.show();
     }
@@ -203,14 +197,6 @@ public class UserInterface extends Worker {
         window.runCallbacks();
         this.respondToMovement(elapsedTime);
         this.respondToLooking(elapsedTime);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected boolean shouldStop() {
-        return this.shouldClose;
     }
 
     /**
