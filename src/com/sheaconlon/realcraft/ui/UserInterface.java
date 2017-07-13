@@ -56,7 +56,7 @@ public class UserInterface extends Worker {
          * @param windowHandle The handle of the GLFW window in which the event occured.
          */
         public void invoke(final long windowHandle) {
-            UserInterface.this.shouldClose = true;
+            Thread.currentThread().interrupt();
         }
     }
 
