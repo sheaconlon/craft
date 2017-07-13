@@ -7,6 +7,8 @@ import java.util.Queue;
  * A runner, which ticks workers.
  */
 public class Runner implements Runnable {
+    private final int NO_WORKER_SLEEP_TIME = 10;
+
     private final Queue<Worker> sharedWorkers;
 
     private final Queue<Worker> assignedWorkers;
@@ -28,6 +30,24 @@ public class Runner implements Runnable {
         while (!Thread.interrupted()) {
             final Worker topSharedWorker = this.sharedWorkers.poll();
             final Worker topAssignedWorker = this.assignedWorkers.poll();
+            if (topSharedWorker == null && topAssignedWorker == null) {
+                try {
+                    Thread.sleep(NO_WORKER_SLEEP_TIME);
+                } catch (final InterruptedException e) {
+                    return;
+                }
+                continue;
+            }
+            if (topSharedWorker == null) {
+                topAssignedWorker.tick();
+                this.assignedWorkers.add(topAssignedWorker);
+                continue;
+            }
+            if (topAssignedWorker == null) {
+                topSharedWorker.tick();
+                this.sharedWorkers.add(topSharedWorker);
+                continue;
+            }
             if (topSharedWorker.compareTo(topAssignedWorker) < 0) { // Ties go to assigned workers.
                 topSharedWorker.tick();
                 this.sharedWorkers.add(topSharedWorker);
