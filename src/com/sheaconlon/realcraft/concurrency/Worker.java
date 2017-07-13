@@ -14,7 +14,7 @@ public abstract class Worker implements Comparable<Worker> {
 
     private static final long NANOSECONDS_PER_SECOND = 1_000_000_000;
 
-    private long lastRunTime;
+    private long lastTickTime;
 
     private final RollingAverager tickIntervalAverager;
 
@@ -24,7 +24,7 @@ public abstract class Worker implements Comparable<Worker> {
      * Its {@link #tick()} method will be called once.
      */
     protected Worker() {
-        this.lastRunTime = System.nanoTime();
+        this.lastTickTime = System.nanoTime();
         this.tickIntervalAverager = new RollingAverager(Worker.AVERAGE_TICK_INTERVAL_SAMPLE_SIZE);
         this.tick();
     }
@@ -33,8 +33,8 @@ public abstract class Worker implements Comparable<Worker> {
      * Record the interval that has passed since the last call to this method and do some bit of work.
      */
     void tick() {
-        final double elapsedTime = nsToS(System.nanoTime() - this.lastRunTime);
-        this.lastRunTime = System.nanoTime();
+        final double elapsedTime = nsToS(System.nanoTime() - this.lastTickTime);
+        this.lastTickTime = System.nanoTime();
         this.tickIntervalAverager.add(elapsedTime);
         this.tick(elapsedTime);
     }
@@ -71,7 +71,7 @@ public abstract class Worker implements Comparable<Worker> {
      * The amount of time until a call to {@link #tick()} is due, in seconds.
      */
     protected double priority() {
-        final double elapsedTime = nsToS(System.nanoTime() - this.lastRunTime);
+        final double elapsedTime = nsToS(System.nanoTime() - this.lastTickTime);
         return 1 / this.getTargetFreq() - elapsedTime;
     }
 
