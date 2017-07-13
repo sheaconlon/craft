@@ -30,11 +30,13 @@ public abstract class Worker implements Comparable<Worker> {
     }
 
     /**
-     * Record the interval that has passed since the last call to {@link #tick()} and call {@link #tick()}.
+     * Record the interval that has passed since the last call to this method and do some bit of work.
      */
-    void tickAndRecord() {
-        this.tickIntervalAverager.add(nsToS(System.nanoTime() - this.lastRunTime));
-        this.tick();
+    void tick() {
+        final double elapsedTime = nsToS(System.nanoTime() - this.lastRunTime);
+        this.lastRunTime = System.nanoTime();
+        this.tickIntervalAverager.add(elapsedTime);
+        this.tick(elapsedTime);
     }
 
     /**
@@ -45,7 +47,11 @@ public abstract class Worker implements Comparable<Worker> {
         return this.tickIntervalAverager.average();
     }
 
-    protected abstract void tick();
+    /**
+     * Do some bit of work.
+     * @param interval The interval that has elapsed since the last call to this method. In seconds.
+     */
+    protected abstract void tick(final double interval);
 
     /**
      * "Smaller" workers are higher priority workers.
