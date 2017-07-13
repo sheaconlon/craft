@@ -21,12 +21,12 @@ public abstract class Worker implements Comparable<Worker> {
     /**
      * Create a worker.
      *
-     * Its {@link #tick()} method will be called once.
+     * It will consider its first tick to have occurred upon construction.
      */
     protected Worker() {
         this.lastTickTime = System.nanoTime();
         this.tickIntervalAverager = new RollingAverager(Worker.AVERAGE_TICK_INTERVAL_SAMPLE_SIZE);
-        this.tick();
+        this.lastTickTime = System.nanoTime();
     }
 
     /**
