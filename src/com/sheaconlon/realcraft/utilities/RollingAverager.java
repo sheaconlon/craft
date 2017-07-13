@@ -25,8 +25,10 @@ public class RollingAverager {
      * @param x The sample.
      */
     public void add(final double x) {
-        final double old = this.buffer.addFront(x);
-        this.sum -= old;
+        final Double old = this.buffer.addFront(x);
+        if (old != null) {
+            this.sum -= old;
+        }
         this.sum += x;
     }
 
