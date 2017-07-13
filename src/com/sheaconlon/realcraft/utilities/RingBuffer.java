@@ -30,11 +30,14 @@ public class RingBuffer<E> {
     /**
      * Add an element, replacing the oldest existing element if needed.
      * @param e The element.
+     * @return The element that was replaced, or null if there is none.
      */
-    public void addFront(E e) {
+    public E addFront(E e) {
+        final E old = this.contents[this.curr];
         this.size = Math.min(this.size + 1, this.contents.length);
         this.contents[this.curr] = e;
         this.curr = (this.curr + 1) % this.contents.length;
+        return old;
     }
 
     /**
