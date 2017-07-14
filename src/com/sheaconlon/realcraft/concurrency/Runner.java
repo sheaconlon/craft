@@ -33,10 +33,12 @@ public class Runner implements Runnable {
         while (!Thread.interrupted()) {
             Worker topSharedWorker = this.sharedWorkers.poll();
             if (topSharedWorker != null && topSharedWorker.timeUntilTickDue() > 0) {
+                this.sharedWorkers.add(topSharedWorker);
                 topSharedWorker = null;
             }
             Worker topAssignedWorker = this.assignedWorkers.poll();
             if (topAssignedWorker != null && topAssignedWorker.timeUntilTickDue() > 0) {
+                this.assignedWorkers.add(topAssignedWorker);
                 topAssignedWorker = null;
             }
             if (topSharedWorker == null && topAssignedWorker == null) {
