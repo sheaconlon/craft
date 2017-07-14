@@ -226,6 +226,7 @@ public class Renderer extends Worker {
         return this.sentVBOs.containsKey(pos) || this.writtenVBOs.containsKey(pos);
     }
 
+    @Override
     public void initInThread() {
         GLFW.glfwMakeContextCurrent(this.windowHandle);
         Renderer.configureOpenGL();

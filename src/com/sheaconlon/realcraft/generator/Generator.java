@@ -64,10 +64,6 @@ public class Generator extends Worker {
         return Generator.TARGET_FREQ;
     }
 
-    public void initInThread() {
-        return;
-    }
-
     /**
      * If necessary, generate any unloaded chunks near the player and load them into the world.
      */

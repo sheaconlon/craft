@@ -143,10 +143,6 @@ public class UserInterface extends Worker {
         return UserInterface.TARGET_FREQ;
     }
 
-    public void initInThread() {
-
-    }
-
     /**
      * Return whether the user interface might be visible.
      * @return Whether the user interface might be visible.

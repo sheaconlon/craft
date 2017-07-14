@@ -27,6 +27,9 @@ public class Runner implements Runnable {
      */
     @Override
     public void run() {
+        for (final Worker w : this.assignedWorkers) {
+            w.initInThread();
+        }
         while (!Thread.interrupted()) {
             final Worker topSharedWorker = this.sharedWorkers.poll();
             final Worker topAssignedWorker = this.assignedWorkers.poll();
@@ -61,7 +64,8 @@ public class Runner implements Runnable {
     }
 
     /**
-     * Assign a worker for this runner to tick. This worker is not ticked by other runners.
+     * Assign a worker for this runner to tick. This worker is not ticked by other runners. Should not be called
+     * once {@link #run()} is called.
      * @param w The worker.
      */
     public void assign(final Worker w) {

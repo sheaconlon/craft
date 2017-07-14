@@ -63,10 +63,6 @@ public class Prerenderer extends Worker {
         return Prerenderer.TARGET_FREQ;
     }
 
-    public void initInThread() {
-
-    }
-
     /**
      * {@inheritDoc}
      */

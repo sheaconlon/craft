@@ -29,6 +29,14 @@ public abstract class Worker implements Comparable<Worker> {
         this.lastTickTime = System.nanoTime();
     }
 
+    /**
+     * Perform initialization that must be done in this worker's dedicated thread. Only called for workers whose
+     * {@link #needsDedicatedThread()} returns true. The default does nothing.
+     */
+    public void initInThread() {
+        return;
+    }
+
     @Override
     public abstract String toString();
 
