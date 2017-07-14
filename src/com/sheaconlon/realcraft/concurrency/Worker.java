@@ -76,11 +76,11 @@ public abstract class Worker implements Comparable<Worker> {
     protected abstract void tick(final double interval);
 
     /**
-     * "Smaller" workers are higher priority workers.
+     * "Smaller" workers have ticks due sooner.
      */
     @Override
     public int compareTo(final Worker other) {
-        return -(int)Math.signum(this.priority() - other.priority());
+        return (int)Math.signum(this.timeUntilTickDue() - other.timeUntilTickDue());
     }
 
     /**
@@ -92,7 +92,7 @@ public abstract class Worker implements Comparable<Worker> {
     /**
      * The amount of time until a call to {@link #tick()} is due, in seconds.
      */
-    protected double priority() {
+    protected double timeUntilTickDue() {
         final double elapsedTime = nsToS(System.nanoTime() - this.lastTickTime);
         return 1 / this.getTargetFreq() - elapsedTime;
     }
