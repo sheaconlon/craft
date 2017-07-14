@@ -55,7 +55,7 @@ public class Prerenderer extends Worker {
 
     @Override
     public boolean needsDedicatedThread() {
-        return true;
+        return false;
     }
 
     @Override
