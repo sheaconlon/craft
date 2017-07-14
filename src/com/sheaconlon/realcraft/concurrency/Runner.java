@@ -31,8 +31,14 @@ public class Runner implements Runnable {
             w.initInThread();
         }
         while (!Thread.interrupted()) {
-            final Worker topSharedWorker = this.sharedWorkers.poll();
-            final Worker topAssignedWorker = this.assignedWorkers.poll();
+            Worker topSharedWorker = this.sharedWorkers.poll();
+            if (topSharedWorker != null && topSharedWorker.timeUntilTickDue() > 0) {
+                topSharedWorker = null;
+            }
+            Worker topAssignedWorker = this.assignedWorkers.poll();
+            if (topAssignedWorker != null && topAssignedWorker.timeUntilTickDue() > 0) {
+                topAssignedWorker = null;
+            }
             if (topSharedWorker == null && topAssignedWorker == null) {
                 try {
                     Thread.sleep(NO_WORKER_SLEEP_TIME);
