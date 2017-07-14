@@ -49,9 +49,11 @@ public class Runner implements Runnable {
                 continue;
             }
             if (topSharedWorker.compareTo(topAssignedWorker) < 0) { // Ties go to assigned workers.
+                this.assignedWorkers.add(topAssignedWorker);
                 topSharedWorker.tick();
                 this.sharedWorkers.add(topSharedWorker);
             } else {
+                this.sharedWorkers.add(topSharedWorker);
                 topAssignedWorker.tick();
                 this.assignedWorkers.add(topAssignedWorker);
             }
