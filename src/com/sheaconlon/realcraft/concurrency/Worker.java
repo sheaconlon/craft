@@ -10,6 +10,10 @@ import com.sheaconlon.realcraft.utilities.RollingAverager;
  * apart. Under load, they would probably be initiated more than that many seconds apart.
  */
 public abstract class Worker implements Comparable<Worker> {
+    public enum PRIORITY_LEVEL {
+        HIGH, MEDIUM, LOW;
+    }
+
     private static final int AVERAGE_TICK_INTERVAL_SAMPLE_SIZE = 1000;
 
     private static final long NANOSECONDS_PER_SECOND = 1_000_000_000;
@@ -28,6 +32,11 @@ public abstract class Worker implements Comparable<Worker> {
         this.tickIntervalAverager = new RollingAverager(Worker.AVERAGE_TICK_INTERVAL_SAMPLE_SIZE);
         this.lastTickTime = System.nanoTime();
     }
+
+    /**
+     * @return The priority level of this worker.
+     */
+    public abstract PRIORITY_LEVEL getPriorityLevel();
 
     /**
      * Perform initialization that must be done in this worker's dedicated thread. Only called for workers whose

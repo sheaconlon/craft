@@ -124,6 +124,11 @@ public class UserInterface extends Worker {
     }
 
     @Override
+    public PRIORITY_LEVEL getPriorityLevel() {
+        return PRIORITY_LEVEL.HIGH;
+    }
+
+    @Override
     public String toString() {
         return "UserInterface";
     }
