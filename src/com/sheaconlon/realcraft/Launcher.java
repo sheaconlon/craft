@@ -46,9 +46,11 @@ public class Launcher {
             }
         }
 
+        Thread.currentThread().setName("Runner #0");
         final Thread[] threads = new Thread[runners.length - 1];
         for (int i = 0; i < threads.length; i++) {
             threads[i] = new Thread(runners[i + 1]);
+            threads[i].setName("Runner #" + (i + 1));
             threads[i].start();
         }
         runners[0].run();
