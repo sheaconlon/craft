@@ -1,6 +1,6 @@
 package com.sheaconlon.realcraft.ui;
 
-import com.sheaconlon.realcraft.Worker;
+import com.sheaconlon.realcraft.concurrency.Worker;
 import com.sheaconlon.realcraft.renderer.Renderer;
 import com.sheaconlon.realcraft.utilities.Vector;
 import com.sheaconlon.realcraft.world.World;
@@ -23,9 +23,9 @@ import java.util.List;
 public class UserInterface extends Worker {
     // TODO: Detect screen FPS and use that as the target tick rate of UserInterface.
     /**
-     * A user interface's return value for {@link #getInitialMinInterval()}.
+     * A user interface's return value for {@link #getTargetFreq()}.
      */
-    private static final long INITIAL_MIN_INTERVAL = 1_000_000_000 / 60;
+    private static final long TARGET_FREQ = 60;
 
     /**
      * The number of nanoseconds in a second.
@@ -56,7 +56,7 @@ public class UserInterface extends Worker {
          * @param windowHandle The handle of the GLFW window in which the event occured.
          */
         public void invoke(final long windowHandle) {
-            UserInterface.this.shouldClose = true;
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -70,7 +70,7 @@ public class UserInterface extends Worker {
         @Override
         public void invoke(long window, int key, int scancode, int action, int mods) {
             if (key == GLFW.GLFW_KEY_ESCAPE) {
-                UserInterface.this.shouldClose = true;
+                Thread.currentThread().interrupt();
             }
         }
     }
@@ -102,11 +102,6 @@ public class UserInterface extends Worker {
     private World world;
 
     /**
-     * Whether the user interface should close.
-     */
-    private boolean shouldClose;
-
-    /**
      * The most recently recorded cursor position, as an array with x- and y-coordinates.
      */
     private double[] cursorPosition;
@@ -124,31 +119,33 @@ public class UserInterface extends Worker {
         this.keyCallback = new UserInterface.KeyCallback();
         this.window.setWindowCloseCallback(this.windowCloseCallback);
         this.window.setKeyCallback(this.keyCallback);
-        this.shouldClose = false;
         this.cursorPosition = this.window.getCursorPosition();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected long getInitialMinInterval() {
-        return UserInterface.INITIAL_MIN_INTERVAL;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void initInThread() {
-
-    }
-
-    /**
-     * Show the user interface.
-     */
-    public void show() {
         this.window.show();
+    }
+
+    @Override
+    public PRIORITY_LEVEL getPriorityLevel() {
+        return PRIORITY_LEVEL.HIGH;
+    }
+
+    @Override
+    public String toString() {
+        return "UserInterface";
+    }
+
+    @Override
+    public boolean needsMainThread() {
+        return true;
+    }
+
+    @Override
+    public boolean needsDedicatedThread() {
+        return true;
+    }
+
+    @Override
+    protected double getTargetFreq() {
+        return UserInterface.TARGET_FREQ;
     }
 
     /**
@@ -206,14 +203,6 @@ public class UserInterface extends Worker {
         window.runCallbacks();
         this.respondToMovement(elapsedTime);
         this.respondToLooking(elapsedTime);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected boolean shouldStop() {
-        return this.shouldClose;
     }
 
     /**

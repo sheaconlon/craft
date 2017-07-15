@@ -1,6 +1,6 @@
 package com.sheaconlon.realcraft.renderer;
 
-import com.sheaconlon.realcraft.Worker;
+import com.sheaconlon.realcraft.concurrency.Worker;
 import com.sheaconlon.realcraft.utilities.Vector;
 import com.sheaconlon.realcraft.world.Chunk;
 import com.sheaconlon.realcraft.world.World;
@@ -15,9 +15,9 @@ import java.util.List;
  */
 public class Prerenderer extends Worker {
     /**
-     * A pre-renderer's return value for {@link #getInitialMinInterval()}.
+     * A pre-renderer's return value for {@link #getTargetFreq()}.
      */
-    private static final long INITIAL_MIN_INTERVAL = 1_000_000_000 / 1;
+    private static final long TARGET_FREQ = 4;
 
     /**
      * The number of chunks in each direction from the player's chunk that pre-renderers should pre-render.
@@ -43,20 +43,29 @@ public class Prerenderer extends Worker {
         this.renderer = renderer;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    protected long getInitialMinInterval() {
-        return Prerenderer.INITIAL_MIN_INTERVAL;
+    public PRIORITY_LEVEL getPriorityLevel() {
+        return PRIORITY_LEVEL.MEDIUM;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void initInThread() {
+    public String toString() {
+        return "Prerenderer";
+    }
 
+    @Override
+    public boolean needsMainThread() {
+        return false;
+    }
+
+    @Override
+    public boolean needsDedicatedThread() {
+        return false;
+    }
+
+    @Override
+    protected double getTargetFreq() {
+        return Prerenderer.TARGET_FREQ;
     }
 
     /**

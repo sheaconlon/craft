@@ -1,6 +1,6 @@
 package com.sheaconlon.realcraft.renderer;
 
-import com.sheaconlon.realcraft.Worker;
+import com.sheaconlon.realcraft.concurrency.Worker;
 import com.sheaconlon.realcraft.entities.Player;
 import com.sheaconlon.realcraft.world.Chunk;
 import com.sheaconlon.realcraft.world.World;
@@ -25,15 +25,15 @@ public class Renderer extends Worker {
     /**
      * The number of frames to wait between sends of VBOs.
      */
-    private static final int SEND_INTERVAL = 60;
+    private static final int SEND_INTERVAL = 20;
 
     /**
-     * A renderer's return value for {@link #getInitialMinInterval()}.
+     * A renderer's return value for {@link #getTargetFreq()}.
      *
      * The value is 0 because a renderer synchronizes itself with screen refreshes and should not be artificially
      * slowed down.
      */
-    private static final long INITIAL_MIN_INTERVAL = 0;
+    private static final double TARGET_FREQ = Double.POSITIVE_INFINITY;
 
     /**
      * The number of VBOs that a renderer should stock its empty VBO list with on each refill.
@@ -180,12 +180,29 @@ public class Renderer extends Worker {
         this.framesSinceVBOSend = Renderer.SEND_INTERVAL;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    protected long getInitialMinInterval() {
-        return Renderer.INITIAL_MIN_INTERVAL;
+    public PRIORITY_LEVEL getPriorityLevel() {
+        return PRIORITY_LEVEL.HIGH;
+    }
+
+    @Override
+    public String toString() {
+        return "Renderer";
+    }
+
+    @Override
+    public boolean needsMainThread() {
+        return false;
+    }
+
+    @Override
+    public boolean needsDedicatedThread() {
+        return true;
+    }
+
+    @Override
+    protected double getTargetFreq() {
+        return Renderer.TARGET_FREQ;
     }
 
     /**
@@ -214,9 +231,6 @@ public class Renderer extends Worker {
         return this.sentVBOs.containsKey(pos) || this.writtenVBOs.containsKey(pos);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void initInThread() {
         GLFW.glfwMakeContextCurrent(this.windowHandle);
@@ -293,7 +307,7 @@ public class Renderer extends Worker {
      * Possibly send a VBO, depending on how many frames have passed since a VBO was last sent.
      */
     private void sendVBO() {
-        if (this.framesSinceVBOSend < Renderer.SEND_INTERVAL && this.ticks >= Worker.BEGINNING_TICKS) {
+        if (this.framesSinceVBOSend < Renderer.SEND_INTERVAL) {
             return;
         }
         final Vector playerPos = this.world.getPlayer().getPosition();
