@@ -85,7 +85,7 @@ public abstract class Worker implements Comparable<Worker> {
     protected abstract void tick(final double interval);
 
     /**
-     * "Smaller" workers have ticks due sooner.
+     * "Smaller" workers have smaller return values for {@link #timeUntilTickDue()}.
      */
     @Override
     public int compareTo(final Worker other) {
@@ -99,11 +99,19 @@ public abstract class Worker implements Comparable<Worker> {
     protected abstract double getTargetFreq();
 
     /**
-     * The amount of time until a call to {@link #tick()} is due, in seconds.
+     * The amount of time until a call to {@link #tick()} is due, in seconds. Weighted if
+     * {@link #getPriorityLevel()} returns {@link PRIORITY_LEVEL#HIGH} or {@link PRIORITY_LEVEL#MEDIUM}.
      */
     protected double timeUntilTickDue() {
         final double elapsedTime = nsToS(System.nanoTime() - this.lastTickTime);
-        return 1 / this.getTargetFreq() - elapsedTime;
+        double result = 1 / this.getTargetFreq() - elapsedTime;
+        if (this.getPriorityLevel() == PRIORITY_LEVEL.HIGH) {
+            result *= 100;
+        }
+        if (this.getPriorityLevel() == PRIORITY_LEVEL.MEDIUM) {
+            result *= 10;
+        }
+        return result;
     }
 
     private static double nsToS(final long ns) {
