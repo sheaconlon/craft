@@ -17,7 +17,7 @@ public class Prerenderer extends Worker {
     /**
      * A pre-renderer's return value for {@link #getTargetFreq()}.
      */
-    private static final long TARGET_FREQ = 1;
+    private static final long TARGET_FREQ = 4;
 
     /**
      * The number of chunks in each direction from the player's chunk that pre-renderers should pre-render.

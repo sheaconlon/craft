@@ -18,7 +18,7 @@ public class Generator extends Worker {
     /**
      * A generator's return value for {@link #getTargetFreq()}.
      */
-    private static final double TARGET_FREQ = 1;
+    private static final double TARGET_FREQ = 4;
 
     /**
      * The y-coordinate of the highest ground blocks.

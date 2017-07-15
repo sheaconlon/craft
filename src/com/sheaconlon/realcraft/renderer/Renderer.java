@@ -25,7 +25,7 @@ public class Renderer extends Worker {
     /**
      * The number of frames to wait between sends of VBOs.
      */
-    private static final int SEND_INTERVAL = 60;
+    private static final int SEND_INTERVAL = 20;
 
     /**
      * A renderer's return value for {@link #getTargetFreq()}.
