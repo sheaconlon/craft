@@ -64,7 +64,6 @@ public abstract class Worker implements Comparable<Worker> {
      */
     void tick() {
         final double elapsedTime = nsToS(System.nanoTime() - this.lastTickTime);
-        System.out.printf("%s was ticked by thread %s after %f seconds.\n", this, Thread.currentThread().getName(), elapsedTime);
         this.lastTickTime = System.nanoTime();
         this.tickIntervalAverager.add(elapsedTime);
         this.tick(elapsedTime);
