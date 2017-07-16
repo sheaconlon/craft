@@ -210,4 +210,33 @@ public class Vector {
         }
         return nearby;
     }
+
+    /**
+     * Get the vectors which bound some set of vectors.
+     * @param vectors A set of vectors. Must contain at least 1 vector. Cannot contain null.
+     * @return The minimal coordinate values over {@code vectors} and the maximal coordinate values over
+     *         {@code vectors}.
+     */
+    public static Vector[] bounds(final Vector[] vectors) {
+        if (vectors.length == 0) {
+            throw new IllegalArgumentException("Cannot get the bounds of a size-0 set of vectors.");
+        }
+        double xMin = Double.POSITIVE_INFINITY, yMin = Double.POSITIVE_INFINITY, zMin = Double.POSITIVE_INFINITY,
+               xMax = Double.NEGATIVE_INFINITY, yMax = Double.NEGATIVE_INFINITY, zMax = Double.NEGATIVE_INFINITY;
+        for (final Vector v : vectors) {
+            if (v == null) {
+                throw new IllegalArgumentException("Cannot get the bounds of a set of vectors containing null.");
+            }
+            xMin = Math.min(xMin, v.getX());
+            yMin = Math.min(yMin, v.getY());
+            zMin = Math.min(zMin, v.getZ());
+            xMax = Math.max(xMax, v.getX());
+            yMax = Math.max(yMax, v.getY());
+            zMax = Math.max(zMax, v.getZ());
+        }
+        return new Vector[]{
+                new Vector(xMin, yMin, zMin),
+                new Vector(xMax, yMax, zMax)
+        };
+    }
 }
