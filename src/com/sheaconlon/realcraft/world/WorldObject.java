@@ -10,16 +10,6 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  */
 public abstract class WorldObject {
     /**
-     * The number of rewinds that a world object is capable of.
-     */
-    private static final int REWIND_COUNT = 1000;
-
-    /**
-     * The container of this world object.
-     */
-    private final Container container;
-
-    /**
      * The position of the anchor point of this world object, relative to the position of the anchor point of
      * this world object's container.
      */
@@ -43,26 +33,16 @@ public abstract class WorldObject {
     private final Vector velocity;
 
     /**
-     * The {@link #REWIND_COUNT} previous configurations that this world object has been in. A configuration
-     * consists of the x component of the position, the y component of the position, the z component of the
-     * position, the xz orientation, and the xz-cross orientation.
-     */
-    private final Deque<double[]> prevConfigs;
-
-    /**
      * Create a world object.
-     * @param container See {@link #container}.
      * @param position See {@link #position}.
      * @param velocity See {@link #velocity}.
      */
     public WorldObject(final Container container, final Vector position, final double horizontalOrientation,
                        final double verticalOrientation, final Vector velocity) {
-        this.container = container;
         this.position = position;
         this.horizontalOrientation = horizontalOrientation;
         this.verticalOrientation = verticalOrientation;
         this.velocity = velocity;
-        this.prevConfigs = new ConcurrentLinkedDeque<>();
     }
 
     /**
@@ -99,7 +79,6 @@ public abstract class WorldObject {
      * Changer for {@link #position}.
      */
     public void changePosition(final Vector delta) {
-        this.recordConfig();
         this.position = Vector.add(this.position, delta);
     }
 
@@ -116,7 +95,6 @@ public abstract class WorldObject {
      * @param delta The amount by which to change the value of {@link #horizontalOrientation}.
      */
     public void changeHorizontalOrientation(final double delta) {
-        this.recordConfig();
         this.horizontalOrientation += delta;
     }
 
@@ -133,36 +111,6 @@ public abstract class WorldObject {
      * @param delta The amount by which to change the value of {@link #verticalOrientation}.
      */
     public void changeVerticalOrientation(final double delta) {
-        this.recordConfig();
         this.verticalOrientation += delta;
-    }
-
-    /**
-     * Rewind this world object's position, xz orientation, and xz-cross orientation to their previous values.
-     */
-    public void rewind() {
-        if (this.prevConfigs.size() == 0) {
-            return;
-        }
-        final double[] config = this.prevConfigs.removeLast();
-        this.position = new Vector(config[0], config[1], config[2]);
-        this.horizontalOrientation = config[3];
-        this.verticalOrientation = config[4];
-    }
-
-    /**
-     * Record the current configuration of this world object in {@link #prevConfigs}.
-     */
-    private void recordConfig() {
-        if (this.prevConfigs.size() == WorldObject.REWIND_COUNT) {
-            this.prevConfigs.removeFirst();
-        }
-        this.prevConfigs.addLast(new double[]{
-                this.position.getX(),
-                this.position.getY(),
-                this.position.getZ(),
-                this.horizontalOrientation,
-                this.verticalOrientation
-        });
     }
 }
