@@ -20,8 +20,8 @@ public class Player extends Animal {
     /**
      * Create a player.
      * @param position The position of the player.
-     * @param horizontalOrientation See {@link WorldObject#horizontalOrientation}.
-     * @param verticalOrientation See {@link WorldObject#verticalOrientation}.
+     * @param horizontalOrientation See {@link WorldObject#orient}.
+     * @param verticalOrientation See {@link WorldObject#vertOrient}.
      */
     public Player(final Vector position, final double horizontalOrientation, final double verticalOrientation) {
         super(position, Player.INITIAL_VELOCITY, horizontalOrientation, verticalOrientation);

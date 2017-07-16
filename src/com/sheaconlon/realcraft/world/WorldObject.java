@@ -1,116 +1,134 @@
 package com.sheaconlon.realcraft.world;
 
+import com.sheaconlon.realcraft.simulator.Hitbox;
 import com.sheaconlon.realcraft.utilities.Vector;
-
-import java.util.Deque;
-import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * A world object.
  */
 public abstract class WorldObject {
-    /**
-     * The position of the anchor point of this world object, relative to the position of the anchor point of
-     * this world object's container.
-     */
-    private Vector position;
-
-    /**
-     * The angle between the "forward" direction of this world object and the positive x-axis, within the
-     * xz-plane, where towards negative z is positive and towards positive z is negative.
-     */
-    protected double horizontalOrientation;
-
-    /**
-     * The angle between the "forward" direction of this world object and the xz-plane, where upward is positive
-     * and downward is negative.
-     */
-    protected double verticalOrientation;
-
-    /**
-     * The velocity of this world object.
-     */
-    private final Vector velocity;
+    private Vector pos;
+    private double orient;
+    private Vector velocity;
 
     /**
      * Create a world object.
-     * @param position See {@link #position}.
-     * @param velocity See {@link #velocity}.
+     * @param pos The position of the anchor point of the world object.
+     * @param orient The direction the world object faces in the xz-plane, as an angle from the positive x-axis
+     *               towards the negative z-axis. In radians.
+     * @param velocity The velocity of the world object. Each component in blocks per second.
      */
-    public WorldObject(final Container container, final Vector position, final double horizontalOrientation,
-                       final double verticalOrientation, final Vector velocity) {
-        this.position = position;
-        this.horizontalOrientation = horizontalOrientation;
-        this.verticalOrientation = verticalOrientation;
+    public WorldObject(final Vector pos, final double orient, final Vector velocity) {
+        this.pos = pos;
+        this.orient = orient;
         this.velocity = velocity;
     }
 
     /**
-     * Get the vertex data of this world object, with positions relative to this world object's anchor.
+     * Get the vertex data of this world object, with positions relative to this world object's anchor point.
      *
      * The vertex data of one vertex consists of an array of 3 float arrays. The first float array consists
-     * of three floats which are the x-, y-, and z-coordinates of the position of the vertex. The second float
-     * array consists of three floats which are the red, green, and blue components of the color of the vertex.
-     * The third float array consists of three floats which are the x-, y-, and z-coordinates of the normal
+     * of three floats which are the position of the vertex. The second float array consists of three floats
+     * which are the RGB color of the vertex. The third float array consists of three floats which are the normal
      * vector of the vertex. The vertex data of this world object consists of the array of the vertex data of all
      * its vertices, in some arbitrary, consistent order.
-     * @return The vertex data of this world object, with positions relative to this world object's anchor.
+     * @return The vertex data of this world object, with positions relative to this world object's anchor point.
      */
     public abstract float[][][] getVertexData();
 
     /**
-     * Get the dimensions of this world object's hit box.
-     *
-     * An array of side lengths along the x-, y-, and z-axes, in blocks. The hit box is a rectangular prism extending
-     * from the world object's anchor point towards the positive x, y, and z directions. Null if the world object
-     * has no hit box.
-     * @return The dimensions of this world object's hit box, or null if it has none.
+     * Get the mass of this world object.
+     * @return The mass of this world object. In kilograms.
      */
-    public abstract double[] getHitBoxDims();
+    public abstract double getMass();
 
     /**
-     * Getter for {@link #position}.
+     * Get the compressive strength of this world object.
+     * @return The compressive strength of this world object. In Newtons per meter.
      */
-    public Vector getPosition() {
-        return this.position;
+    public abstract double getCompressiveStrength();
+
+    /**
+     * Get the hitboxes of this world object.
+     * @return The hitboxes of this world object.
+     */
+    public abstract Hitbox[] getHitboxes();
+
+    /**
+     * Act upon the world. Should be called every so often.
+     */
+    public abstract void tick(final World world);
+
+    /**
+     * @return The position of the anchor point of this world object.
+     */
+    public Vector getPos() {
+        return this.pos;
     }
 
     /**
-     * Changer for {@link #position}.
+     * Change the position of the anchor point of this world object.
+     * @param disp The displacement to add to the position.
      */
-    public void changePosition(final Vector delta) {
-        this.position = Vector.add(this.position, delta);
+    public void changePos(final Vector disp) {
+        this.pos = Vector.add(this.pos, disp);
     }
 
     /**
-     * Get the value of {@link #horizontalOrientation}.
-     * @return The value of {@link #horizontalOrientation}.
+     * Set the position of the anchor point of this world object.
+     * @param pos The new position.
      */
-    public double getHorizontalOrientation() {
-        return this.horizontalOrientation;
+    public void setPos(final Vector pos) {
+        this.pos = pos;
     }
 
     /**
-     * Change the value of {@link #horizontalOrientation}.
-     * @param delta The amount by which to change the value of {@link #horizontalOrientation}.
+     * Get the direction this world object faces in the xz-plane.
+     * @return The direction this world object faces in the xz-plane, as an angle from the positive x-axis
+     *         towards the negative z-axis. In radians.
      */
-    public void changeHorizontalOrientation(final double delta) {
-        this.horizontalOrientation += delta;
+    public double getOrient() {
+        return this.orient;
     }
 
     /**
-     * Get the value of {@link #verticalOrientation}.
-     * @return The value of {@link #verticalOrientation}.
+     * Change the direction this world object faces in the xz-plane.
+     * @param delta The angle through which this world object should turn in the xz-plane, in the direction away
+     *              from the positive x-axis and towards the negative z-axis. In radians.
      */
-    public double getVerticalOrientation() {
-        return this.verticalOrientation;
+    public void changeOrient(final double delta) {
+        this.orient += delta;
     }
 
     /**
-     * Change the value of {@link #verticalOrientation}.
-     * @param delta The amount by which to change the value of {@link #verticalOrientation}.
+     * Set the direction this world object faces in the xz-plane.
+     * @param orient The direction this world object should face in the xz-plane, as an angle from the positive
+     *               x-axis towards the negative z-axis. In radians.
      */
-    public void changeVerticalOrientation(final double delta) {
-        this.verticalOrientation += delta;
+    public void setOrient(final double orient) {
+        this.orient = orient;
+    }
+
+    /**
+     * @return The velocity of this world object.
+     */
+    public Vector getVelocity() {
+        return this.velocity;
+    }
+
+    /**
+     * Change the velocity of this world object.
+     * @param disp The displacement to add to the velocity.
+     */
+    public void changeVelocity(final Vector disp) {
+        this.velocity = Vector.add(this.velocity, disp);
+    }
+
+    /**
+     * Set the velocity of this world object.
+     * @param velocity The new velocity.
+     */
+    public void setVelocity(final Vector velocity) {
+        this.velocity = velocity;
     }
 }

@@ -26,8 +26,8 @@ public abstract class Animal extends Entity {
      * Create an animal.
      * @param position See {@link WorldObject#position}.
      * @param velocity See {@link WorldObject#velocity}.
-     * @param xzOrientation See {@link WorldObject#horizontalOrientation}.
-     * @param xzCrossOrientation See {@link WorldObject#verticalOrientation}.
+     * @param xzOrientation See {@link WorldObject#orient}.
+     * @param xzCrossOrientation See {@link WorldObject#vertOrient}.
      */
     public Animal(final Vector position, final Vector velocity, final double xzOrientation,
                   final double xzCrossOrientation) {
@@ -37,13 +37,13 @@ public abstract class Animal extends Entity {
     @Override
     public void changeHorizontalOrientation(final double delta) {
         super.changeHorizontalOrientation(delta);
-        this.horizontalOrientation = this.horizontalOrientation % Animal.FULL_REVOLUTION_ANGLE;
+        this.orient = this.orient % Animal.FULL_REVOLUTION_ANGLE;
     }
 
     @Override
     public void changeVerticalOrientation(final double delta) {
         super.changeVerticalOrientation(delta);
-        this.verticalOrientation = Math.max(Animal.VERTICAL_ORIENTATION_MINIMUM, this.verticalOrientation);
-        this.verticalOrientation = Math.min(Animal.VERTICAL_ORIENTATION_MAXIMUM, this.verticalOrientation);
+        this.vertOrient = Math.max(Animal.VERTICAL_ORIENTATION_MINIMUM, this.vertOrient);
+        this.vertOrient = Math.min(Animal.VERTICAL_ORIENTATION_MAXIMUM, this.vertOrient);
     }
 }

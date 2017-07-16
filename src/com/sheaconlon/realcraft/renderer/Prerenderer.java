@@ -73,7 +73,7 @@ public class Prerenderer extends Worker {
      */
     @Override
     public void tick(final double elapsedTime) {
-        final Vector playerPos = this.world.getPlayer().getPosition();
+        final Vector playerPos = this.world.getPlayer().getPos();
         final Vector playerChunkPos = Chunk.toChunkPos(playerPos);
         int numberDone = 0;
         for (final Vector renderChunkPos : Chunk.getChunkPosNearby(playerChunkPos, Prerenderer.PRERENDER_DISTANCE)) {
@@ -102,7 +102,7 @@ public class Prerenderer extends Worker {
         for (final Iterator<WorldObject> iterator = chunk.getContents(); iterator.hasNext(); ) {
             final WorldObject obj = iterator.next();
             for (final float[][] singleVertexData : obj.getVertexData()) {
-                final Vector objPos = obj.getPosition();
+                final Vector objPos = obj.getPos();
                 final float[][] singleVertexDataAbsolute = new float[][]{
                         new float[]{
                                 (float)(singleVertexData[0][0] + objPos.getX()),

@@ -1,21 +1,12 @@
 package com.sheaconlon.realcraft.ui;
 
 import com.sheaconlon.realcraft.concurrency.Worker;
-import com.sheaconlon.realcraft.renderer.Renderer;
 import com.sheaconlon.realcraft.utilities.Vector;
 import com.sheaconlon.realcraft.world.World;
 
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWCursorPosCallbackI;
 import org.lwjgl.glfw.GLFWWindowCloseCallbackI;
 import org.lwjgl.glfw.GLFWKeyCallbackI;
-import org.lwjgl.BufferUtils;
-import org.lwjgl.system.CallbackI;
-
-import java.nio.DoubleBuffer;
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * A user interface for Realcraft.
@@ -236,7 +227,7 @@ public class UserInterface extends Worker {
             displacement = Vector.add(displacement, new Vector(0, 0, 1));
         }
         if (!displacement.equals(Vector.ZERO_VECTOR)) {
-            displacement = Vector.rotateHorizontal(displacement, this.world.getPlayer().getHorizontalOrientation());
+            displacement = Vector.rotateHorizontal(displacement, this.world.getPlayer().getOrient());
             final double distance = UserInterface.SPEED_OF_MOVEMENT * elapsedTime;
             displacement = Vector.scale(displacement, distance / displacement.mag());
             this.world.getPlayer().changePosition(displacement);

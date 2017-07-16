@@ -47,12 +47,12 @@ public class Hitbox {
         // Relative to anchor. Does not account for height.
         for (int i = 0; i < bottomFaceCorners.length; i++) {
             bottomFaceCorners[i] =
-                    Vector.rotateHorizontal(bottomFaceCorners[i], this.obj.getHorizontalOrientation());
+                    Vector.rotateHorizontal(bottomFaceCorners[i], this.obj.getOrient());
         }
         // Does not account for height.
         final Vector[] bounds = Vector.bounds(bottomFaceCorners);
-        bounds[0] = Vector.add(bounds[0], this.obj.getPosition());
-        bounds[1] = Vector.add(bounds[1], this.obj.getPosition());
+        bounds[0] = Vector.add(bounds[0], this.obj.getPos());
+        bounds[1] = Vector.add(bounds[1], this.obj.getPos());
         // Correct.
         final Vector verticalDisp = new Vector(0, this.dims.getY(), 0);
         bounds[1] = Vector.add(bounds[1], verticalDisp);
