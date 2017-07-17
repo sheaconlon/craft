@@ -60,8 +60,12 @@ public abstract class WorldObject {
 
     /**
      * Act upon the world. Should be called every so often.
+     *
+     * The default implementation does nothing.
      */
-    public abstract void tick(final World world);
+    public void tick(final World world) {
+        return;
+    };
 
     /**
      * @return The position of the anchor point of this world object.
