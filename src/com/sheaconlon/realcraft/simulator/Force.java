@@ -1,6 +1,7 @@
 package com.sheaconlon.realcraft.simulator;
 
 import com.sheaconlon.realcraft.utilities.Vector;
+import com.sheaconlon.realcraft.world.World;
 import com.sheaconlon.realcraft.world.WorldObject;
 
 /**
@@ -18,5 +19,5 @@ public abstract class Force {
      * @param obj The object.
      * @return The force exerted on {@code obj}. Each component in Newtons.
      */
-    public abstract Vector apply(final WorldObject obj);
+    public abstract Vector apply(final WorldObject obj, final World world);
 }
