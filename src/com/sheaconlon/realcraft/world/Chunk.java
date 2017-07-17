@@ -179,7 +179,7 @@ public class Chunk extends Container {
      * Get the entities in this chunk.
      * @return The entities in this chunk.
      */
-    public Iterable<Entity> getEntites() {
+    public Iterable<Entity> getEntities() {
         return this.entities;
     }
 
