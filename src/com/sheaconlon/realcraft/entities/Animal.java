@@ -10,40 +10,52 @@ public abstract class Animal extends Entity {
     /**
      * The minimum allowed vertical orientation for an animal.
      */
-    private static final double VERTICAL_ORIENTATION_MINIMUM = 0.999 * -Math.PI / 2;
+    private static final double VERT_ORIENT_MIN = 0.999 * -Math.PI / 2;
 
     /**
      * The maximum allowed vertical orientation for an animal.
      */
-    private static final double VERTICAL_ORIENTATION_MAXIMUM = 0.999 * Math.PI / 2;
+    private static final double VERT_ORIENT_MAX = 0.999 * Math.PI / 2;
 
-    /**
-     * The angle change, in radians, which represents a full revolution.
-     */
-    private static final double FULL_REVOLUTION_ANGLE = 2 * Math.PI;
+    private double vertOrient;
 
     /**
      * Create an animal.
-     * @param position See {@link WorldObject#position}.
-     * @param velocity See {@link WorldObject#velocity}.
-     * @param xzOrientation See {@link WorldObject#orient}.
-     * @param xzCrossOrientation See {@link WorldObject#vertOrient}.
+     * @param position See {@link WorldObject#getPos()}.
+     * @param velocity See {@link WorldObject#getVelocity()}.
+     * @param orient See {@link WorldObject#getOrient()}.
+     * @param vertOrient See {@link #getVertOrient()}.
      */
-    public Animal(final Vector position, final Vector velocity, final double xzOrientation,
-                  final double xzCrossOrientation) {
-        super(position, xzOrientation, xzCrossOrientation, velocity);
+    public Animal(final Vector position, final Vector velocity, final double orient, final double vertOrient) {
+        super(position, orient, velocity);
+        this.vertOrient = vertOrient;
     }
 
-    @Override
-    public void changeHorizontalOrientation(final double delta) {
-        super.changeHorizontalOrientation(delta);
-        this.orient = this.orient % Animal.FULL_REVOLUTION_ANGLE;
+    /**
+     * Get this animal's look direction.
+     *
+     * As an angle from horizontal. Towards the positive y-axis is positive.
+     * @return This animal's look direction. In radians.
+     */
+    public double getVertOrient() {
+        return this.vertOrient;
     }
 
-    @Override
-    public void changeVerticalOrientation(final double delta) {
-        super.changeVerticalOrientation(delta);
-        this.vertOrient = Math.max(Animal.VERTICAL_ORIENTATION_MINIMUM, this.vertOrient);
-        this.vertOrient = Math.min(Animal.VERTICAL_ORIENTATION_MAXIMUM, this.vertOrient);
+    /**
+     * Change this animal's look direction. See {@link #getVertOrient()}.
+     * @param delta The amount to change it by. In radians.
+     */
+    public void changeVertOrient(final double delta) {
+        this.setVertOrient(this.getVertOrient() + delta);
+    }
+
+    /**
+     * Set this animal's look direction. See {@link #getVertOrient()}.
+     * @param vertOrient The new look direction. In radians.
+     */
+    public void setVertOrient(final double vertOrient) {
+        this.vertOrient = vertOrient;
+        this.vertOrient = Math.max(Animal.VERT_ORIENT_MIN, this.vertOrient);
+        this.vertOrient = Math.min(Animal.VERT_ORIENT_MAX, this.vertOrient);
     }
 }

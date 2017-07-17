@@ -4,18 +4,16 @@ import com.sheaconlon.realcraft.utilities.Vector;
 import com.sheaconlon.realcraft.world.WorldObject;
 
 /**
- * An entities, any world object that is not a block.
+ * An entity, any world object that is not a block.
  */
 public abstract class Entity extends WorldObject {
     /**
-     * Create an entities.
-     * @param position See {@link WorldObject#position}.
-     * @param xzOrientation See {@link WorldObject#orient}.
-     * @param xzCrossOrientation See {@link WorldObject#vertOrient}.
-     * @param velocity See {@link WorldObject#velocity}.
+     * Create an entity.
+     * @param pos See {@link WorldObject#getPos()}.
+     * @param orient See {@link WorldObject#getOrient()}.
+     * @param velocity See {@link WorldObject#getVelocity()}.
      */
-    public Entity(final Vector position, final double xzOrientation, final double xzCrossOrientation,
-                  final Vector velocity) {
-        super(null, position, xzOrientation, xzCrossOrientation, velocity);
+    public Entity(final Vector pos, final double orient, final Vector velocity) {
+        super(pos, orient, velocity);
     }
 }

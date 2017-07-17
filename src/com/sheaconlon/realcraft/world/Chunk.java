@@ -133,8 +133,9 @@ public class Chunk extends Container {
         for (blockPosition[0] = 0; blockPosition[0] < Chunk.SIZE; blockPosition[0]++) {
             for (blockPosition[1] = 0; blockPosition[1] < Chunk.SIZE; blockPosition[1]++) {
                 for (blockPosition[2] = 0; blockPosition[2] < Chunk.SIZE; blockPosition[2]++) {
+                    final Vector pos = Vector.add(this.position, new Vector(blockPosition[0], blockPosition[1], blockPosition[2]));
                     this.blocks[blockPosition[0]][blockPosition[1]][blockPosition[2]] =
-                            new AirBlock(this, new Vector(blockPosition[0], blockPosition[1], blockPosition[2]));
+                            new AirBlock(pos);
                 }
             }
         }

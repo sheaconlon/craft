@@ -1,18 +1,18 @@
 package com.sheaconlon.realcraft.blocks;
 
+import com.sheaconlon.realcraft.simulator.Hitbox;
 import com.sheaconlon.realcraft.utilities.Vector;
 import com.sheaconlon.realcraft.world.WorldObject;
 import com.sheaconlon.realcraft.world.Chunk;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * A block, a cubical, grid-aligned object in the world.
  */
 public abstract class Block extends WorldObject {
-    /**
-     * A block's return value for {@link #getHitBoxDims()}}.
-     */
-    private static final double[] HIT_BOX_DIMS = new double[]{1, 1, 1};
-
     /**
      * The normal vector for the front face of a block.
      */
@@ -135,26 +135,23 @@ public abstract class Block extends WorldObject {
     /**
      * The initial velocity of a block.
      */
-    private static final Vector INITIAL_VELOCITY = new Vector(0, 0, 0);
+    private static final Vector INIT_VELOCITY = new Vector(0, 0, 0);
 
     /**
      * The initial xz orientation of a block.
      */
-    private static final double INITIAL_HORIZONTAL_ORIENTATION = 0;
+    private static final double INIT_ORIENT = 0;
 
-    /**
-     * The initial xz-cross orientation of a block.
-     */
-    private static final double INITIAL_VERTICAL_ORIENTATION = 0;
+    private final List<Hitbox> hitboxes;
 
     /**
      * Create a block.
-     * @param chunk The chunk containing the block.
-     * @param position The position of the block relative to the anchor point of the chunk containing it.
+     * @param pos See {@link WorldObject#getPos()}.
      */
-    public Block(final Chunk chunk, final Vector position) {
-        super(chunk, position, Block.INITIAL_HORIZONTAL_ORIENTATION,
-                Block.INITIAL_VERTICAL_ORIENTATION, Block.INITIAL_VELOCITY);
+    public Block(final Vector pos) {
+        super(pos, INIT_ORIENT, INIT_VELOCITY);
+        this.hitboxes = new LinkedList<>();
+        this.hitboxes.add(new Hitbox(this, new Vector(-0.5, -0.5, -0.5), new Vector(1, 1, 1)));
     }
 
     /**
@@ -186,7 +183,7 @@ public abstract class Block extends WorldObject {
     protected abstract float[][] getFaceColors();
 
     @Override
-    public double[] getHitBoxDims() {
-        return Block.HIT_BOX_DIMS;
+    public List<Hitbox> getHitboxes() {
+        return Collections.unmodifiableList(this.hitboxes);
     }
 }

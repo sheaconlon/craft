@@ -2,11 +2,15 @@ package com.sheaconlon.realcraft.blocks;
 
 import com.sheaconlon.realcraft.utilities.Vector;
 import com.sheaconlon.realcraft.world.Chunk;
+import com.sheaconlon.realcraft.world.WorldObject;
 
 /**
  * A block of air.
  */
 public class DirtBlock extends Block {
+    private static final double COMPRESSIVE_STRENGTH = 10;
+    private static final double MASS = 100;
+
     /**
      * The brown color of a dirt block.
      */
@@ -14,11 +18,10 @@ public class DirtBlock extends Block {
 
     /**
      * Create a dirt block.
-     * @param chunk The chunk containing the dirt block.
-     * @param position The position of the dirt block relative to the anchor point of the chunk containing it.
+     * @param pos See {@link WorldObject#getPos()}
      */
-    public DirtBlock(final Chunk chunk, final Vector position) {
-        super(chunk, position);
+    public DirtBlock(final Vector pos) {
+        super(pos);
     }
 
     /**
@@ -28,5 +31,15 @@ public class DirtBlock extends Block {
     public float[][] getFaceColors() {
         return new float[][]{DirtBlock.BROWN, DirtBlock.BROWN, DirtBlock.BROWN,
                 DirtBlock.BROWN, DirtBlock.BROWN, DirtBlock.BROWN};
+    }
+
+    @Override
+    public double getCompressiveStrength() {
+        return COMPRESSIVE_STRENGTH;
+    }
+
+    @Override
+    public double getMass() {
+        return MASS;
     }
 }

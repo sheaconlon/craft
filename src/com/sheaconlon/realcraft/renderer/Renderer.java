@@ -74,8 +74,7 @@ public class Renderer extends Worker {
     /**
      * The position of the player's eye, relative to the player's anchor point.
      */
-    private static final Vector PLAYER_EYE_POSITION =
-            new Vector(Player.HIT_BOX_DIMS[0] / 2, Player.HIT_BOX_DIMS[1] * 0.9, Player.HIT_BOX_DIMS[2] / 2);
+    private static final Vector PLAYER_EYE_POSITION = new Vector(0, 1.5, 0);
 
     /**
      * The number of extra chunks to render in each direction from the player's chunk.

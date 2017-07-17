@@ -1,24 +1,27 @@
 package com.sheaconlon.realcraft.blocks;
 
+import com.sheaconlon.realcraft.simulator.Hitbox;
 import com.sheaconlon.realcraft.utilities.Vector;
 import com.sheaconlon.realcraft.world.Chunk;
+import com.sheaconlon.realcraft.world.WorldObject;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * A block of air.
  */
 public class AirBlock extends Block {
-    /**
-     * An air block's return value for {@link #getHitBoxDims()}}.
-     */
-    private static final double[] HIT_BOX_DIMS = null;
+    private static final double COMPRESSIVE_STRENGTH = 0;
+    private static final double MASS = 1;
+    private static final List<Hitbox> HITBOXES = Collections.emptyList();
 
     /**
      * Create an air block.
-     * @param chunk The chunk containing the air block.
-     * @param position The position of the air block relative to the anchor point of the chunk containing it.
+     * @param pos See {@link WorldObject#getPos()}.
      */
-    public AirBlock(final Chunk chunk, final Vector position) {
-        super(chunk, position);
+    public AirBlock(final Vector pos) {
+        super(pos);
     }
 
     /**
@@ -38,8 +41,18 @@ public class AirBlock extends Block {
     }
 
     @Override
-    public double[] getHitBoxDims() {
-        return AirBlock.HIT_BOX_DIMS;
+    public List<Hitbox> getHitboxes() {
+        return HITBOXES;
+    }
+
+    @Override
+    public double getCompressiveStrength() {
+        return COMPRESSIVE_STRENGTH;
+    }
+
+    @Override
+    public double getMass() {
+        return MASS;
     }
 }
 
