@@ -3,10 +3,14 @@ package com.sheaconlon.realcraft.world;
 import com.sheaconlon.realcraft.simulator.Hitbox;
 import com.sheaconlon.realcraft.utilities.Vector;
 
+import java.util.List;
+
 /**
  * A world object.
  */
 public abstract class WorldObject {
+    private static final double FULL_REV_ANGLE = 2 * Math.PI;
+
     private Vector pos;
     private double orient;
     private Vector velocity;
@@ -52,7 +56,7 @@ public abstract class WorldObject {
      * Get the hitboxes of this world object.
      * @return The hitboxes of this world object.
      */
-    public abstract Hitbox[] getHitboxes();
+    public abstract List<Hitbox> getHitboxes();
 
     /**
      * Act upon the world. Should be called every so often.
@@ -104,7 +108,7 @@ public abstract class WorldObject {
      * @param orient The direction this world object should face. In radians.
      */
     public void setOrient(final double orient) {
-        this.orient = orient;
+        this.orient = orient % FULL_REV_ANGLE;
     }
 
     /**
