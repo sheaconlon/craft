@@ -67,7 +67,7 @@ public abstract class WorldObject {
     }
 
     /**
-     * Change the position of the anchor point of this world object.
+     * Change this world object's position. See {@link #getPos()}.
      * @param disp The displacement to add to the position.
      */
     public void changePos(final Vector disp) {
@@ -75,7 +75,7 @@ public abstract class WorldObject {
     }
 
     /**
-     * Set the position of the anchor point of this world object.
+     * Set this world object's position. See {@link #getPos()}.
      * @param pos The new position.
      */
     public void setPos(final Vector pos) {
@@ -92,18 +92,16 @@ public abstract class WorldObject {
     }
 
     /**
-     * Change the direction this world object faces in the xz-plane.
-     * @param delta The angle through which this world object should turn in the xz-plane, in the direction away
-     *              from the positive x-axis and towards the negative z-axis. In radians.
+     * Change the direction this world object faces. See {@link #getOrient()}.
+     * @param delta The change in the direction this world object faces. In radians.
      */
     public void changeOrient(final double delta) {
         this.orient += delta;
     }
 
     /**
-     * Set the direction this world object faces in the xz-plane.
-     * @param orient The direction this world object should face in the xz-plane, as an angle from the positive
-     *               x-axis towards the negative z-axis. In radians.
+     * Set the direction this world object faces. See {@link #getOrient()}.
+     * @param orient The direction this world object should face. In radians.
      */
     public void setOrient(final double orient) {
         this.orient = orient;
