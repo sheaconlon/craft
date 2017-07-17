@@ -84,6 +84,10 @@ public class Simulator extends Worker {
             final Vector chosenChunkPos =
                     nearbyChunkPositions.get(ThreadLocalRandom.current().nextInt(nearbyChunkPositions.size()));
             final Chunk chosenChunk = this.world.getChunk(chosenChunkPos);
+            if (chosenChunk == null) {
+                return;
+            }
+            // TODO: Choose a chunk randomly from the set of loaded chunks.
             for (final Block block : chosenChunk.getBlocks()) {
                 final boolean moving = this.update(block, deltaT);
                 if (moving) {
@@ -98,6 +102,9 @@ public class Simulator extends Worker {
                 Chunk.getChunkPosNearby(Chunk.toChunkPos(this.world.getPlayer().getPos()), SIMULATION_DISTANCE);
         for (final Vector chunkPos: nearbyChunkPositions) {
             final Chunk chunk = this.world.getChunk(chunkPos);
+            if (chunk == null) {
+                continue;
+            }
             for (final Entity e : chunk.getEntities()) {
                 this.update(e, deltaT);
             }
