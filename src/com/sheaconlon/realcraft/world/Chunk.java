@@ -28,7 +28,15 @@ public class Chunk extends Container {
 
         @Override
         public Block next() {
-            return Chunk.this.blocks[(int)this.curr.getX()][(int)this.curr.getY()][(int)this.curr.getZ()];
+            final Block next = Chunk.this.blocks[(int)this.curr.getX()][(int)this.curr.getY()][(int)this.curr.getZ()];
+            this.curr = new Vector(this.curr.getX() + 1, this.curr.getY(), this.curr.getZ());
+            if (this.curr.getX() >= Chunk.SIZE) {
+                this.curr = new Vector(0, this.curr.getY() + 1, this.curr.getZ());
+            }
+            if (this.curr.getY() >= Chunk.SIZE) {
+                this.curr = new Vector(0, 0, this.curr.getZ() + 1);
+            }
+            return next;
         }
     }
 
