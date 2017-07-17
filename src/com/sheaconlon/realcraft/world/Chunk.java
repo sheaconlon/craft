@@ -14,6 +14,31 @@ import java.util.LinkedList;
  * A cubical subset of the world.
  */
 public class Chunk extends Container {
+    private class BlockIterator implements Iterator<Block> {
+        private Vector curr;
+
+        private BlockIterator() {
+            this.curr = Vector.ZERO_VECTOR;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return this.curr.getX() < Chunk.SIZE && this.curr.getY() < Chunk.SIZE && this.curr.getZ() < Chunk.SIZE;
+        }
+
+        @Override
+        public Block next() {
+            return Chunk.this.blocks[(int)this.curr.getX()][(int)this.curr.getY()][(int)this.curr.getZ()];
+        }
+    }
+
+    private class Blocks implements Iterable<Block> {
+        @Override
+        public Iterator<Block> iterator() {
+            return new BlockIterator();
+        }
+    }
+
     private class ChunkContentsIterator implements Iterator<WorldObject> {
         /**
          * The x-coordinate of the current block, relative to the anchor point of this chunk.
@@ -169,6 +194,14 @@ public class Chunk extends Container {
     }
 
     /**
+     * Get the blocks in this chunk.
+     * @return The blocks in this chunk.
+     */
+    public Iterable<Block> getBlocks() {
+        return new Blocks();
+    }
+
+    /**
      * Return the position of the anchor point of the chunk containing some position.
      * @param pos The position.
      * @return The position of the anchor point of the chunk containing {@code pos}.
@@ -184,7 +217,7 @@ public class Chunk extends Container {
      * {@code pos}.
      * @return The chunk positions which are "nearby" {@code pos}.
      */
-    public static Iterable<Vector> getChunkPosNearby(final Vector pos, final int distance) {
+    public static List<Vector> getChunkPosNearby(final Vector pos, final int distance) {
         final Iterable<Vector> nearbyDisplacements = Vector.getNearby(Vector.ZERO_VECTOR, distance);
         final List<Vector> nearbyChunkPos = new LinkedList<>();
         for (final Vector disp : nearbyDisplacements) {
