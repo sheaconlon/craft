@@ -71,7 +71,7 @@ public abstract class WorldObject {
      * @param disp The displacement to add to the position.
      */
     public void changePos(final Vector disp) {
-        this.pos = Vector.add(this.pos, disp);
+        this.setPos(Vector.add(this.getPos(), disp));
     }
 
     /**
@@ -96,7 +96,7 @@ public abstract class WorldObject {
      * @param delta The change in the direction this world object faces. In radians.
      */
     public void changeOrient(final double delta) {
-        this.orient += delta;
+        this.setOrient(this.getOrient() + delta);
     }
 
     /**
@@ -119,7 +119,7 @@ public abstract class WorldObject {
      * @param disp The displacement to add to the velocity.
      */
     public void changeVelocity(final Vector disp) {
-        this.velocity = Vector.add(this.velocity, disp);
+        this.setVelocity(Vector.add(this.getVelocity(), disp));
     }
 
     /**
