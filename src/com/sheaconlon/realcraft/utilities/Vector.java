@@ -109,6 +109,13 @@ public class Vector {
     }
 
     /**
+     * @return Whether this vector equals the zero vector.
+     */
+    public boolean isZero() {
+        return this.equals(ZERO_VECTOR);
+    }
+
+    /**
      * Add two vectors.
      * @param a A vector.
      * @param b A vector.
