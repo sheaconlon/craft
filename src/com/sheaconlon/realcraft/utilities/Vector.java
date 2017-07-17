@@ -48,6 +48,13 @@ public class Vector {
     }
 
     /**
+     * @return The x-component of this vector, rounded down to the nearest integer.
+     */
+    public int getXInt() {
+        return (int)Math.floor(this.x);
+    }
+
+    /**
      * @return The value of {@link #y}.
      */
     public double getY() {
@@ -55,10 +62,24 @@ public class Vector {
     }
 
     /**
+     * @return The y-component of this vector, rounded down to the nearest integer.
+     */
+    public int getYInt() {
+        return (int)Math.floor(this.y);
+    }
+
+    /**
      * @return The value of {@link #z}.
      */
     public double getZ() {
         return this.z;
+    }
+
+    /**
+     * @return The z-component of this vector, rounded down to the nearest integer.
+     */
+    public int getZInt() {
+        return (int)Math.floor(this.z);
     }
 
     /**
