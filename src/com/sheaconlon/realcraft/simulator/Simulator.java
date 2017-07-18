@@ -3,6 +3,7 @@ package com.sheaconlon.realcraft.simulator;
 import com.sheaconlon.realcraft.blocks.Block;
 import com.sheaconlon.realcraft.concurrency.Worker;
 import com.sheaconlon.realcraft.entities.Entity;
+import com.sheaconlon.realcraft.simulator.forces.Force;
 import com.sheaconlon.realcraft.world.Chunk;
 import com.sheaconlon.realcraft.world.WorldObject;
 import com.sheaconlon.realcraft.world.World;

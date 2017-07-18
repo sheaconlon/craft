@@ -1,4 +1,4 @@
-package com.sheaconlon.realcraft.simulator;
+package com.sheaconlon.realcraft.simulator.forces;
 
 import com.sheaconlon.realcraft.utilities.Vector;
 import com.sheaconlon.realcraft.world.World;
