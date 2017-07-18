@@ -1,6 +1,7 @@
 package com.sheaconlon.realcraft.utilities;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * A 3-vector.
@@ -266,5 +267,19 @@ public class Vector {
                 new Vector(xMin, yMin, zMin),
                 new Vector(xMax, yMax, zMax)
         };
+    }
+
+    /**
+     * Create a vector of Normal deviates.
+     * @param mu The mean of the Normal distribution to draw from.
+     * @param sigma The standard deviation of the Normal distribution to draw from.
+     * @return A vector of Normal deviates.
+     */
+    public static Vector normal(final double mu, final double sigma) {
+        return new Vector(
+                ThreadLocalRandom.current().nextGaussian() * sigma + mu,
+                ThreadLocalRandom.current().nextGaussian() * sigma + mu,
+                ThreadLocalRandom.current().nextGaussian() * sigma + mu
+        );
     }
 }
