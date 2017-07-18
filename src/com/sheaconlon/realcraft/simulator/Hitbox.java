@@ -58,4 +58,49 @@ public class Hitbox {
         bounds[1] = Vector.add(bounds[1], verticalDisp);
         return bounds;
     }
+
+    /**
+     * Get the minimum translation vector for this hitbox and some other hitbox it may be colliding with.
+     *
+     * The minimum translation vector is the smallest axis-aligned translation that could be applied to this hitbox to resolve
+     * its collision with the other hitbox. If this hitbox is not colliding with the other hitbox, then it will be the zero
+     * vector.
+     * @param other The other hitbox.
+     * @return The minimum translation vector for this hitbox and {@code other}.
+     */
+    public Vector minTranslation(final Hitbox other) {
+        Vector minTrans = new Vector(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+        final boolean[] overlap = new boolean[]{false, false, false};
+        final Vector[] thisBounds = this.getBounds();
+        final double[] thisMins = thisBounds[0].toArray();
+        final double[] thisMaxs = thisBounds[1].toArray();
+        final Vector[] otherBounds = other.getBounds();
+        final double[] otherMins = otherBounds[0].toArray();
+        final double[] otherMaxs = otherBounds[1].toArray();
+        for (int i = 0; i < 3; i++) {
+            if (thisMaxs[i] > otherMins[i] && thisMaxs[i] <= otherMaxs[i]) {
+                overlap[i] = true;
+                final double[] trans = new double[3];
+                trans[i] = -(thisMaxs[i] - otherMins[i]);
+                final Vector transVec = new Vector(trans);
+                if (transVec.sqMag() < minTrans.sqMag()) {
+                    minTrans = transVec;
+                }
+            }
+            if (thisMins[i] < otherMaxs[i] && thisMins[i] >= otherMins[i]) {
+                overlap[i] = true;
+                final double[] trans = new double[3];
+                trans[i] = otherMaxs[i] - thisMins[i];
+                final Vector transVec = new Vector(trans);
+                if (transVec.sqMag() < minTrans.sqMag()) {
+                    minTrans = transVec;
+                }
+            }
+        }
+        if (overlap[0] && overlap[1] && overlap[2]) {
+            return minTrans;
+        } else {
+            return Vector.ZERO_VECTOR;
+        }
+    }
 }
