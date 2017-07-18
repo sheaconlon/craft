@@ -77,6 +77,22 @@ public class Vector {
     }
 
     /**
+     * Get some component of this vector.
+     * @param i The index of the component to get.
+     * @return The value of the {@code i}-th component of this vector.
+     */
+    public double get(final int i) {
+        if (i == 0) {
+            return this.getX();
+        } else if (i == 1) {
+            return this.getY();
+        } else if (i == 2) {
+            return this.getZ();
+        }
+        throw new IllegalArgumentException("invalid index");
+    }
+
+    /**
      * @return The z-component of this vector, rounded down to the nearest integer.
      */
     public int getZInt() {
