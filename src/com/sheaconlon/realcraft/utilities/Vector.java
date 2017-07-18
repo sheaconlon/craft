@@ -42,6 +42,14 @@ public class Vector {
     }
 
     /**
+     * Create a vector.
+     * @param arr An array of the vector's components.
+     */
+    public Vector(final double[] arr) {
+        this(arr[0], arr[1], arr[2]);
+    }
+
+    /**
      * @return The value of {@link #x}.
      */
     public double getX() {
@@ -77,19 +85,10 @@ public class Vector {
     }
 
     /**
-     * Get some component of this vector.
-     * @param i The index of the component to get.
-     * @return The value of the {@code i}-th component of this vector.
+     * @return An array of this vector's components.
      */
-    public double get(final int i) {
-        if (i == 0) {
-            return this.getX();
-        } else if (i == 1) {
-            return this.getY();
-        } else if (i == 2) {
-            return this.getZ();
-        }
-        throw new IllegalArgumentException("invalid index");
+    public double[] toArray() {
+        return new double[]{this.getX(), this.getY(), this.getZ()};
     }
 
     /**
