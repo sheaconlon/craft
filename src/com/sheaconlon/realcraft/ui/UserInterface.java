@@ -224,6 +224,9 @@ public class UserInterface extends Worker {
             // towards positive z
             displacement = Vector.add(displacement, new Vector(0, 0, 1));
         }
+        if (this.window.spaceKeyIsPressed()) {
+            this.world.getPlayer().changeVelocity(new Vector(0, 15 * elapsedTime, 0));
+        }
         if (!displacement.equals(Vector.ZERO_VECTOR)) {
             displacement = Vector.rotateHorizontal(displacement, this.world.getPlayer().getOrient());
             final double distance = UserInterface.SPEED_OF_MOVEMENT * elapsedTime;
