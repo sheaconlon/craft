@@ -133,22 +133,6 @@ public class UserInterface extends Worker {
     }
 
     /**
-     * Return whether the user interface might be visible.
-     * @return Whether the user interface might be visible.
-     */
-    public boolean mightBeVisible() {
-        return !this.window.isIconified();
-    }
-
-    /**
-     * Return whether the user interface is focused.
-     * @return Whether the user interface is focused.
-     */
-    public boolean isFocused() {
-        return this.window.isFocused();
-    }
-
-    /**
      * Get the dimensions of this user interface.
      * @return The dimensions of this user interface in screen coordinates, as a array containing the width and
      * height.
