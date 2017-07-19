@@ -297,4 +297,15 @@ public class Vector {
                 ThreadLocalRandom.current().nextGaussian() * sigma + mu
         );
     }
+
+    /**
+     * @return The componentwise signum (see {@link Math#signum(double)}) of {@code v}.
+     */
+    public static Vector signum(final Vector v) {
+        return new Vector(
+                Math.signum(v.getX()),
+                Math.signum(v.getY()),
+                Math.signum(v.getZ())
+        );
+    }
 }
