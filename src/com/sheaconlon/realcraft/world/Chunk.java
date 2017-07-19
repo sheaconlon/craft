@@ -47,67 +47,6 @@ public class Chunk {
         }
     }
 
-    private class ChunkContentsIterator implements Iterator<WorldObject> {
-        /**
-         * The x-coordinate of the current block, relative to the anchor point of this chunk.
-         */
-        private int x;
-
-        /**
-         * The y-coordinate of the current block, relative to the anchor point of this chunk.
-         */
-        private int y;
-
-        /**
-         * The z-coordinate of the current block, relative to the anchor point of this chunk.
-         */
-        private int z;
-
-        /**
-         * Whether this chunk contents iterator has a next world object.
-         */
-        private boolean hasNext;
-
-        ChunkContentsIterator() {
-            this.x = 0;
-            this.y = 0;
-            this.z = 0;
-            this.hasNext = this.x < Chunk.SIZE && this.y < Chunk.SIZE && this.z < Chunk.SIZE;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public boolean hasNext() {
-            return this.hasNext;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public WorldObject next() {
-            if (!this.hasNext()) {
-                throw new NoSuchElementException();
-            }
-            final WorldObject result = Chunk.this.blocks[this.x][this.y][this.z];
-            this.x++;
-            if (this.x >= Chunk.SIZE) {
-                this.x = 0;
-                this.y++;
-            }
-            if (this.y >= Chunk.SIZE) {
-                this.y = 0;
-                this.z++;
-            }
-            if (this.z >= Chunk.SIZE) {
-                this.hasNext = false;
-            }
-            return result;
-        }
-    }
-
     /**
      * The side length of a chunk, in blocks.
      */
