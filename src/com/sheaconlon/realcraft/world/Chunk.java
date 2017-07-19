@@ -13,7 +13,7 @@ import java.util.LinkedList;
 /**
  * A cubical subset of the world.
  */
-public class Chunk extends Container {
+public class Chunk {
     private class BlockIterator implements Iterator<Block> {
         private Vector curr;
 
@@ -133,7 +133,6 @@ public class Chunk extends Container {
      * @param position The anchor point of the chunk.
      */
     public Chunk(final Vector position) {
-        super(null, position);
         this.blocks = new Block[Chunk.SIZE][Chunk.SIZE][Chunk.SIZE];
         this.entities = new LinkedList<>();
         this.position = position;
@@ -147,14 +146,6 @@ public class Chunk extends Container {
                 }
             }
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Iterator<WorldObject> getContents() {
-        return new ChunkContentsIterator();
     }
 
     /**

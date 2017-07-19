@@ -1,5 +1,6 @@
 package com.sheaconlon.realcraft.renderer;
 
+import com.sheaconlon.realcraft.blocks.Block;
 import com.sheaconlon.realcraft.concurrency.Worker;
 import com.sheaconlon.realcraft.utilities.Vector;
 import com.sheaconlon.realcraft.world.Chunk;
@@ -99,15 +100,14 @@ public class Prerenderer extends Worker {
     private void prerenderChunk(final Vector chunkPos, final VertexBufferObject vbo) {
         final Chunk chunk = this.world.getChunk(chunkPos);
         final List<float[][]> vertexDataList = new ArrayList<>();
-        for (final Iterator<WorldObject> iterator = chunk.getContents(); iterator.hasNext(); ) {
-            final WorldObject obj = iterator.next();
-            for (final float[][] singleVertexData : obj.getVertexData()) {
-                final Vector objPos = obj.getPos();
+        for (final Block block : chunk.getBlocks()) {
+            for (final float[][] singleVertexData : block.getVertexData()) {
+                final Vector blockPos = block.getPos();
                 final float[][] singleVertexDataAbsolute = new float[][]{
                         new float[]{
-                                (float)(singleVertexData[0][0] + objPos.getX()),
-                                (float)(singleVertexData[0][1] + objPos.getY()),
-                                (float)(singleVertexData[0][2] + objPos.getZ())
+                                (float)(singleVertexData[0][0] + blockPos.getX()),
+                                (float)(singleVertexData[0][1] + blockPos.getY()),
+                                (float)(singleVertexData[0][2] + blockPos.getZ())
                         },
                         singleVertexData[1],
                         singleVertexData[2]
