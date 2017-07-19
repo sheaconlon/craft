@@ -30,11 +30,6 @@ public class World {
     private static final double PLAYER_SPAWN_VERTICAL_ORIENTATION = 0;
 
     /**
-     * The y-coordinate of the highest blocks of the ground in a world.
-     */
-    private static final int GROUND_Y_MAX = 100;
-
-    /**
      * The chunks of the world.
      */
     private final Map<Vector, Chunk> chunks;
