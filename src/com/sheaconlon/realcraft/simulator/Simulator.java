@@ -3,7 +3,9 @@ package com.sheaconlon.realcraft.simulator;
 import com.sheaconlon.realcraft.blocks.Block;
 import com.sheaconlon.realcraft.concurrency.Worker;
 import com.sheaconlon.realcraft.entities.Entity;
+import com.sheaconlon.realcraft.simulator.forces.AirResistance;
 import com.sheaconlon.realcraft.simulator.forces.Force;
+import com.sheaconlon.realcraft.simulator.forces.Gravity;
 import com.sheaconlon.realcraft.world.Chunk;
 import com.sheaconlon.realcraft.world.WorldObject;
 import com.sheaconlon.realcraft.world.World;
@@ -24,9 +26,12 @@ public class Simulator extends Worker {
     private static final String NAME = "Simulator";
     private static final boolean NEEDS_DEDICATED_THREAD = false;
     private static final boolean NEEDS_MAIN_THREAD = false;
-    private static final PRIORITY_LEVEL PRIORITY_LEVEL = Worker.PRIORITY_LEVEL.MEDIUM;
+    private static final PRIORITY_LEVEL PRIORITY_LEVEL = Worker.PRIORITY_LEVEL.HIGH;
     private static final double SCAN_PROBABILITY = 0.25;
-    private static final Force[] FORCES = new Force[]{};
+    private static final Force[] FORCES = new Force[]{
+            new Gravity(),
+            new AirResistance()
+    };
 
     private final World world;
     private final List<Block> activeBlocks;
@@ -114,12 +119,38 @@ public class Simulator extends Worker {
 
     private boolean update(final WorldObject obj, final double deltaT) {
         obj.tick(this.world);
-        updatePosition(obj, deltaT);
+        this.updatePosition(obj, deltaT);
         return this.updateVelocity(obj, deltaT);
     }
 
-    private static void updatePosition(final WorldObject obj, final double deltaT) {
+    private void updatePosition(final WorldObject obj, final double deltaT) {
         obj.changePos(Vector.scale(obj.getVelocity(), deltaT));
+        final Vector velocity = obj.getVelocity();
+        for (final Hitbox objHitbox : obj.getHitboxes()) {
+            final Vector[] objHitboxBounds = objHitbox.getBounds();
+            objHitboxBounds[0] = Vector.subtract(objHitboxBounds[0], new Vector(-0.5, -0.5, -0.5));
+            objHitboxBounds[1] = Vector.subtract(objHitboxBounds[1], new Vector(-0.5, -0.5, -0.5));
+            for (int x = objHitboxBounds[0].getXInt(); x <= objHitboxBounds[1].getXInt(); x++) {
+                for (int y = objHitboxBounds[0].getYInt(); y <= objHitboxBounds[1].getYInt(); y++) {
+                    for (int z = objHitboxBounds[0].getZInt(); z <= objHitboxBounds[1].getZInt(); z++) {
+                        final Vector blockPos = new Vector(x, y, z);
+                        final Block block = this.world.getBlock(blockPos);
+                        for (final Hitbox blockHitbox : block.getHitboxes()) {
+                            final Vector minTrans = objHitbox.minTranslation(blockHitbox);
+                            obj.changePos(minTrans);
+                            final double mag = minTrans.mag();
+                            if (mag != 0) {
+                                obj.changeVelocity(
+                                        Vector.multiply(obj.getVelocity(),
+                                                Vector.scale(minTrans, -1 / minTrans.mag())
+                                        )
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private boolean updateVelocity(final WorldObject obj, final double deltaT) {
