@@ -68,8 +68,8 @@ public class Simulator extends Worker {
 
     @Override
     public void tick(final double deltaT) {
-        this.updateActiveBlocks(deltaT);
-        this.scanInactiveBlocks(deltaT);
+        //this.updateActiveBlocks(deltaT);
+        //this.scanInactiveBlocks(deltaT);
         this.updateEntities(deltaT);
     }
 
