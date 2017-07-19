@@ -128,11 +128,9 @@ public class Simulator extends Worker {
         final Vector velocity = obj.getVelocity();
         for (final Hitbox objHitbox : obj.getHitboxes()) {
             final Vector[] objHitboxBounds = objHitbox.getBounds();
-            objHitboxBounds[0] = Vector.subtract(objHitboxBounds[0], new Vector(-0.5, -0.5, -0.5));
-            objHitboxBounds[1] = Vector.subtract(objHitboxBounds[1], new Vector(-0.5, -0.5, -0.5));
-            for (int x = objHitboxBounds[0].getXInt(); x <= objHitboxBounds[1].getXInt(); x++) {
-                for (int y = objHitboxBounds[0].getYInt(); y <= objHitboxBounds[1].getYInt(); y++) {
-                    for (int z = objHitboxBounds[0].getZInt(); z <= objHitboxBounds[1].getZInt(); z++) {
+            for (int x = objHitboxBounds[0].getXInt(); x <= objHitboxBounds[1].getXInt() + 1; x++) {
+                for (int y = objHitboxBounds[0].getYInt(); y <= objHitboxBounds[1].getYInt() + 1; y++) {
+                    for (int z = objHitboxBounds[0].getZInt(); z <= objHitboxBounds[1].getZInt() + 1; z++) {
                         final Vector blockPos = new Vector(x, y, z);
                         final Block block = this.world.getBlock(blockPos);
                         for (final Hitbox blockHitbox : block.getHitboxes()) {
@@ -142,7 +140,7 @@ public class Simulator extends Worker {
                             if (mag != 0) {
                                 obj.changeVelocity(
                                         Vector.multiply(obj.getVelocity(),
-                                                Vector.scale(minTrans, -1 / minTrans.mag())
+                                                Vector.scale(minTrans, -1.1 / minTrans.mag())
                                         )
                                 );
                             }
