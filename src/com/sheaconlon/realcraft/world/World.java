@@ -135,7 +135,7 @@ public class World {
      * @param chunk The chunk.
      */
     public void loadChunk(final Vector pos, final Chunk chunk) {
-        if (pos.equals(Chunk.toChunkPos(this.player.getPosition()))) {
+        if (pos.equals(Chunk.toChunkPos(this.player.getPos()))) {
             chunk.addEntity(this.player);
         }
         this.chunks.put(pos, chunk);

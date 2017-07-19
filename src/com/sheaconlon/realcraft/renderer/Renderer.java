@@ -74,8 +74,7 @@ public class Renderer extends Worker {
     /**
      * The position of the player's eye, relative to the player's anchor point.
      */
-    private static final Vector PLAYER_EYE_POSITION =
-            new Vector(Player.HIT_BOX_DIMS[0] / 2, Player.HIT_BOX_DIMS[1] * 0.9, Player.HIT_BOX_DIMS[2] / 2);
+    private static final Vector PLAYER_EYE_POSITION = new Vector(0, 1.5, 0);
 
     /**
      * The number of extra chunks to render in each direction from the player's chunk.
@@ -248,7 +247,7 @@ public class Renderer extends Worker {
         Renderer.setLighting();
         Renderer.clear();
         this.sendVBO();
-        final Vector playerPos = this.world.getPlayer().getPosition();
+        final Vector playerPos = this.world.getPlayer().getPos();
         final Vector playerChunkPos = Chunk.toChunkPos(playerPos);
         for (final Vector renderChunkPos : Chunk.getChunkPosNearby(playerChunkPos, Renderer.RENDER_DISTANCE)) {
             if (this.sentVBOs.containsKey(renderChunkPos)) {
@@ -265,25 +264,25 @@ public class Renderer extends Worker {
      */
     private void setPerspective() {
         final Player player = this.world.getPlayer();
-        final Vector position = player.getPosition();
-        final double xzCrossOrientation = player.getVerticalOrientation();
+        final Vector position = player.getPos();
+        final double xzCrossOrientation = player.getVertOrient();
         final Vector eyePosition = Vector.add(position, Renderer.PLAYER_EYE_POSITION);
         final Vector lookDisplacement =
                 Vector.rotateVertical(
                     Vector.rotateHorizontal(
                         new Vector(1, 0, 0),
-                        player.getHorizontalOrientation()
+                        player.getOrient()
                     ),
-                    player.getVerticalOrientation()
+                    player.getVertOrient()
                 );
         final Vector lookPosition = Vector.add(eyePosition, lookDisplacement);
         final Vector upDirection =
                 Vector.rotateVertical(
                         Vector.rotateHorizontal(
                                 new Vector(0, 1, 0),
-                                player.getHorizontalOrientation()
+                                player.getOrient()
                         ),
-                        player.getVerticalOrientation()
+                        player.getVertOrient()
                 );
         final DoubleBuffer buffer = BufferUtils.createDoubleBuffer(16);
         final Matrix4d matrix = new Matrix4d();
@@ -310,7 +309,7 @@ public class Renderer extends Worker {
         if (this.framesSinceVBOSend < Renderer.SEND_INTERVAL) {
             return;
         }
-        final Vector playerPos = this.world.getPlayer().getPosition();
+        final Vector playerPos = this.world.getPlayer().getPos();
         final Vector playerChunkPos = Chunk.toChunkPos(playerPos);
         for (final Vector chunkPos : Chunk.getChunkPosNearby(playerChunkPos, Renderer.RENDER_DISTANCE)) {
             if (this.writtenVBOs.containsKey(chunkPos)) {

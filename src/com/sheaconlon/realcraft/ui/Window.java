@@ -222,4 +222,11 @@ public class Window {
     boolean dKeyIsPressed() {
         return GLFW.glfwGetKey(this.getHandle(), GLFW.GLFW_KEY_D) == GLFW.GLFW_PRESS;
     }
+
+    /**
+     * @return Whether the space bar is currently being pressed.
+     */
+    boolean spaceKeyIsPressed() {
+        return GLFW.glfwGetKey(this.getHandle(), GLFW.GLFW_KEY_SPACE) == GLFW.GLFW_PRESS;
+    }
 }

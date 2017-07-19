@@ -1,21 +1,12 @@
 package com.sheaconlon.realcraft.ui;
 
 import com.sheaconlon.realcraft.concurrency.Worker;
-import com.sheaconlon.realcraft.renderer.Renderer;
 import com.sheaconlon.realcraft.utilities.Vector;
 import com.sheaconlon.realcraft.world.World;
 
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWCursorPosCallbackI;
 import org.lwjgl.glfw.GLFWWindowCloseCallbackI;
 import org.lwjgl.glfw.GLFWKeyCallbackI;
-import org.lwjgl.BufferUtils;
-import org.lwjgl.system.CallbackI;
-
-import java.nio.DoubleBuffer;
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * A user interface for Realcraft.
@@ -108,8 +99,6 @@ public class UserInterface extends Worker {
 
     /**
      * Construct a user interface.
-     *
-     * The user interface will not be visible, but can be made visible by a call to {@link #show()}.
      */
     public UserInterface(final World world) {
         this.world = world;
@@ -235,11 +224,14 @@ public class UserInterface extends Worker {
             // towards positive z
             displacement = Vector.add(displacement, new Vector(0, 0, 1));
         }
+        if (this.window.spaceKeyIsPressed()) {
+            this.world.getPlayer().changeVelocity(new Vector(0, 15 * elapsedTime, 0));
+        }
         if (!displacement.equals(Vector.ZERO_VECTOR)) {
-            displacement = Vector.rotateHorizontal(displacement, this.world.getPlayer().getHorizontalOrientation());
+            displacement = Vector.rotateHorizontal(displacement, this.world.getPlayer().getOrient());
             final double distance = UserInterface.SPEED_OF_MOVEMENT * elapsedTime;
             displacement = Vector.scale(displacement, distance / displacement.mag());
-            this.world.getPlayer().changePosition(displacement);
+            this.world.getPlayer().changePos(displacement);
         }
     }
 
@@ -250,12 +242,12 @@ public class UserInterface extends Worker {
      */
     private void respondToLooking(final double elapsedTime) {
         final double[] cursorPositionDelta = this.getCursorPositionDelta();
-        double horizontalOrientationDelta = cursorPositionDelta[0] * UserInterface.LOOKING_FACTOR;
-        double verticalOrientationDelta = -cursorPositionDelta[1] * UserInterface.LOOKING_FACTOR;
+        double orientDelta = cursorPositionDelta[0] * UserInterface.LOOKING_FACTOR;
+        double vertOrientDelta = -cursorPositionDelta[1] * UserInterface.LOOKING_FACTOR;
         final double limit = UserInterface.LOOKING_MAX_SPEED * elapsedTime;
-        horizontalOrientationDelta = Math.signum(horizontalOrientationDelta) * Math.min(limit, Math.abs(horizontalOrientationDelta));
-        verticalOrientationDelta = Math.signum(verticalOrientationDelta) * Math.min(limit, Math.abs(verticalOrientationDelta));
-        this.world.getPlayer().changeHorizontalOrientation(horizontalOrientationDelta);
-        this.world.getPlayer().changeVerticalOrientation(verticalOrientationDelta);
+        orientDelta = Math.signum(orientDelta) * Math.min(limit, Math.abs(orientDelta));
+        vertOrientDelta = Math.signum(vertOrientDelta) * Math.min(limit, Math.abs(vertOrientDelta));
+        this.world.getPlayer().changeOrient(orientDelta);
+        this.world.getPlayer().changeVertOrient(vertOrientDelta);
     }
 }

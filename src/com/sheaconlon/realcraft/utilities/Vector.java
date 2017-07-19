@@ -1,6 +1,7 @@
 package com.sheaconlon.realcraft.utilities;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * A 3-vector.
@@ -41,10 +42,25 @@ public class Vector {
     }
 
     /**
+     * Create a vector.
+     * @param arr An array of the vector's components.
+     */
+    public Vector(final double[] arr) {
+        this(arr[0], arr[1], arr[2]);
+    }
+
+    /**
      * @return The value of {@link #x}.
      */
     public double getX() {
         return this.x;
+    }
+
+    /**
+     * @return The x-component of this vector, rounded down to the nearest integer.
+     */
+    public int getXInt() {
+        return (int)Math.floor(this.x);
     }
 
     /**
@@ -55,10 +71,31 @@ public class Vector {
     }
 
     /**
+     * @return The y-component of this vector, rounded down to the nearest integer.
+     */
+    public int getYInt() {
+        return (int)Math.floor(this.y);
+    }
+
+    /**
      * @return The value of {@link #z}.
      */
     public double getZ() {
         return this.z;
+    }
+
+    /**
+     * @return An array of this vector's components.
+     */
+    public double[] toArray() {
+        return new double[]{this.getX(), this.getY(), this.getZ()};
+    }
+
+    /**
+     * @return The z-component of this vector, rounded down to the nearest integer.
+     */
+    public int getZInt() {
+        return (int)Math.floor(this.z);
     }
 
     /**
@@ -106,6 +143,13 @@ public class Vector {
     @Override
     public String toString() {
         return (new Formatter()).format("(%f, %f, %f)", this.x, this.y, this.z).toString();
+    }
+
+    /**
+     * @return Whether this vector equals the zero vector.
+     */
+    public boolean isZero() {
+        return this.equals(ZERO_VECTOR);
     }
 
     /**
@@ -209,5 +253,59 @@ public class Vector {
             }
         }
         return nearby;
+    }
+
+    /**
+     * Get the vectors which bound some set of vectors.
+     * @param vectors A set of vectors. Must contain at least 1 vector. Cannot contain null.
+     * @return The minimal coordinate values over {@code vectors} and the maximal coordinate values over
+     *         {@code vectors}.
+     */
+    public static Vector[] bounds(final Vector[] vectors) {
+        if (vectors.length == 0) {
+            throw new IllegalArgumentException("Cannot get the bounds of a size-0 set of vectors.");
+        }
+        double xMin = Double.POSITIVE_INFINITY, yMin = Double.POSITIVE_INFINITY, zMin = Double.POSITIVE_INFINITY,
+               xMax = Double.NEGATIVE_INFINITY, yMax = Double.NEGATIVE_INFINITY, zMax = Double.NEGATIVE_INFINITY;
+        for (final Vector v : vectors) {
+            if (v == null) {
+                throw new IllegalArgumentException("Cannot get the bounds of a set of vectors containing null.");
+            }
+            xMin = Math.min(xMin, v.getX());
+            yMin = Math.min(yMin, v.getY());
+            zMin = Math.min(zMin, v.getZ());
+            xMax = Math.max(xMax, v.getX());
+            yMax = Math.max(yMax, v.getY());
+            zMax = Math.max(zMax, v.getZ());
+        }
+        return new Vector[]{
+                new Vector(xMin, yMin, zMin),
+                new Vector(xMax, yMax, zMax)
+        };
+    }
+
+    /**
+     * Create a vector of Normal deviates.
+     * @param mu The mean of the Normal distribution to draw from.
+     * @param sigma The standard deviation of the Normal distribution to draw from.
+     * @return A vector of Normal deviates.
+     */
+    public static Vector normal(final double mu, final double sigma) {
+        return new Vector(
+                ThreadLocalRandom.current().nextGaussian() * sigma + mu,
+                ThreadLocalRandom.current().nextGaussian() * sigma + mu,
+                ThreadLocalRandom.current().nextGaussian() * sigma + mu
+        );
+    }
+
+    /**
+     * @return The componentwise signum (see {@link Math#signum(double)}) of {@code v}.
+     */
+    public static Vector signum(final Vector v) {
+        return new Vector(
+                Math.signum(v.getX()),
+                Math.signum(v.getY()),
+                Math.signum(v.getZ())
+        );
     }
 }

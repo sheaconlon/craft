@@ -14,6 +14,39 @@ import java.util.LinkedList;
  * A cubical subset of the world.
  */
 public class Chunk extends Container {
+    private class BlockIterator implements Iterator<Block> {
+        private Vector curr;
+
+        private BlockIterator() {
+            this.curr = Vector.ZERO_VECTOR;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return this.curr.getX() < Chunk.SIZE && this.curr.getY() < Chunk.SIZE && this.curr.getZ() < Chunk.SIZE;
+        }
+
+        @Override
+        public Block next() {
+            final Block next = Chunk.this.blocks[(int)this.curr.getX()][(int)this.curr.getY()][(int)this.curr.getZ()];
+            this.curr = new Vector(this.curr.getX() + 1, this.curr.getY(), this.curr.getZ());
+            if (this.curr.getX() >= Chunk.SIZE) {
+                this.curr = new Vector(0, this.curr.getY() + 1, this.curr.getZ());
+            }
+            if (this.curr.getY() >= Chunk.SIZE) {
+                this.curr = new Vector(0, 0, this.curr.getZ() + 1);
+            }
+            return next;
+        }
+    }
+
+    private class Blocks implements Iterable<Block> {
+        @Override
+        public Iterator<Block> iterator() {
+            return new BlockIterator();
+        }
+    }
+
     private class ChunkContentsIterator implements Iterator<WorldObject> {
         /**
          * The x-coordinate of the current block, relative to the anchor point of this chunk.
@@ -108,8 +141,9 @@ public class Chunk extends Container {
         for (blockPosition[0] = 0; blockPosition[0] < Chunk.SIZE; blockPosition[0]++) {
             for (blockPosition[1] = 0; blockPosition[1] < Chunk.SIZE; blockPosition[1]++) {
                 for (blockPosition[2] = 0; blockPosition[2] < Chunk.SIZE; blockPosition[2]++) {
+                    final Vector pos = Vector.add(this.position, new Vector(blockPosition[0], blockPosition[1], blockPosition[2]));
                     this.blocks[blockPosition[0]][blockPosition[1]][blockPosition[2]] =
-                            new AirBlock(this, new Vector(blockPosition[0], blockPosition[1], blockPosition[2]));
+                            new AirBlock(pos);
                 }
             }
         }
@@ -154,7 +188,7 @@ public class Chunk extends Container {
      * Get the entities in this chunk.
      * @return The entities in this chunk.
      */
-    public Iterable<Entity> getEntites() {
+    public Iterable<Entity> getEntities() {
         return this.entities;
     }
 
@@ -166,6 +200,14 @@ public class Chunk extends Container {
     public Block getBlock(final Vector pos) {
         final Vector relativePosition = Vector.subtract(pos, this.position);
         return this.blocks[(int)relativePosition.getX()][(int)relativePosition.getY()][(int)relativePosition.getZ()];
+    }
+
+    /**
+     * Get the blocks in this chunk.
+     * @return The blocks in this chunk.
+     */
+    public Iterable<Block> getBlocks() {
+        return new Blocks();
     }
 
     /**
@@ -184,7 +226,7 @@ public class Chunk extends Container {
      * {@code pos}.
      * @return The chunk positions which are "nearby" {@code pos}.
      */
-    public static Iterable<Vector> getChunkPosNearby(final Vector pos, final int distance) {
+    public static List<Vector> getChunkPosNearby(final Vector pos, final int distance) {
         final Iterable<Vector> nearbyDisplacements = Vector.getNearby(Vector.ZERO_VECTOR, distance);
         final List<Vector> nearbyChunkPos = new LinkedList<>();
         for (final Vector disp : nearbyDisplacements) {

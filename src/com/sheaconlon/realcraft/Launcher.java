@@ -19,11 +19,13 @@ public class Launcher {
         final Renderer renderer = new Renderer(world, ui.getWindowHandle(), ui.getDimensions());
         final Generator generator = new Generator(world);
         final Prerenderer prerenderer = new Prerenderer(world, renderer);
+        final Simulator simulator = new Simulator(world);
         final Worker[] workers = new Worker[]{
                 ui,
                 renderer,
                 generator,
-                prerenderer
+                prerenderer,
+                simulator
         };
 
         final Queue<Worker> sharedWorkers = new PriorityBlockingQueue<>();
