@@ -32,14 +32,4 @@ public class DirtBlock extends Block {
         return new float[][]{DirtBlock.BROWN, DirtBlock.BROWN, DirtBlock.BROWN,
                 DirtBlock.BROWN, DirtBlock.BROWN, DirtBlock.BROWN};
     }
-
-    @Override
-    public double getCompressiveStrength() {
-        return COMPRESSIVE_STRENGTH;
-    }
-
-    @Override
-    public double getMass() {
-        return MASS;
-    }
 }

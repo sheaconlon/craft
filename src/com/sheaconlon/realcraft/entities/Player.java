@@ -55,14 +55,4 @@ public class Player extends Animal {
     public List<Hitbox> getHitboxes() {
         return Collections.unmodifiableList(this.hitboxes);
     }
-
-    @Override
-    public double getCompressiveStrength() {
-        return COMPRESSIVE_STRENGTH;
-    }
-
-    @Override
-    public double getMass() {
-        return MASS;
-    }
 }

@@ -41,18 +41,6 @@ public abstract class WorldObject {
     public abstract float[][][] getVertexData();
 
     /**
-     * Get the mass of this world object.
-     * @return The mass of this world object. In kilograms.
-     */
-    public abstract double getMass();
-
-    /**
-     * Get the compressive strength of this world object.
-     * @return The compressive strength of this world object. In Newtons per meter.
-     */
-    public abstract double getCompressiveStrength();
-
-    /**
      * Get the hitboxes of this world object.
      * @return The hitboxes of this world object.
      */

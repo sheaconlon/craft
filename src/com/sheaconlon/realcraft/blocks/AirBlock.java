@@ -44,16 +44,6 @@ public class AirBlock extends Block {
     public List<Hitbox> getHitboxes() {
         return HITBOXES;
     }
-
-    @Override
-    public double getCompressiveStrength() {
-        return COMPRESSIVE_STRENGTH;
-    }
-
-    @Override
-    public double getMass() {
-        return MASS;
-    }
 }
 
 // TODO: Optimize rendering by rendering only those blocks touching air/a translucent block.
