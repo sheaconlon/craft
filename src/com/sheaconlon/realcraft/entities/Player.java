@@ -47,8 +47,7 @@ public class Player extends Animal {
      */
     @Override
     public float[][][] getVertexData() {
-        // TODO: Make vertex data for the player.
-        throw new UnsupportedOperationException();
+        return new float[0][][];
     }
 
     @Override
