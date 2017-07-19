@@ -5,7 +5,6 @@ import com.sheaconlon.realcraft.concurrency.Worker;
 import com.sheaconlon.realcraft.generator.Generator;
 import com.sheaconlon.realcraft.renderer.Prerenderer;
 import com.sheaconlon.realcraft.renderer.Renderer;
-import com.sheaconlon.realcraft.simulator.Simulator;
 import com.sheaconlon.realcraft.ui.UserInterface;
 import com.sheaconlon.realcraft.world.World;
 
