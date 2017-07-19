@@ -34,14 +34,4 @@ public class UnloadedBlock extends Block {
     public float[][][] getVertexData() {
         return UnloadedBlock.VERTEX_DATA;
     }
-
-    @Override
-    public double getCompressiveStrength() {
-        return 10000;
-    }
-
-    @Override
-    public double getMass() {
-        return 0;
-    }
 }

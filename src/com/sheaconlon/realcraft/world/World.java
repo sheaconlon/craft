@@ -30,34 +30,9 @@ public class World {
     private static final double PLAYER_SPAWN_VERTICAL_ORIENTATION = 0;
 
     /**
-     * The number of nanoseconds in a second.
-     */
-    private static final int NANOSECONDS_PER_SECOND = 1_000_000_000;
-
-    /**
-     * The number of seconds in a day.
-     */
-    public static final int SECONDS_PER_DAY = 24 * 60 * 60;
-
-    /**
-     * The number of in-game seconds that pass per wall clock second.
-     */
-    private static final int TIME_RATIO = 60;
-
-    /**
-     * The y-coordinate of the highest blocks of the ground in a world.
-     */
-    private static final int GROUND_Y_MAX = 100;
-
-    /**
      * The chunks of the world.
      */
     private final Map<Vector, Chunk> chunks;
-
-    /**
-     * The wall time at which the world was created, in nanoseconds since some arbitrary fixed point.
-     */
-    private long originTime;
 
     /**
      * The player in this world.
@@ -69,7 +44,6 @@ public class World {
      */
     public World() {
         this.chunks = new ConcurrentHashMap<>();
-        this.originTime = System.nanoTime();
         this.player = this.generatePlayer();
     }
 
@@ -100,17 +74,6 @@ public class World {
         final Player player = new Player(playerPosition, World.PLAYER_SPAWN_HORIZONTAL_ORIENTATION,
                 World.PLAYER_SPAWN_VERTICAL_ORIENTATION);
         return player;
-    }
-
-    /**
-     * Get the number of in-game seconds that have passed since the start of the current in-game day.
-     */
-    public int getTime() {
-        final double elapsedWallNanoseconds = System.nanoTime() - this.originTime;
-        final double elapsedWallSeconds = elapsedWallNanoseconds / World.NANOSECONDS_PER_SECOND;
-        final long elapsedInGameSeconds = (long)(elapsedWallSeconds * World.TIME_RATIO);
-        final int time = (int)(elapsedInGameSeconds % World.SECONDS_PER_DAY);
-        return time;
     }
 
     /**

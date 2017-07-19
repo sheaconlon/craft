@@ -13,7 +13,7 @@ import java.util.LinkedList;
 /**
  * A cubical subset of the world.
  */
-public class Chunk extends Container {
+public class Chunk {
     private class BlockIterator implements Iterator<Block> {
         private Vector curr;
 
@@ -47,67 +47,6 @@ public class Chunk extends Container {
         }
     }
 
-    private class ChunkContentsIterator implements Iterator<WorldObject> {
-        /**
-         * The x-coordinate of the current block, relative to the anchor point of this chunk.
-         */
-        private int x;
-
-        /**
-         * The y-coordinate of the current block, relative to the anchor point of this chunk.
-         */
-        private int y;
-
-        /**
-         * The z-coordinate of the current block, relative to the anchor point of this chunk.
-         */
-        private int z;
-
-        /**
-         * Whether this chunk contents iterator has a next world object.
-         */
-        private boolean hasNext;
-
-        ChunkContentsIterator() {
-            this.x = 0;
-            this.y = 0;
-            this.z = 0;
-            this.hasNext = this.x < Chunk.SIZE && this.y < Chunk.SIZE && this.z < Chunk.SIZE;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public boolean hasNext() {
-            return this.hasNext;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public WorldObject next() {
-            if (!this.hasNext()) {
-                throw new NoSuchElementException();
-            }
-            final WorldObject result = Chunk.this.blocks[this.x][this.y][this.z];
-            this.x++;
-            if (this.x >= Chunk.SIZE) {
-                this.x = 0;
-                this.y++;
-            }
-            if (this.y >= Chunk.SIZE) {
-                this.y = 0;
-                this.z++;
-            }
-            if (this.z >= Chunk.SIZE) {
-                this.hasNext = false;
-            }
-            return result;
-        }
-    }
-
     /**
      * The side length of a chunk, in blocks.
      */
@@ -133,7 +72,6 @@ public class Chunk extends Container {
      * @param position The anchor point of the chunk.
      */
     public Chunk(final Vector position) {
-        super(null, position);
         this.blocks = new Block[Chunk.SIZE][Chunk.SIZE][Chunk.SIZE];
         this.entities = new LinkedList<>();
         this.position = position;
@@ -147,14 +85,6 @@ public class Chunk extends Container {
                 }
             }
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Iterator<WorldObject> getContents() {
-        return new ChunkContentsIterator();
     }
 
     /**

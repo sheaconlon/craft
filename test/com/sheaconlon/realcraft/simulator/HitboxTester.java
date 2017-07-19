@@ -23,16 +23,6 @@ class HitboxTester {
         }
 
         @Override
-        public double getMass() {
-            return 0;
-        }
-
-        @Override
-        public double getCompressiveStrength() {
-            return 0;
-        }
-
-        @Override
         public List<Hitbox> getHitboxes() {
             return null;
         }

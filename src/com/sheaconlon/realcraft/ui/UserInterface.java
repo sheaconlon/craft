@@ -19,11 +19,6 @@ public class UserInterface extends Worker {
     private static final long TARGET_FREQ = 60;
 
     /**
-     * The number of nanoseconds in a second.
-     */
-    private static final double NANOSECONDS_PER_SECOND = Math.pow(10, 9);
-
-    /**
      * The number of radians that the player's orientation should change by for each pixel of mouse movement.
      */
     private static final double LOOKING_FACTOR = 0.003;
@@ -135,22 +130,6 @@ public class UserInterface extends Worker {
     @Override
     protected double getTargetFreq() {
         return UserInterface.TARGET_FREQ;
-    }
-
-    /**
-     * Return whether the user interface might be visible.
-     * @return Whether the user interface might be visible.
-     */
-    public boolean mightBeVisible() {
-        return !this.window.isIconified();
-    }
-
-    /**
-     * Return whether the user interface is focused.
-     * @return Whether the user interface is focused.
-     */
-    public boolean isFocused() {
-        return this.window.isFocused();
     }
 
     /**

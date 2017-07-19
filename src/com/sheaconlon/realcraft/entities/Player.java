@@ -47,22 +47,11 @@ public class Player extends Animal {
      */
     @Override
     public float[][][] getVertexData() {
-        // TODO: Make vertex data for the player.
-        throw new UnsupportedOperationException();
+        return new float[0][][];
     }
 
     @Override
     public List<Hitbox> getHitboxes() {
         return Collections.unmodifiableList(this.hitboxes);
-    }
-
-    @Override
-    public double getCompressiveStrength() {
-        return COMPRESSIVE_STRENGTH;
-    }
-
-    @Override
-    public double getMass() {
-        return MASS;
     }
 }
