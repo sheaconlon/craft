@@ -2,6 +2,7 @@ package com.sheaconlon.realcraft.renderer;
 
 import com.sheaconlon.realcraft.blocks.Block;
 import com.sheaconlon.realcraft.concurrency.Worker;
+import com.sheaconlon.realcraft.utilities.ArrayUtilities;
 import com.sheaconlon.realcraft.utilities.Vector;
 import com.sheaconlon.realcraft.world.Chunk;
 import com.sheaconlon.realcraft.world.World;
@@ -99,23 +100,24 @@ public class Prerenderer extends Worker {
      */
     private void prerenderChunk(final Vector chunkPos, final VertexBufferObject vbo) {
         final Chunk chunk = this.world.getChunk(chunkPos);
+        final float[][][] blockVertexData = vertexData(chunk.getBlocks());
+        final float[][][] entityVertexData = vertexData(chunk.getEntities());
+        vbo.write(blockVertexData);
+        vbo.write(entityVertexData);
+    }
+
+    private static <T extends WorldObject> float[][][] vertexData(final Iterable<T> objects) {
         final List<float[][]> vertexDataList = new ArrayList<>();
-        for (final Block block : chunk.getBlocks()) {
-            for (final float[][] singleVertexData : block.getVertexData()) {
-                final Vector blockPos = block.getPos();
+        for (final WorldObject object : objects) {
+            for (final float[][] singleVertexData : object.getVertexData()) {
                 final float[][] singleVertexDataAbsolute = new float[][]{
-                        new float[]{
-                                (float)(singleVertexData[0][0] + blockPos.getX()),
-                                (float)(singleVertexData[0][1] + blockPos.getY()),
-                                (float)(singleVertexData[0][2] + blockPos.getZ())
-                        },
+                        ArrayUtilities.add(singleVertexData[0], object.getPos().toArray()),
                         singleVertexData[1],
                         singleVertexData[2]
                 };
                 vertexDataList.add(singleVertexDataAbsolute);
             }
         }
-        final float[][][] vertexData = vertexDataList.toArray(new float[][][]{});
-        vbo.write(vertexData);
+        return vertexDataList.toArray(new float[][][]{});
     }
 }
