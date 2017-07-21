@@ -1,5 +1,6 @@
 package com.sheaconlon.realcraft.blocks;
 
+import com.sheaconlon.realcraft.renderer.Vertex;
 import com.sheaconlon.realcraft.simulator.Hitbox;
 import com.sheaconlon.realcraft.utilities.Vector;
 import com.sheaconlon.realcraft.world.Chunk;
@@ -28,8 +29,8 @@ public class AirBlock extends Block {
      * {@inheritDoc}
      */
     @Override
-    public float[][][] getVertexData() {
-        return new float[][][]{};
+    public List<Vertex> getVertices() {
+        return Collections.emptyList();
     }
 
     /**

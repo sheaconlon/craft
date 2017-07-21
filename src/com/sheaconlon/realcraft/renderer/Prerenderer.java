@@ -80,7 +80,7 @@ public class Prerenderer extends Worker {
         int numberDone = 0;
         for (final Vector renderChunkPos : Chunk.getChunkPosNearby(playerChunkPos, Prerenderer.PRERENDER_DISTANCE)) {
             if (world.chunkLoaded(renderChunkPos) && !renderer.hasWrittenVBO(renderChunkPos)) {
-                final VertexBufferObject vbo = this.renderer.getEmptyVBO();
+                final VBO vbo = this.renderer.getEmptyVBO();
                 if (vbo != null) {
                     this.prerenderChunk(renderChunkPos, vbo);
                     this.renderer.receiveWrittenVBO(renderChunkPos, vbo);
@@ -98,26 +98,18 @@ public class Prerenderer extends Worker {
      * @param chunkPos The position of the anchor point of the chunk.
      * @param vbo The VBO.
      */
-    private void prerenderChunk(final Vector chunkPos, final VertexBufferObject vbo) {
+    private void prerenderChunk(final Vector chunkPos, final VBO vbo) {
         final Chunk chunk = this.world.getChunk(chunkPos);
-        final float[][][] blockVertexData = vertexData(chunk.getBlocks());
-        final float[][][] entityVertexData = vertexData(chunk.getEntities());
-        vbo.write(blockVertexData);
-        vbo.write(entityVertexData);
+        prerenderObjects(chunk.getBlocks(), vbo);
+        prerenderObjects(chunk.getEntities(), vbo);
     }
 
-    private static <T extends WorldObject> float[][][] vertexData(final Iterable<T> objects) {
-        final List<float[][]> vertexDataList = new ArrayList<>();
+    private static <T extends WorldObject> void prerenderObjects(final Iterable<T> objects, final VBO vbo) {
         for (final WorldObject object : objects) {
-            for (final float[][] singleVertexData : object.getVertexData()) {
-                final float[][] singleVertexDataAbsolute = new float[][]{
-                        ArrayUtilities.add(singleVertexData[0], object.getPos().toArray()),
-                        singleVertexData[1],
-                        singleVertexData[2]
-                };
-                vertexDataList.add(singleVertexDataAbsolute);
+            for (Vertex vertex : object.getVertices()) {
+                vertex = vertex.translate(object.getPos());
+                vbo.write(vertex);
             }
         }
-        return vertexDataList.toArray(new float[][][]{});
     }
 }

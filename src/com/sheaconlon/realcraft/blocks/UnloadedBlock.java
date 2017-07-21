@@ -1,7 +1,11 @@
 package com.sheaconlon.realcraft.blocks;
 
+import com.sheaconlon.realcraft.renderer.Vertex;
 import com.sheaconlon.realcraft.utilities.Vector;
 import com.sheaconlon.realcraft.world.WorldObject;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * A placeholder for a block in a chunk which is not yet loaded into the world.
@@ -12,10 +16,7 @@ public class UnloadedBlock extends Block {
      */
     private static final float[][] FACE_COLORS = new float[][]{};
 
-    /**
-     * See {@link Block#getVertexData()}. There are no rendered vertices.
-     */
-    private static final float[][][] VERTEX_DATA = new float[][][]{};
+    private static final List<Vertex> VERTEX_DATA = Collections.emptyList();
 
     /**
      * Create an unloaded block.
@@ -31,7 +32,7 @@ public class UnloadedBlock extends Block {
     }
 
     @Override
-    public float[][][] getVertexData() {
+    public List<Vertex> getVertices() {
         return UnloadedBlock.VERTEX_DATA;
     }
 }
