@@ -299,7 +299,7 @@ public class Renderer extends Worker {
     private void refillEmptyVBOs() {
         while (this.emptyVBOs.size() < Renderer.TARGET_NUM_EMPTY_VBOS) {
             // TODO: Possibly different capacity + splitting over multiple VBOs
-            final VBO vbo = new VBO(Chunk.SIZE * Chunk.SIZE * Chunk.SIZE);
+            final VBO vbo = new VBO(Chunk.SIZE * Chunk.SIZE * Chunk.SIZE * 6 * 4);
             vbo.link();
             this.emptyVBOs.addLast(vbo);
         }
