@@ -10,9 +10,9 @@ import java.util.Arrays;
  * A vertex. Part of a quadrilateral.
  */
 public class Vertex {
-    private static final int POSITION_SIZE = 3;
-    private static final int COLOR_SIZE = 3;
-    private static final int NORMAL_SIZE = 3;
+    public static final int POSITION_SIZE = 3;
+    public static final int COLOR_SIZE = 3;
+    public static final int NORMAL_SIZE = 3;
 
     private static final Map<Vertex, Integer> indexMap = new HashMap<>();
     private static int currentIndex = 0;
