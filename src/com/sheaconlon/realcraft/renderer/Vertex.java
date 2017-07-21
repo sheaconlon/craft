@@ -14,9 +14,6 @@ public class Vertex {
     public static final int COLOR_SIZE = 3;
     public static final int NORMAL_SIZE = 3;
 
-    private static final Map<Vertex, Integer> indexMap = new HashMap<>();
-    private static int currentIndex = 0;
-
     private final float[] data;
 
     /**
@@ -49,10 +46,6 @@ public class Vertex {
             this.data[i] = val;
             i++;
         }
-        if (!indexMap.containsKey(this)) {
-            indexMap.put(this, currentIndex);
-            currentIndex++;
-        }
     }
 
     /**
@@ -63,15 +56,6 @@ public class Vertex {
      */
     public float[] data() {
         return Arrays.copyOf(this.data, this.data.length);
-    }
-
-    /**
-     * Get the index of this vertex.
-     * @return An index identifying this vertex. Any other vertex for which {@link #equals(Object)} returns true
-     * has the same index. Any other vertex for which {@link #equals(Object)} return false has a different index.
-     */
-    public int index() {
-        return indexMap.get(this);
     }
 
     /**

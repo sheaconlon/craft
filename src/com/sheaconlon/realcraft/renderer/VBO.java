@@ -29,9 +29,9 @@ public class VBO {
     private int vertexArrayHandle;
     private int dataBufferHandle;
     private int indexBufferHandle;
-    private int vertices;
-    private int currGLIndex;
-    private Map<Integer, Integer> indices;
+    private int numInstances;
+    private int currIndex;
+    private Map<Vertex, Integer> indices;
 
     /**
      * Create a new VBO.
@@ -39,13 +39,14 @@ public class VBO {
     public VBO(final int capacity) {
         this.capacity = capacity;
         this.state = State.NOT_LINKED;
-        this.dataBuffer = BufferUtils.createByteBuffer(vertices * BYTES_PER_FLOAT * (Vertex.POSITION_SIZE + Vertex.COLOR_SIZE + Vertex.NORMAL_SIZE));
-        this.indexBuffer = BufferUtils.createByteBuffer(vertices * BYTES_PER_INT);
+        this.dataBuffer = BufferUtils.createByteBuffer(this.capacity * BYTES_PER_FLOAT
+                * (Vertex.POSITION_SIZE + Vertex.COLOR_SIZE + Vertex.NORMAL_SIZE));
+        this.indexBuffer = BufferUtils.createByteBuffer(this.capacity * BYTES_PER_INT);
         this.glThread = null;
         this.vertexArrayHandle = -1;
         this.dataBufferHandle = -1;
-        this.vertices = 0;
-        this.currGLIndex = 0;
+        this.numInstances = 0;
+        this.currIndex = 0;
         this.indices = new HashMap<>();
     }
 
@@ -69,14 +70,14 @@ public class VBO {
         this.dataBufferHandle = bufferHandlesBuffer.get(0);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, this.dataBufferHandle);
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, this.dataBuffer, GL15.GL_STATIC_DRAW);
-        GL15.glMapBuffer(GL15.GL_ARRAY_BUFFER, GL15.GL_WRITE_ONLY, this.vertices, this.dataBuffer);
+        GL15.glMapBuffer(GL15.GL_ARRAY_BUFFER, GL15.GL_WRITE_ONLY, this.dataBuffer.capacity(), this.dataBuffer);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 
         // Map index buffer.
         this.indexBufferHandle = bufferHandlesBuffer.get(1);
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, this.indexBufferHandle);
         GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, this.indexBuffer, GL15.GL_STATIC_DRAW);
-        GL15.glMapBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, GL15.GL_WRITE_ONLY, this.vertices, this.indexBuffer);
+        GL15.glMapBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, GL15.GL_WRITE_ONLY, this.indexBuffer.capacity(), this.indexBuffer);
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
 
         // Get vertex array handle.
@@ -101,18 +102,17 @@ public class VBO {
         if (this.isFull()) {
             throw new RuntimeException("attempted to write to a full VBO");
         }
-        this.vertices++;
-        final int index = vertex.index();
-        Integer glIndex = this.indices.get(vertex.index());
-        if (glIndex == null) {
-            glIndex = this.currGLIndex;
-            this.currGLIndex++;
-            this.indices.put(index, glIndex);
+        this.numInstances++;
+        Integer index = this.indices.get(vertex);
+        if (index == null) {
+            index = this.currIndex;
+            this.currIndex++;
+            this.indices.put(vertex, index);
             for (final float f : vertex.data()) {
                 this.dataBuffer.putFloat(f);
             }
         }
-        this.indexBuffer.putInt(glIndex);
+        this.indexBuffer.putInt(index);
     }
 
     /**
@@ -120,7 +120,7 @@ public class VBO {
      * @return Whether this VBO has reached its capacity.
      */
     public boolean isFull() {
-        return this.vertices >= this.capacity;
+        return this.numInstances >= this.capacity;
     }
 
     /**
@@ -178,7 +178,7 @@ public class VBO {
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, this.indexBufferHandle);
 
         // Draw.
-        GL11.glDrawElements(GL11.GL_QUADS, this.vertices, GL11.GL_UNSIGNED_INT, 0);
+        GL11.glDrawElements(GL11.GL_QUADS, this.numInstances, GL11.GL_UNSIGNED_INT, 0);
 
         // Unbind the buffers.
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
