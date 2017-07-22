@@ -1,6 +1,7 @@
 package com.sheaconlon.realcraft.renderer;
 
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +25,9 @@ public class VBO {
     private int capacity;
     private State state;
     private ByteBuffer dataBuffer;
+    private FloatBuffer dataBufferFloat;
     private ByteBuffer indexBuffer;
+    private IntBuffer indexBufferInt;
     private Thread glThread;
     private int vertexArrayHandle;
     private int dataBufferHandle;
@@ -41,7 +44,9 @@ public class VBO {
         this.state = State.NOT_LINKED;
         this.dataBuffer = BufferUtils.createByteBuffer(this.capacity * BYTES_PER_FLOAT
                 * (Vertex.POSITION_SIZE + Vertex.COLOR_SIZE + Vertex.NORMAL_SIZE));
+        this.dataBufferFloat = this.dataBuffer.asFloatBuffer();
         this.indexBuffer = BufferUtils.createByteBuffer(this.capacity * BYTES_PER_INT);
+        this.indexBufferInt = this.indexBuffer.asIntBuffer();
         this.glThread = null;
         this.vertexArrayHandle = -1;
         this.dataBufferHandle = -1;
@@ -102,17 +107,16 @@ public class VBO {
         if (this.isFull()) {
             throw new RuntimeException("attempted to write to a full VBO");
         }
+
         this.numInstances++;
         Integer index = this.indices.get(vertex);
         if (index == null) {
             index = this.currIndex;
             this.currIndex++;
             this.indices.put(vertex, index);
-            for (final float f : vertex.data()) {
-                this.dataBuffer.putFloat(f);
-            }
+            this.dataBufferFloat.put(vertex.data());
         }
-        this.indexBuffer.putInt(index);
+        this.indexBufferInt.put(index);
     }
 
     /**
@@ -150,12 +154,14 @@ public class VBO {
         boolean success = GL15.glUnmapBuffer(GL15.GL_ARRAY_BUFFER);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         this.dataBuffer = null;
+        this.dataBufferFloat = null;
 
         // Unmap the index buffer.
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, this.indexBufferHandle);
         success &= GL15.glUnmapBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER);
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
         this.indexBuffer = null;
+        this.indexBufferInt = null;
 
         // Unbind the vertex array.
         GL30.glBindVertexArray(0);
