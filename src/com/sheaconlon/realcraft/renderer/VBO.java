@@ -176,6 +176,13 @@ public class VBO {
      * context must be current.
      */
     public void render() {
+        if (!this.state.equals(State.SENT)) {
+            throw new RuntimeException("attempted to render a VBO that was not sent");
+        }
+        if (!Thread.currentThread().equals(this.glThread)) {
+            throw new RuntimeException("attempted to render a VBO from a different thread than the one that linked the VBO");
+        }
+
         // Bind the vertex array.
         GL30.glBindVertexArray(this.vertexArrayHandle);
 
