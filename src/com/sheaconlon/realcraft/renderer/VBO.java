@@ -43,11 +43,6 @@ public class VBO {
     public VBO(final int capacity) {
         this.capacity = capacity;
         this.state = State.NOT_LINKED;
-        this.dataBuffer = BufferUtils.createByteBuffer(this.capacity * BYTES_PER_FLOAT
-                * (Vertex.POSITION_SIZE + Vertex.COLOR_SIZE + Vertex.NORMAL_SIZE));
-        this.dataBufferFloat = this.dataBuffer.asFloatBuffer();
-        this.indexBuffer = BufferUtils.createByteBuffer(this.capacity * BYTES_PER_INT);
-        this.indexBufferShort = this.indexBuffer.asShortBuffer();
         this.glThread = null;
         this.vertexArrayHandle = -1;
         this.dataBufferHandle = -1;
@@ -73,17 +68,20 @@ public class VBO {
         GL15.glGenBuffers(bufferHandlesBuffer);
 
         // Map data buffer.
+        final ByteBuffer dataBufferBacking = BufferUtils.createByteBuffer(this.capacity * BYTES_PER_FLOAT
+                * (Vertex.POSITION_SIZE + Vertex.COLOR_SIZE + Vertex.NORMAL_SIZE));
         this.dataBufferHandle = bufferHandlesBuffer.get(0);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, this.dataBufferHandle);
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, this.dataBuffer, GL15.GL_STATIC_DRAW);
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, dataBufferBacking, GL15.GL_STATIC_DRAW);
         this.dataBuffer = GL15.glMapBuffer(GL15.GL_ARRAY_BUFFER, GL15.GL_WRITE_ONLY);
         this.dataBufferFloat = this.dataBuffer.asFloatBuffer();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 
         // Map index buffer.
+        final ByteBuffer indexBufferBacking = BufferUtils.createByteBuffer(this.capacity * BYTES_PER_INT);
         this.indexBufferHandle = bufferHandlesBuffer.get(1);
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, this.indexBufferHandle);
-        GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, this.indexBuffer, GL15.GL_STATIC_DRAW);
+        GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, indexBufferBacking, GL15.GL_STATIC_DRAW);
         this.indexBuffer = GL15.glMapBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, GL15.GL_WRITE_ONLY);
         this.indexBufferShort = this.indexBuffer.asShortBuffer();
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
