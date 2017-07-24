@@ -50,7 +50,7 @@ public class Chunk {
     /**
      * The side length of a chunk, in blocks.
      */
-    public static final int SIZE = 20;
+    public static final int SIZE = 15;
 
     /**
      * The blocks in this chunk.

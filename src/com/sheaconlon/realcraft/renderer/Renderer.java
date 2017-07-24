@@ -25,7 +25,7 @@ public class Renderer extends Worker {
     /**
      * The number of frames to wait between sends of VBOs.
      */
-    private static final int SEND_INTERVAL = 20;
+    private static final int SEND_INTERVAL = 3;
 
     /**
      * A renderer's return value for {@link #getTargetFreq()}.
@@ -38,7 +38,7 @@ public class Renderer extends Worker {
     /**
      * The number of VBOs that a renderer should stock its empty VBO list with on each refill.
      */
-    private static final int TARGET_NUM_EMPTY_VBOS = 10;
+    private static final int TARGET_NUM_EMPTY_VBOS = 100;
 
     /**
      * The world.
@@ -79,7 +79,7 @@ public class Renderer extends Worker {
     /**
      * The number of extra chunks to render in each direction from the player's chunk.
      */
-    public static final int RENDER_DISTANCE = 2;
+    public static final int RENDER_DISTANCE = 3;
 
     /**
      * The color of the sky, in RGBA format.
