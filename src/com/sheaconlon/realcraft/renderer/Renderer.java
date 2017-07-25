@@ -25,7 +25,7 @@ public class Renderer extends Worker {
     /**
      * The number of frames to wait between sends of VBOs.
      */
-    private static final int SEND_INTERVAL = 20;
+    private static final int SEND_INTERVAL = 3;
 
     /**
      * A renderer's return value for {@link #getTargetFreq()}.
@@ -38,7 +38,7 @@ public class Renderer extends Worker {
     /**
      * The number of VBOs that a renderer should stock its empty VBO list with on each refill.
      */
-    private static final int TARGET_NUM_EMPTY_VBOS = 10;
+    private static final int TARGET_NUM_EMPTY_VBOS = 100;
 
     /**
      * The world.
@@ -79,7 +79,7 @@ public class Renderer extends Worker {
     /**
      * The number of extra chunks to render in each direction from the player's chunk.
      */
-    public static final int RENDER_DISTANCE = 2;
+    public static final int RENDER_DISTANCE = 3;
 
     /**
      * The color of the sky, in RGBA format.
@@ -147,17 +147,17 @@ public class Renderer extends Worker {
     /**
      * The empty VBOs that this renderer has.
      */
-    private final Deque<VertexBufferObject> emptyVBOs;
+    private final Deque<VBO> emptyVBOs;
 
     /**
      * The written VBOs that this renderer has.
      */
-    private final Map<Vector, VertexBufferObject> writtenVBOs;
+    private final Map<Vector, VBO> writtenVBOs;
 
     /**
      * The sent VBOs that this renderer has.
      */
-    private final Map<Vector, VertexBufferObject> sentVBOs;
+    private final Map<Vector, VBO> sentVBOs;
 
     /**
      * The number of frames that have been shown since the last VBO was sent.
@@ -208,7 +208,7 @@ public class Renderer extends Worker {
      * Return an empty VBO created by this renderer, or null if there is none.
      * @return An empty VBO created by this renderer, or null if there is none.
      */
-    public VertexBufferObject getEmptyVBO() {
+    public VBO getEmptyVBO() {
         return this.emptyVBOs.pollFirst();
     }
 
@@ -217,7 +217,7 @@ public class Renderer extends Worker {
      * @param pos The position of the anchor point of the chunk.
      * @param vbo The VBO.
      */
-    public void receiveWrittenVBO(final Vector pos, final VertexBufferObject vbo) {
+    public void receiveWrittenVBO(final Vector pos, final VBO vbo) {
         this.writtenVBOs.put(pos, vbo);
     }
 
@@ -251,7 +251,7 @@ public class Renderer extends Worker {
         final Vector playerChunkPos = Chunk.toChunkPos(playerPos);
         for (final Vector renderChunkPos : Chunk.getChunkPosNearby(playerChunkPos, Renderer.RENDER_DISTANCE)) {
             if (this.sentVBOs.containsKey(renderChunkPos)) {
-                final VertexBufferObject vbo = this.sentVBOs.get(renderChunkPos);
+                final VBO vbo = this.sentVBOs.get(renderChunkPos);
                 vbo.render();
             }
         }
@@ -298,7 +298,10 @@ public class Renderer extends Worker {
      */
     private void refillEmptyVBOs() {
         while (this.emptyVBOs.size() < Renderer.TARGET_NUM_EMPTY_VBOS) {
-            this.emptyVBOs.addLast(new VertexBufferObject());
+            // TODO: Possibly different capacity + splitting over multiple VBOs
+            final VBO vbo = new VBO(Chunk.SIZE * Chunk.SIZE * Chunk.SIZE * 6 * 4);
+            vbo.link();
+            this.emptyVBOs.addLast(vbo);
         }
     }
 
@@ -313,7 +316,7 @@ public class Renderer extends Worker {
         final Vector playerChunkPos = Chunk.toChunkPos(playerPos);
         for (final Vector chunkPos : Chunk.getChunkPosNearby(playerChunkPos, Renderer.RENDER_DISTANCE)) {
             if (this.writtenVBOs.containsKey(chunkPos)) {
-                final VertexBufferObject vbo = this.writtenVBOs.remove(chunkPos);
+                final VBO vbo = this.writtenVBOs.remove(chunkPos);
                 final boolean success = vbo.send();
                 if (success) {
                     this.sentVBOs.put(chunkPos, vbo);

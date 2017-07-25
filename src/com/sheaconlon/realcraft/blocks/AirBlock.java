@@ -1,5 +1,6 @@
 package com.sheaconlon.realcraft.blocks;
 
+import com.sheaconlon.realcraft.renderer.Vertex;
 import com.sheaconlon.realcraft.simulator.Hitbox;
 import com.sheaconlon.realcraft.utilities.Vector;
 import com.sheaconlon.realcraft.world.Chunk;
@@ -15,6 +16,7 @@ public class AirBlock extends Block {
     private static final double COMPRESSIVE_STRENGTH = 0;
     private static final double MASS = 1;
     private static final List<Hitbox> HITBOXES = Collections.emptyList();
+    private static final List<float[]> FACE_COLORS = Collections.emptyList();
 
     /**
      * Create an air block.
@@ -28,16 +30,16 @@ public class AirBlock extends Block {
      * {@inheritDoc}
      */
     @Override
-    public float[][][] getVertexData() {
-        return new float[][][]{};
+    public List<Vertex> getVertices() {
+        return Collections.emptyList();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public float[][] getFaceColors() {
-        return new float[][]{};
+    public List<float[]> getFaceColors() {
+        return FACE_COLORS;
     }
 
     @Override

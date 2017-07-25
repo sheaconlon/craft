@@ -7,6 +7,8 @@ import java.util.Queue;
  * A runner, which ticks workers.
  */
 public class Runner implements Runnable {
+    private static final double MINIMUM_TIME_UNTIL_DUE = -2;
+
     private final int NO_WORKER_SLEEP_TIME = 10;
 
     private final Queue<Worker> sharedWorkers;
@@ -32,12 +34,12 @@ public class Runner implements Runnable {
         }
         while (!Thread.interrupted()) {
             Worker topSharedWorker = this.sharedWorkers.poll();
-            if (topSharedWorker != null && topSharedWorker.timeUntilTickDue() > 0) {
+            if (topSharedWorker != null && topSharedWorker.timeUntilTickDue() > MINIMUM_TIME_UNTIL_DUE) {
                 this.sharedWorkers.add(topSharedWorker);
                 topSharedWorker = null;
             }
             Worker topAssignedWorker = this.assignedWorkers.poll();
-            if (topAssignedWorker != null && topAssignedWorker.timeUntilTickDue() > 0) {
+            if (topAssignedWorker != null && topAssignedWorker.timeUntilTickDue() > MINIMUM_TIME_UNTIL_DUE) {
                 this.assignedWorkers.add(topAssignedWorker);
                 topAssignedWorker = null;
             }

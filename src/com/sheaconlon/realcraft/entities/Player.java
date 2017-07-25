@@ -1,5 +1,6 @@
 package com.sheaconlon.realcraft.entities;
 
+import com.sheaconlon.realcraft.renderer.Vertex;
 import com.sheaconlon.realcraft.simulator.Hitbox;
 import com.sheaconlon.realcraft.utilities.Vector;
 import com.sheaconlon.realcraft.world.WorldObject;
@@ -46,8 +47,8 @@ public class Player extends Animal {
      * {@inheritDoc}
      */
     @Override
-    public float[][][] getVertexData() {
-        return new float[0][][];
+    public List<Vertex> getVertices() {
+        return Collections.emptyList();
     }
 
     @Override

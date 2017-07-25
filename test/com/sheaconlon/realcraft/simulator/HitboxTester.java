@@ -1,9 +1,11 @@
 package com.sheaconlon.realcraft.simulator;
 
 import com.sheaconlon.realcraft.entities.Entity;
+import com.sheaconlon.realcraft.renderer.Vertex;
 import com.sheaconlon.realcraft.utilities.Vector;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,8 +20,8 @@ class HitboxTester {
         }
 
         @Override
-        public float[][][] getVertexData() {
-            return new float[0][][];
+        public List<Vertex> getVertices() {
+            return Collections.emptyList();
         }
 
         @Override

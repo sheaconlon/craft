@@ -1,5 +1,6 @@
 package com.sheaconlon.realcraft.world;
 
+import com.sheaconlon.realcraft.renderer.Vertex;
 import com.sheaconlon.realcraft.simulator.Hitbox;
 import com.sheaconlon.realcraft.utilities.Vector;
 
@@ -29,16 +30,10 @@ public abstract class WorldObject {
     }
 
     /**
-     * Get the vertex data of this world object, with positions relative to this world object's anchor point.
-     *
-     * The vertex data of one vertex consists of an array of 3 float arrays. The first float array consists
-     * of three floats which are the position of the vertex. The second float array consists of three floats
-     * which are the RGB color of the vertex. The third float array consists of three floats which are the normal
-     * vector of the vertex. The vertex data of this world object consists of the array of the vertex data of all
-     * its vertices, in some arbitrary, consistent order.
-     * @return The vertex data of this world object, with positions relative to this world object's anchor point.
+     * Get the vertices of this world object, with positions relative to this world object's anchor point.
+     * @return The vertices of this world object, with positions relative to this world object's anchor point.
      */
-    public abstract float[][][] getVertexData();
+    public abstract List<Vertex> getVertices();
 
     /**
      * Get the hitboxes of this world object.
