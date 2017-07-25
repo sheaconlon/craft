@@ -41,4 +41,13 @@ public class Quad {
                 .collect(Collectors.toList());
         return new Quad(newVertices);
     }
+
+    /**
+     * Get this quad with some color.
+     * @param color The color.
+     * @return A new quad which is like this quad, with the color {@code color}.
+     */
+    public Quad withColor(final float[] color) {
+        return new Quad(this.vertices.stream().map(v -> v.withColor(color)).collect(Collectors.toList()));
+    }
 }

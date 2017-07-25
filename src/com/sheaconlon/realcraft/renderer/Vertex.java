@@ -89,6 +89,22 @@ public class Vertex {
         return Arrays.equals(this.data(), otherVertex.data());
     }
 
+    /**
+     * Get this vertex with some color.
+     * @param color The color.
+     * @return A new vertex which is like this vertex, with the color {@code color}.
+     */
+    public Vertex withColor(final float[] color) {
+        if (color.length != COLOR_SIZE) {
+            throw new IllegalArgumentException("color not of correct length");
+        }
+        final float[] newData = Arrays.copyOf(this.data, this.data.length);
+        for (int i = 0; i < color.length; i++) {
+            newData[POSITION_SIZE + i] = color[i];
+        }
+        return new Vertex(newData);
+    }
+
     private Vertex(final float[] data) {
         this.data = Arrays.copyOf(data, data.length);
     }
