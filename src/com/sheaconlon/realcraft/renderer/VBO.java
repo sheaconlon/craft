@@ -18,6 +18,10 @@ import org.lwjgl.opengl.GL30;
 public class VBO {
     private static final int BYTES_PER_FLOAT = 4;
     private static final int BYTES_PER_INT = 4;
+    private static final int BYTES_PER_POSITION = Vertex.POSITION_SIZE * BYTES_PER_FLOAT;
+    private static final int BYTES_PER_COLOR = Vertex.COLOR_SIZE * BYTES_PER_FLOAT;
+    private static final int BYTES_PER_NORMAL = Vertex.NORMAL_SIZE * BYTES_PER_FLOAT;
+    private static final int BYTES_PER_VERTEX = BYTES_PER_POSITION + BYTES_PER_COLOR + BYTES_PER_NORMAL;
 
     private enum State {
         NOT_LINKED, LINKED_NOT_SENT, SENT
@@ -191,13 +195,9 @@ public class VBO {
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, this.dataBufferHandle);
 
         // Set up pointers.
-        final int bytesPerPosition = Vertex.POSITION_SIZE * BYTES_PER_FLOAT;
-        final int bytesPerColor = Vertex.COLOR_SIZE * BYTES_PER_FLOAT;
-        final int bytesPerNormal = Vertex.NORMAL_SIZE * BYTES_PER_FLOAT;
-        final int bytesPerVertex = bytesPerPosition + bytesPerColor + bytesPerNormal;
-        GL11.glVertexPointer(Vertex.POSITION_SIZE, GL11.GL_FLOAT, bytesPerVertex, 0);
-        GL11.glColorPointer(Vertex.COLOR_SIZE, GL11.GL_FLOAT, bytesPerVertex, bytesPerPosition);
-        GL11.glNormalPointer(GL11.GL_FLOAT, bytesPerVertex, (bytesPerPosition + bytesPerColor));
+        GL11.glVertexPointer(Vertex.POSITION_SIZE, GL11.GL_FLOAT, BYTES_PER_VERTEX, 0);
+        GL11.glColorPointer(Vertex.COLOR_SIZE, GL11.GL_FLOAT, BYTES_PER_VERTEX, BYTES_PER_POSITION);
+        GL11.glNormalPointer(GL11.GL_FLOAT, BYTES_PER_VERTEX, (BYTES_PER_POSITION + BYTES_PER_COLOR));
 
         // Bind the index buffer.
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, this.indexBufferHandle);
