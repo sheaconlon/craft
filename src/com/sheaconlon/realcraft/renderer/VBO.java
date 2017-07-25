@@ -28,7 +28,7 @@ public class VBO {
     private ByteBuffer dataBuffer;
     private FloatBuffer dataBufferFloat;
     private ByteBuffer indexBuffer;
-    private ShortBuffer indexBufferShort;
+    private IntBuffer indexBufferInt;
     private Thread glThread;
     private int vertexArrayHandle;
     private int dataBufferHandle;
@@ -83,7 +83,7 @@ public class VBO {
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, this.indexBufferHandle);
         GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, indexBufferBacking, GL15.GL_STATIC_DRAW);
         this.indexBuffer = GL15.glMapBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, GL15.GL_WRITE_ONLY);
-        this.indexBufferShort = this.indexBuffer.asShortBuffer();
+        this.indexBufferInt = this.indexBuffer.asIntBuffer();
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
 
         // Get vertex array handle.
@@ -117,7 +117,7 @@ public class VBO {
             this.indices.put(vertex, index);
             this.dataBufferFloat.put(vertex.data());
         }
-        this.indexBufferShort.put((short)(int)index);
+        this.indexBufferInt.put(index);
     }
 
     /**
@@ -162,7 +162,7 @@ public class VBO {
         success &= GL15.glUnmapBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER);
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
         this.indexBuffer = null;
-        this.indexBufferShort = null;
+        this.indexBufferInt = null;
 
         // Unbind the vertex array.
         GL30.glBindVertexArray(0);
@@ -203,7 +203,7 @@ public class VBO {
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, this.indexBufferHandle);
 
         // Draw.
-        GL11.glDrawElements(GL11.GL_QUADS, this.numInstances, GL11.GL_UNSIGNED_SHORT, 0);
+        GL11.glDrawElements(GL11.GL_QUADS, this.numInstances, GL11.GL_UNSIGNED_INT, 0);
 
         //Unbind the index buffer.
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
