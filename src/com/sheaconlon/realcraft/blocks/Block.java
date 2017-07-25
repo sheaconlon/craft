@@ -1,14 +1,18 @@
 package com.sheaconlon.realcraft.blocks;
 
+import com.sheaconlon.realcraft.renderer.Quad;
 import com.sheaconlon.realcraft.renderer.Vertex;
 import com.sheaconlon.realcraft.simulator.Hitbox;
 import com.sheaconlon.realcraft.utilities.Vector;
 import com.sheaconlon.realcraft.world.WorldObject;
 import com.sheaconlon.realcraft.world.Chunk;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * A block, a cubical, grid-aligned object in the world.
@@ -20,31 +24,9 @@ public abstract class Block extends WorldObject {
     private static final float[] FRONT_NORMAL = new float[]{0, 0, 1};
 
     /**
-     * The positions of the vertices of the front face of a block, relative to its anchor.
-     */
-    private static final float[][] FRONT_POSITIONS = new float[][]{
-            new float[]{0, 0, 0},
-            new float[]{1, 0, 0},
-            new float[]{1, 1, 0},
-            new float[]{0, 1, 0}
-    };
-
-    /**
      * The normal vector for the left face of a block.
      */
     private static final float[] LEFT_NORMAL = new float[]{-1, 0, 0};
-
-    // TODO: Ensure that attributes are fully qualified throughout codebase.
-
-    /**
-     * The positions of the vertices of the left face of a block, relative to its anchor.
-     */
-    private static final float[][] LEFT_POSITIONS = new float[][]{
-            new float[]{0, 0, -1},
-            new float[]{0, 0, 0},
-            new float[]{0, 1, 0},
-            new float[]{0, 1, -1}
-    };
 
     /**
      * The normal vector for the back face of a block.
@@ -52,29 +34,9 @@ public abstract class Block extends WorldObject {
     private static final float[] BACK_NORMAL = new float[]{0, 0, -1};
 
     /**
-     * The positions of the vertices of the back face of a block, relative to its anchor.
-     */
-    private static final float[][] BACK_POSITIONS = new float[][]{
-            new float[]{1, 0, -1},
-            new float[]{0, 0, -1},
-            new float[]{0, 1, -1},
-            new float[]{1, 1, -1}
-    };
-
-    /**
      * The normal vector for the right face of a block.
      */
     private static final float[] RIGHT_NORMAL = new float[]{1, 0, 0};
-
-    /**
-     * The positions of the vertices of the right face of a block, relative to its anchor.
-     */
-    private static final float[][] RIGHT_POSITIONS = new float[][]{
-            new float[]{1, 0, 0},
-            new float[]{1, 0, -1},
-            new float[]{1, 1, -1},
-            new float[]{1, 1, 0}
-    };
 
     /**
      * The normal vector for the top face of a block.
@@ -82,56 +44,49 @@ public abstract class Block extends WorldObject {
     private static final float[] TOP_NORMAL = new float[]{0, 1, 0};
 
     /**
-     * The positions of the vertices of the top face of a block, relative to its anchor.
-     */
-    private static final float[][] TOP_POSITIONS = new float[][]{
-            new float[]{0, 1, 0},
-            new float[]{1, 1, 0},
-            new float[]{1, 1, -1},
-            new float[]{0, 1, -1}
-    };
-
-    /**
      * The normal vector for the bottom face of a block.
      */
     private static final float[] BOTTOM_NORMAL = new float[]{0, -1, 0};
 
-    /**
-     * The positions of the vertices of the bottom face of a block, relative to its anchor.
-     */
-    private static final float[][] BOTTOM_POSITIONS = new float[][]{
-            new float[]{0, 0, -1},
-            new float[]{1, 0, -1},
-            new float[]{1, 0, 0},
-            new float[]{0, 0, 0}
-    };
-
-    private static final float[][][] PARTIAL_VERTEX_DATA = new float[][][]{
-            new float[][]{Block.FRONT_POSITIONS[0], Block.FRONT_NORMAL},
-            new float[][]{Block.FRONT_POSITIONS[1], Block.FRONT_NORMAL},
-            new float[][]{Block.FRONT_POSITIONS[2], Block.FRONT_NORMAL},
-            new float[][]{Block.FRONT_POSITIONS[3], Block.FRONT_NORMAL},
-            new float[][]{Block.LEFT_POSITIONS[0], Block.LEFT_NORMAL},
-            new float[][]{Block.LEFT_POSITIONS[1], Block.LEFT_NORMAL},
-            new float[][]{Block.LEFT_POSITIONS[2], Block.LEFT_NORMAL},
-            new float[][]{Block.LEFT_POSITIONS[3], Block.LEFT_NORMAL},
-            new float[][]{Block.BACK_POSITIONS[0], Block.BACK_NORMAL},
-            new float[][]{Block.BACK_POSITIONS[1], Block.BACK_NORMAL},
-            new float[][]{Block.BACK_POSITIONS[2], Block.BACK_NORMAL},
-            new float[][]{Block.BACK_POSITIONS[3], Block.BACK_NORMAL},
-            new float[][]{Block.RIGHT_POSITIONS[0], Block.RIGHT_NORMAL},
-            new float[][]{Block.RIGHT_POSITIONS[1], Block.RIGHT_NORMAL},
-            new float[][]{Block.RIGHT_POSITIONS[2], Block.RIGHT_NORMAL},
-            new float[][]{Block.RIGHT_POSITIONS[3], Block.RIGHT_NORMAL},
-            new float[][]{Block.TOP_POSITIONS[0], Block.TOP_NORMAL},
-            new float[][]{Block.TOP_POSITIONS[1], Block.TOP_NORMAL},
-            new float[][]{Block.TOP_POSITIONS[2], Block.TOP_NORMAL},
-            new float[][]{Block.TOP_POSITIONS[3], Block.TOP_NORMAL},
-            new float[][]{Block.BOTTOM_POSITIONS[0], Block.BOTTOM_NORMAL},
-            new float[][]{Block.BOTTOM_POSITIONS[1], Block.BOTTOM_NORMAL},
-            new float[][]{Block.BOTTOM_POSITIONS[2], Block.BOTTOM_NORMAL},
-            new float[][]{Block.BOTTOM_POSITIONS[3], Block.BOTTOM_NORMAL}
-    };
+    private static final float[] BLACK = new float[]{0, 0, 0};
+    private static final List<Quad> FACES = Collections.unmodifiableList(Stream.of(
+            new Quad(Stream.of(
+                    new Vertex(new float[]{0, 0, 0}, BLACK, FRONT_NORMAL),
+                    new Vertex(new float[]{1, 0, 0}, BLACK, FRONT_NORMAL),
+                    new Vertex(new float[]{1, 1, 0}, BLACK, FRONT_NORMAL),
+                    new Vertex(new float[]{0, 1, 0}, BLACK, FRONT_NORMAL)
+            ).collect(Collectors.toList())),
+            new Quad(Stream.of(
+                    new Vertex(new float[]{0, 0, -1}, BLACK, LEFT_NORMAL),
+                    new Vertex(new float[]{0, 0, 0}, BLACK, LEFT_NORMAL),
+                    new Vertex(new float[]{0, 1, 0}, BLACK, LEFT_NORMAL),
+                    new Vertex(new float[]{0, 1, -1}, BLACK, LEFT_NORMAL)
+            ).collect(Collectors.toList())),
+            new Quad(Stream.of(
+                    new Vertex(new float[]{1, 0, -1}, BLACK, BACK_NORMAL),
+                    new Vertex(new float[]{0, 0, -1}, BLACK, BACK_NORMAL),
+                    new Vertex(new float[]{0, 1, -1}, BLACK, BACK_NORMAL),
+                    new Vertex(new float[]{1, 1, -1}, BLACK, BACK_NORMAL)
+            ).collect(Collectors.toList())),
+            new Quad(Stream.of(
+                    new Vertex(new float[]{1, 0, 0}, BLACK, RIGHT_NORMAL),
+                    new Vertex(new float[]{1, 0, -1}, BLACK, RIGHT_NORMAL),
+                    new Vertex(new float[]{1, 1, -1}, BLACK, RIGHT_NORMAL),
+                    new Vertex(new float[]{1, 1, 0}, BLACK, RIGHT_NORMAL)
+            ).collect(Collectors.toList())),
+            new Quad(Stream.of(
+                    new Vertex(new float[]{0, 1, 0}, BLACK, TOP_NORMAL),
+                    new Vertex(new float[]{1, 1, 0}, BLACK, TOP_NORMAL),
+                    new Vertex(new float[]{1, 1, -1}, BLACK, TOP_NORMAL),
+                    new Vertex(new float[]{0, 1, -1}, BLACK, TOP_NORMAL)
+            ).collect(Collectors.toList())),
+            new Quad(Stream.of(
+                    new Vertex(new float[]{0, 0, -1}, BLACK, BOTTOM_NORMAL),
+                    new Vertex(new float[]{1, 0, -1}, BLACK, BOTTOM_NORMAL),
+                    new Vertex(new float[]{1, 0, 0}, BLACK, BOTTOM_NORMAL),
+                    new Vertex(new float[]{0, 0, 0}, BLACK, BOTTOM_NORMAL)
+            ).collect(Collectors.toList()))
+    ).collect(Collectors.toList()));
 
     /**
      * The initial velocity of a block.
@@ -161,10 +116,9 @@ public abstract class Block extends WorldObject {
     @Override
     public List<Vertex> getVertices() {
         final List<Vertex> vertices = new LinkedList<>();
-        final float[][] faceColors = this.getFaceColors();
-        for (int vertex = 0; vertex < Block.PARTIAL_VERTEX_DATA.length; vertex++) {
-            final int face = vertex / 4;
-            vertices.add(new Vertex(Block.PARTIAL_VERTEX_DATA[vertex][0], faceColors[face], Block.PARTIAL_VERTEX_DATA[vertex][1]));
+        final List<float[]> faceColors = this.getFaceColors();
+        for (int face = 0; face < FACES.size(); face++) {
+            vertices.addAll(FACES.get(face).withColor(faceColors.get(face)).vertices());
         }
         return vertices;
     }
@@ -172,12 +126,11 @@ public abstract class Block extends WorldObject {
     /**
      * Get the colors of the faces of this block.
      *
-     * The color of a face is a float array consisting of the red, green, and blue components of the face's
-     * color. The colors of the faces of a block are organized into an array of arrays, with the faces' colors
-     * appearing in the order front, left, back, right, top, then bottom.
+     * The color of a face is a float array consisting of its red, green, and blue components. The face colors
+     * must appear in the order front, left, back, right, top, then bottom.
      * @return The colors of the faces of this block.
      */
-    protected abstract float[][] getFaceColors();
+    protected abstract List<float[]> getFaceColors();
 
     @Override
     public List<Hitbox> getHitboxes() {
