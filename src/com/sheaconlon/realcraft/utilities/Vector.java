@@ -204,13 +204,14 @@ public class Vector {
     /**
      * Rotate a vector horizontally.
      *
-     * "Horizontal" means within the xz-plane. A rotation of {@code Math.PI / 2} radians would rotate the positive x-axis to
-     * overlap with the negative z-axis.
+     * "Horizontal" means about the y-axis. A positive rotation goes in the same direction as the angle from the
+     * positive x-axis to the positive z-axis.
      * @param v The vector.
-     * @param theta The angle to rotate {@code v} through. In radians.
-     * @return {@code v} rotated horizontally by {@code theta}.
+     * @param theta The angle to rotate through. In radians.
+     * @return A new vector that is {@code v} rotated horizontally by {@code theta}.
      */
-    public static Vector rotateHorizontal(final Vector v, final double theta) {
+    public static Vector rotateHorizontal(final Vector v, double theta) {
+        // Formula derived from http://www.wolframalpha.com/input/?i=rotate+30+degrees+around+y-axis.
         return new Vector(
                 v.x * Math.cos(theta) - v.z * Math.sin(theta),
                 v.y,
