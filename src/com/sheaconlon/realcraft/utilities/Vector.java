@@ -2,6 +2,7 @@ package com.sheaconlon.realcraft.utilities;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.UnaryOperator;
 
 /**
  * A 3-vector.
@@ -204,17 +205,18 @@ public class Vector {
     /**
      * Rotate a vector horizontally.
      *
-     * "Horizontal" means within the xz-plane. A rotation of {@code Math.PI / 2} radians would rotate the positive x-axis to
-     * overlap with the negative z-axis.
+     * "Horizontal" means about the y-axis. A positive rotation goes in the same direction as the angle from the
+     * positive x-axis to the negative z-axis.
      * @param v The vector.
-     * @param theta The angle to rotate {@code v} through. In radians.
-     * @return {@code v} rotated horizontally by {@code theta}.
+     * @param theta The angle to rotate through. In radians.
+     * @return A new vector that is {@code v} rotated horizontally by {@code theta}.
      */
-    public static Vector rotateHorizontal(final Vector v, final double theta) {
+    public static Vector rotateHorizontal(final Vector v, double theta) {
+        // Formula derived from http://www.wolframalpha.com/input/?i=rotate+30+degrees+around+y-axis.
         return new Vector(
                 v.x * Math.cos(theta) + v.z * Math.sin(theta),
                 v.y,
-                v.x * Math.sin(theta) + v.z * Math.cos(theta)
+                -v.x * Math.sin(theta) + v.z * Math.cos(theta)
         );
     }
 
@@ -307,5 +309,43 @@ public class Vector {
                 Math.signum(v.getY()),
                 Math.signum(v.getZ())
         );
+    }
+
+    /**
+     * Return whether two vectors are about equal.
+     * @param a A vector.
+     * @param b A vector.
+     * @param epsilon The error that is to be allowed.
+     * @return Whether the corresponding components of {@code a} and {@code b} differ by no more than
+     *         {@code epsilon}.
+     */
+    public static boolean aboutEquals(final Vector a, final Vector b, final double epsilon) {
+        final Vector diff = Vector.subtract(a, b);
+        final Vector absDiff = Vector.abs(diff);
+        final double maxAbsDiff = absDiff.max();
+        return maxAbsDiff <= epsilon;
+    }
+
+    /**
+     * Apply a function to a vector component-wise.
+     * @param v The vector.
+     * @param f The function.
+     * @return A new vector which is the component-wise application of {@code f} on {@code v}.
+     */
+    public static Vector apply(final Vector v, final UnaryOperator<Double> f) {
+        return new Vector(
+                f.apply(v.getX()),
+                f.apply(v.getY()),
+                f.apply(v.getZ())
+        );
+    }
+
+    /**
+     * Get the component-wise absolute value of a vector.
+     * @param v The vector.
+     * @return A new vector which is the component-wise absolute value of {@code v}.
+     */
+    public static Vector abs(final Vector v) {
+        return apply(v, Math::abs);
     }
 }
