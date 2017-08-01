@@ -223,17 +223,17 @@ public class Vector {
     /**
      * Rotate a vector vertically.
      *
-     * "Vertical" means perpendicular to the xz-plane. A rotation of {@code Math.PI / 2} radians would rotate any vector in the
-     * xz-plane to overlap the positive y-axis.
+     * "Vertical" means about the z-axis. Positive rotations are in the same direction as the angle from the positive x-axis
+     * to the positive y-axis.
      * @param v The vector.
-     * @param theta The angle to rotate {@code v} through. In radians.
+     * @param theta The angle to rotate through. In radians.
      * @return {@code v} rotated vertically by {@code theta}.
      */
     public static Vector rotateVertical(final Vector v, final double theta) {
         return new Vector(
-                v.x * Math.cos(theta),
-                v.y * Math.cos(theta) + (new Vector(v.x, 0, v.z).mag()) * Math.sin(theta),
-                v.z * Math.cos(theta)
+                v.x * Math.cos(theta) - v.y * Math.sin(theta),
+                v.y * Math.cos(theta) + v.x * Math.sin(theta),
+                v.z
         );
     }
 

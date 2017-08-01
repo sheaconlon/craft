@@ -13,7 +13,8 @@ public class VectorTester {
     private static final Vector NEG_Z = new Vector(0, 0, -1);
     private static final Vector NEG_Z_45_DEG = new Vector(-Math.sqrt(2) / 2, 0, -Math.sqrt(2) / 2);
     private static final Vector RANDOM = new Vector(43, 59, 30);
-    private static final Vector RANDOM_7_RAD = new Vector(52.1, 59.0, -5.63); // Per http://www.wolframalpha.com/input/?i=rotate+(43,+59,+30)+by+7+radians+about+the+y-axis.
+    private static final Vector RANDOM_7_RAD_HORIZ = new Vector(52.1, 59.0, -5.63); // Per http://www.wolframalpha.com/input/?i=rotate+(43,+59,+30)+by+7+radians+about+the+y-axis.
+    private static final Vector RANDOM_7_RAD_VERT = new Vector(-6.34, 72.7, 30.0); // Per http://www.wolframalpha.com/input/?i=rotate+(43,+59,+30)+by+7+radians+about+the+z-axis.
 
     @Test
     public void testRotateHorizontalPosX30Deg() {
@@ -30,6 +31,12 @@ public class VectorTester {
     @Test
     public void testRotateHorizontalRandom7Rad() {
         final Vector random7rad = Vector.rotateHorizontal(RANDOM, 7);
-        assertTrue(Vector.aboutEquals(RANDOM_7_RAD, random7rad, 0.1));
+        assertTrue(Vector.aboutEquals(RANDOM_7_RAD_HORIZ, random7rad, 0.1));
+    }
+
+    @Test
+    public void testRotateVerticalRandom7Rad() {
+        final Vector random7rad = Vector.rotateVertical(RANDOM, 7);
+        assertTrue(Vector.aboutEquals(RANDOM_7_RAD_VERT, random7rad, 0.1));
     }
 }
