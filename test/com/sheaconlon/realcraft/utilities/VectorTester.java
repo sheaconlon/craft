@@ -2,7 +2,7 @@ package com.sheaconlon.realcraft.utilities;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * A tester of vectors.
@@ -18,22 +18,18 @@ public class VectorTester {
     @Test
     public void testRotateHorizontalPosX30Deg() {
         final Vector posX30 = Vector.rotateHorizontal(POS_X, Math.PI / 6);
-        assertVectorAboutEquals(POS_X_30_DEG, posX30);
+        assertTrue(Vector.aboutEquals(POS_X_30_DEG, posX30, 0.001));
     }
 
     @Test
     public void testRotateHorizontalNegZ45Deg() {
         final Vector negZ45 = Vector.rotateHorizontal(NEG_Z, Math.PI / 4);
-        assertVectorAboutEquals(NEG_Z_45_DEG, negZ45);
+        assertTrue(Vector.aboutEquals(NEG_Z_45_DEG, negZ45, 0.001));
     }
 
     @Test
     public void testRotateHorizontalRandom7Rad() {
         final Vector random7rad = Vector.rotateHorizontal(RANDOM, 7);
-        assertVectorAboutEquals(RANDOM_7_RAD, random7rad);
-    }
-
-    private void assertVectorAboutEquals(final Vector expected, final Vector actual) {
-        assertArrayEquals(expected.toArray(), actual.toArray(), 0.1);
+        assertTrue(Vector.aboutEquals(RANDOM_7_RAD, random7rad, 0.1));
     }
 }

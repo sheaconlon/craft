@@ -2,6 +2,7 @@ package com.sheaconlon.realcraft.utilities;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.UnaryOperator;
 
 /**
  * A 3-vector.
@@ -308,5 +309,43 @@ public class Vector {
                 Math.signum(v.getY()),
                 Math.signum(v.getZ())
         );
+    }
+
+    /**
+     * Return whether two vectors are about equal.
+     * @param a A vector.
+     * @param b A vector.
+     * @param epsilon The error that is to be allowed.
+     * @return Whether the corresponding components of {@code a} and {@code b} differ by no more than
+     *         {@code epsilon}.
+     */
+    public static boolean aboutEquals(final Vector a, final Vector b, final double epsilon) {
+        final Vector diff = Vector.subtract(a, b);
+        final Vector absDiff = Vector.abs(diff);
+        final double maxAbsDiff = absDiff.max();
+        return maxAbsDiff <= epsilon;
+    }
+
+    /**
+     * Apply a function to a vector component-wise.
+     * @param v The vector.
+     * @param f The function.
+     * @return A new vector which is the component-wise application of {@code f} on {@code v}.
+     */
+    public static Vector apply(final Vector v, final UnaryOperator<Double> f) {
+        return new Vector(
+                f.apply(v.getX()),
+                f.apply(v.getY()),
+                f.apply(v.getZ())
+        );
+    }
+
+    /**
+     * Get the component-wise absolute value of a vector.
+     * @param v The vector.
+     * @return A new vector which is the component-wise absolute value of {@code v}.
+     */
+    public static Vector abs(final Vector v) {
+        return apply(v, Math::abs);
     }
 }
