@@ -221,7 +221,7 @@ public class UserInterface extends Worker {
      */
     private void respondToLooking(final double elapsedTime) {
         final double[] cursorPositionDelta = this.getCursorPositionDelta();
-        double orientDelta = cursorPositionDelta[0] * UserInterface.LOOKING_FACTOR;
+        double orientDelta = -cursorPositionDelta[0] * UserInterface.LOOKING_FACTOR;
         double vertOrientDelta = -cursorPositionDelta[1] * UserInterface.LOOKING_FACTOR;
         final double limit = UserInterface.LOOKING_MAX_SPEED * elapsedTime;
         orientDelta = Math.signum(orientDelta) * Math.min(limit, Math.abs(orientDelta));

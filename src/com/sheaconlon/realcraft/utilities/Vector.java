@@ -205,7 +205,7 @@ public class Vector {
      * Rotate a vector horizontally.
      *
      * "Horizontal" means about the y-axis. A positive rotation goes in the same direction as the angle from the
-     * positive x-axis to the positive z-axis.
+     * positive x-axis to the negative z-axis.
      * @param v The vector.
      * @param theta The angle to rotate through. In radians.
      * @return A new vector that is {@code v} rotated horizontally by {@code theta}.
@@ -213,9 +213,9 @@ public class Vector {
     public static Vector rotateHorizontal(final Vector v, double theta) {
         // Formula derived from http://www.wolframalpha.com/input/?i=rotate+30+degrees+around+y-axis.
         return new Vector(
-                v.x * Math.cos(theta) - v.z * Math.sin(theta),
+                v.x * Math.cos(theta) + v.z * Math.sin(theta),
                 v.y,
-                v.x * Math.sin(theta) + v.z * Math.cos(theta)
+                -v.x * Math.sin(theta) + v.z * Math.cos(theta)
         );
     }
 

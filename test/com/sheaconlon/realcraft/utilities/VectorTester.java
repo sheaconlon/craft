@@ -9,19 +9,31 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
  */
 public class VectorTester {
     private static final Vector POS_X = new Vector(1, 0, 0);
-    private static final Vector POS_X_30 = new Vector(Math.sqrt(3) / 2, 0, -1.0/2.0);
+    private static final Vector POS_X_30_DEG = new Vector(Math.sqrt(3) / 2, 0, -1.0/2.0);
     private static final Vector NEG_Z = new Vector(0, 0, -1);
-    private static final Vector NEG_Z_45 = new Vector(-Math.sqrt(2) / 2, 0, -Math.sqrt(2) / 2);
+    private static final Vector NEG_Z_45_DEG = new Vector(-Math.sqrt(2) / 2, 0, -Math.sqrt(2) / 2);
+    private static final Vector RANDOM = new Vector(43, 59, 30);
+    private static final Vector RANDOM_7_RAD = new Vector(52.1, 59.0, -5.63); // Per http://www.wolframalpha.com/input/?i=rotate+(43,+59,+30)+by+7+radians+about+the+y-axis.
 
     @Test
-    public void testRotateHorizontal() {
-        final Vector posX30 = Vector.rotateHorizontal(POS_X, -Math.PI / 6);
-        assertVectorAboutEquals(POS_X_30, posX30);
-        final Vector negZ45 = Vector.rotateHorizontal(NEG_Z, -Math.PI / 4);
-        assertVectorAboutEquals(NEG_Z_45, negZ45);
+    public void testRotateHorizontalPosX30Deg() {
+        final Vector posX30 = Vector.rotateHorizontal(POS_X, Math.PI / 6);
+        assertVectorAboutEquals(POS_X_30_DEG, posX30);
+    }
+
+    @Test
+    public void testRotateHorizontalNegZ45Deg() {
+        final Vector negZ45 = Vector.rotateHorizontal(NEG_Z, Math.PI / 4);
+        assertVectorAboutEquals(NEG_Z_45_DEG, negZ45);
+    }
+
+    @Test
+    public void testRotateHorizontalRandom7Rad() {
+        final Vector random7rad = Vector.rotateHorizontal(RANDOM, 7);
+        assertVectorAboutEquals(RANDOM_7_RAD, random7rad);
     }
 
     private void assertVectorAboutEquals(final Vector expected, final Vector actual) {
-        assertArrayEquals(expected.toArray(), actual.toArray(), 0.01);
+        assertArrayEquals(expected.toArray(), actual.toArray(), 0.1);
     }
 }
