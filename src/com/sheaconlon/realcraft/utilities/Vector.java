@@ -11,6 +11,20 @@ import java.util.function.UnaryOperator;
  */
 public class Vector {
     /**
+     * The vertices of the unit cube.
+     */
+    public static final Vector[] UNIT_CUBE_VERTICES = new Vector[]{
+            new Vector(0, 0, 0),
+            new Vector(1, 0, 0),
+            new Vector(1, 0, 1),
+            new Vector(0, 0, 1),
+            new Vector(0, 1, 0),
+            new Vector(1, 1, 0),
+            new Vector(1, 1, 1),
+            new Vector(0, 1, 1)
+    };
+
+    /**
      * The vector whose components are all zero.
      */
     public static final Vector ZERO_VECTOR = new Vector(0, 0, 0);
@@ -151,6 +165,14 @@ public class Vector {
      */
     public boolean isZero() {
         return this.equals(ZERO_VECTOR);
+    }
+
+    /**
+     * Return the sum of this vector's components.
+     * @return The sum of this vector's components.
+     */
+    public double sum() {
+        return this.getX() + this.getY() + this.getZ();
     }
 
     /**
@@ -347,5 +369,15 @@ public class Vector {
      */
     public static Vector abs(final Vector v) {
         return apply(v, Math::abs);
+    }
+
+    /*
+     * Return the dot product of two vectors.
+     * @param a The first vector.
+     * @param b The second vector.
+     * @return The dot product of {@code a} and {@code b}.
+     */
+    public static double dot(final Vector a, final Vector b) {
+        return Vector.multiply(a, b).sum();
     }
 }
