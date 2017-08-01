@@ -16,7 +16,7 @@ public class Launcher {
         final World world = new World();
 
         final UserInterface ui = new UserInterface(world);
-        final Renderer renderer = new Renderer(world, ui.getWindowHandle(), ui.getDimensions());
+        final Renderer renderer = new Renderer(world, ui);
         final Generator generator = new Generator(world);
         final Prerenderer prerenderer = new Prerenderer(world, renderer);
         final Worker[] workers = new Worker[]{

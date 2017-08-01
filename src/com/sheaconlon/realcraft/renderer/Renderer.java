@@ -5,6 +5,7 @@ import com.sheaconlon.realcraft.entities.Player;
 import com.sheaconlon.realcraft.world.Chunk;
 import com.sheaconlon.realcraft.world.World;
 import com.sheaconlon.realcraft.utilities.Vector;
+import com.sheaconlon.realcraft.ui.UserInterface;
 import org.joml.Matrix4d;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
@@ -134,15 +135,7 @@ public class Renderer extends Worker {
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
     }
 
-    /**
-     * The OpenGL handle of the window to render in.
-     */
-    private final long windowHandle;
-
-    /**
-     * The dimensions, in pixels, of the window's rendering area.
-     */
-    private final int[] windowDimensions;
+    private final UserInterface ui;
 
     /**
      * The empty VBOs that this renderer has.
@@ -166,13 +159,11 @@ public class Renderer extends Worker {
 
     /**
      * Create a renderer.
-     * @param windowHandle The OpenGL handle of the window to render in.
-     * @param windowDimensions The dimensions, in pixels, of the window's rendering area.
+     * @param ui The user interface to render into.
      */
-    public Renderer(final World world, final long windowHandle, final int[] windowDimensions) {
+    public Renderer(final World world, final UserInterface ui) {
         this.world = world;
-        this.windowHandle = windowHandle;
-        this.windowDimensions = windowDimensions;
+        this.ui = ui;
         this.emptyVBOs = new ConcurrentLinkedDeque<>();
         this.writtenVBOs = new ConcurrentHashMap<>();
         this.sentVBOs = new ConcurrentHashMap<>();
@@ -232,9 +223,9 @@ public class Renderer extends Worker {
 
     @Override
     public void initInThread() {
-        GLFW.glfwMakeContextCurrent(this.windowHandle);
+        GLFW.glfwMakeContextCurrent(this.ui.getWindowHandle());
         Renderer.configureOpenGL();
-        Renderer.setProjection(this.windowDimensions);
+        Renderer.setProjection(this.ui.getDimensions());
         this.refillEmptyVBOs();
     }
 
@@ -251,11 +242,13 @@ public class Renderer extends Worker {
         final Vector playerChunkPos = Chunk.toChunkPos(playerPos);
         for (final Vector renderChunkPos : Chunk.getChunkPosNearby(playerChunkPos, Renderer.RENDER_DISTANCE)) {
             if (this.sentVBOs.containsKey(renderChunkPos)) {
-                final VBO vbo = this.sentVBOs.get(renderChunkPos);
-                vbo.render();
+                if (this.chunkIsWithinFrustum(renderChunkPos)) {
+                    final VBO vbo = this.sentVBOs.get(renderChunkPos);
+                    vbo.render();
+                }
             }
         }
-        GLFW.glfwSwapBuffers(this.windowHandle);
+        GLFW.glfwSwapBuffers(this.ui.getWindowHandle());
         this.framesSinceVBOSend++;
     }
 
@@ -268,21 +261,21 @@ public class Renderer extends Worker {
         final double xzCrossOrientation = player.getVertOrient();
         final Vector eyePosition = Vector.add(position, Renderer.PLAYER_EYE_POSITION);
         final Vector lookDisplacement =
-                Vector.rotateVertical(
-                    Vector.rotateHorizontal(
+                Vector.rotateHorizontal(
+                    Vector.rotateVertical(
                         new Vector(1, 0, 0),
-                        player.getOrient()
+                        player.getVertOrient()
                     ),
-                    player.getVertOrient()
+                    player.getOrient()
                 );
         final Vector lookPosition = Vector.add(eyePosition, lookDisplacement);
         final Vector upDirection =
-                Vector.rotateVertical(
-                        Vector.rotateHorizontal(
+                Vector.rotateHorizontal(
+                        Vector.rotateVertical(
                                 new Vector(0, 1, 0),
-                                player.getOrient()
+                                player.getVertOrient()
                         ),
-                        player.getVertOrient()
+                        player.getOrient()
                 );
         final DoubleBuffer buffer = BufferUtils.createDoubleBuffer(16);
         final Matrix4d matrix = new Matrix4d();
@@ -325,5 +318,53 @@ public class Renderer extends Worker {
                 return;
             }
         }
+    }
+
+    private boolean chunkIsWithinFrustum(final Vector chunkPos) {
+        for (final Vector unitCubeVertex : Vector.UNIT_CUBE_VERTICES) {
+            final Vector corner = Vector.add(chunkPos, Vector.scale(unitCubeVertex, Chunk.SIZE));
+            if (posIsWithinFrustum(corner)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean posIsWithinFrustum(final Vector p) {
+        final Vector camera = Vector.add(this.world.getPlayer().getPos(), PLAYER_EYE_POSITION);
+        final Vector dispToP = Vector.subtract(p, camera);
+        final Vector orientedDispToP =
+                Vector.rotateVertical(
+                    Vector.rotateHorizontal(dispToP, -this.world.getPlayer().getOrient()),
+                    -this.world.getPlayer().getVertOrient()
+                );
+        // If p is too near to (or is behind) the camera, then it can be immediately rejected.
+        if (orientedDispToP.getX() < NEAR_CUTOFF) {
+            return false;
+        }
+        // If p is too far from the camera, then it can be immediately rejected.
+        if (orientedDispToP.getX() > FAR_CUTOFF) {
+            return false;
+        }
+        // If p is not within the camera's vertical field of view, then it can be rejected.
+        final double vertDir = Math.atan(orientedDispToP.getY() / orientedDispToP.getX());
+        if (vertDir < -VERTICAL_FIELD_OF_VIEW / 2) {
+            return false;
+        }
+        if (vertDir > VERTICAL_FIELD_OF_VIEW / 2) {
+            return false;
+        }
+        // If p is not within the camera's horizontal field of view, then it can be rejected.
+        final int[] dims = this.ui.getDimensions();
+        final double horizFOV = (double)dims[0] / (double)dims[1] * VERTICAL_FIELD_OF_VIEW;
+        final double horizDir = Math.atan(orientedDispToP.getZ() / orientedDispToP.getX());
+        if (horizDir < -horizFOV / 2) {
+            return false;
+        }
+        if (horizDir > horizFOV / 2) {
+            return false;
+        }
+        // p is within the view frustum.
+        return true;
     }
 }

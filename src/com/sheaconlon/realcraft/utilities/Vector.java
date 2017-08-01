@@ -11,6 +11,20 @@ import java.util.function.UnaryOperator;
  */
 public class Vector {
     /**
+     * The vertices of the unit cube.
+     */
+    public static final Vector[] UNIT_CUBE_VERTICES = new Vector[]{
+            new Vector(0, 0, 0),
+            new Vector(1, 0, 0),
+            new Vector(1, 0, 1),
+            new Vector(0, 0, 1),
+            new Vector(0, 1, 0),
+            new Vector(1, 1, 0),
+            new Vector(1, 1, 1),
+            new Vector(0, 1, 1)
+    };
+
+    /**
      * The vector whose components are all zero.
      */
     public static final Vector ZERO_VECTOR = new Vector(0, 0, 0);
@@ -32,6 +46,7 @@ public class Vector {
 
     /**
      * Create a vector.
+     *
      * @param x A value for {@link #x}.
      * @param y A value for {@link #y}.
      * @param z A value for {@link #z}.
@@ -44,6 +59,7 @@ public class Vector {
 
     /**
      * Create a vector.
+     *
      * @param arr An array of the vector's components.
      */
     public Vector(final double[] arr) {
@@ -61,7 +77,7 @@ public class Vector {
      * @return The x-component of this vector, rounded down to the nearest integer.
      */
     public int getXInt() {
-        return (int)Math.floor(this.x);
+        return (int) Math.floor(this.x);
     }
 
     /**
@@ -75,7 +91,7 @@ public class Vector {
      * @return The y-component of this vector, rounded down to the nearest integer.
      */
     public int getYInt() {
-        return (int)Math.floor(this.y);
+        return (int) Math.floor(this.y);
     }
 
     /**
@@ -96,11 +112,12 @@ public class Vector {
      * @return The z-component of this vector, rounded down to the nearest integer.
      */
     public int getZInt() {
-        return (int)Math.floor(this.z);
+        return (int) Math.floor(this.z);
     }
 
     /**
      * Get the maximum component of this vector.
+     *
      * @return The maximum component of this vector.
      */
     public double max() {
@@ -109,6 +126,7 @@ public class Vector {
 
     /**
      * Get the squared magnitude of this vector.
+     *
      * @return The squared magnitude of this vector.
      */
     public double sqMag() {
@@ -117,6 +135,7 @@ public class Vector {
 
     /**
      * Get the magnitude of this vector.
+     *
      * @return The magnitude of this vector.
      */
     public double mag() {
@@ -137,7 +156,7 @@ public class Vector {
         if (!(other instanceof Vector)) {
             return false;
         }
-        final Vector otherVector = (Vector)other;
+        final Vector otherVector = (Vector) other;
         return this.x == otherVector.x && this.y == otherVector.y && this.z == otherVector.z;
     }
 
@@ -154,7 +173,17 @@ public class Vector {
     }
 
     /**
+     * Return the sum of this vector's components.
+     *
+     * @return The sum of this vector's components.
+     */
+    public double sum() {
+        return this.getX() + this.getY() + this.getZ();
+    }
+
+    /**
      * Add two vectors.
+     *
      * @param a A vector.
      * @param b A vector.
      * @return The element-wise sum of {@code a} and {@code b}.
@@ -165,6 +194,7 @@ public class Vector {
 
     /**
      * Subtract two vectors.
+     *
      * @param a A vector.
      * @param b A vector.
      * @return The element-wise difference of {@code a} - {@code b}.
@@ -175,6 +205,7 @@ public class Vector {
 
     /**
      * Multiply two vectors.
+     *
      * @param a A vector.
      * @param b A vector.
      * @return The element-wise product of {@code a} and {@code b}.
@@ -185,6 +216,7 @@ public class Vector {
 
     /**
      * Scale a vector.
+     *
      * @param v The vector to scale.
      * @param c The factor to scale {@code v} by.
      * @return {@code v} scaled by {@code c}.
@@ -195,6 +227,7 @@ public class Vector {
 
     /**
      * Round a vector.
+     *
      * @param v The vector.
      * @return A vector whose *-component is the largest integer that is no larger than {@code v}'s *-component.
      */
@@ -204,10 +237,11 @@ public class Vector {
 
     /**
      * Rotate a vector horizontally.
-     *
+     * <p>
      * "Horizontal" means about the y-axis. A positive rotation goes in the same direction as the angle from the
      * positive x-axis to the negative z-axis.
-     * @param v The vector.
+     *
+     * @param v     The vector.
      * @param theta The angle to rotate through. In radians.
      * @return A new vector that is {@code v} rotated horizontally by {@code theta}.
      */
@@ -222,24 +256,26 @@ public class Vector {
 
     /**
      * Rotate a vector vertically.
+     * <p>
+     * "Vertical" means about the z-axis. Positive rotations are in the same direction as the angle from the positive x-axis
+     * to the positive y-axis.
      *
-     * "Vertical" means perpendicular to the xz-plane. A rotation of {@code Math.PI / 2} radians would rotate any vector in the
-     * xz-plane to overlap the positive y-axis.
-     * @param v The vector.
-     * @param theta The angle to rotate {@code v} through. In radians.
+     * @param v     The vector.
+     * @param theta The angle to rotate through. In radians.
      * @return {@code v} rotated vertically by {@code theta}.
      */
     public static Vector rotateVertical(final Vector v, final double theta) {
         return new Vector(
-                v.x * Math.cos(theta),
-                v.y * Math.cos(theta) + (new Vector(v.x, 0, v.z).mag()) * Math.sin(theta),
-                v.z * Math.cos(theta)
+                v.x * Math.cos(theta) - v.y * Math.sin(theta),
+                v.y * Math.cos(theta) + v.x * Math.sin(theta),
+                v.z
         );
     }
 
     /**
      * Get the vectors which are "nearby" some vector and at integer displacements from it.
-     * @param v The vector.
+     *
+     * @param v        The vector.
      * @param distance The maximum distance at which a vector will be considered nearby {@code v}.
      * @return The vectors which are "nearby" {@code v} and at integer displacements from it.
      */
@@ -259,16 +295,17 @@ public class Vector {
 
     /**
      * Get the vectors which bound some set of vectors.
+     *
      * @param vectors A set of vectors. Must contain at least 1 vector. Cannot contain null.
      * @return The minimal coordinate values over {@code vectors} and the maximal coordinate values over
-     *         {@code vectors}.
+     * {@code vectors}.
      */
     public static Vector[] bounds(final Vector[] vectors) {
         if (vectors.length == 0) {
             throw new IllegalArgumentException("Cannot get the bounds of a size-0 set of vectors.");
         }
         double xMin = Double.POSITIVE_INFINITY, yMin = Double.POSITIVE_INFINITY, zMin = Double.POSITIVE_INFINITY,
-               xMax = Double.NEGATIVE_INFINITY, yMax = Double.NEGATIVE_INFINITY, zMax = Double.NEGATIVE_INFINITY;
+                xMax = Double.NEGATIVE_INFINITY, yMax = Double.NEGATIVE_INFINITY, zMax = Double.NEGATIVE_INFINITY;
         for (final Vector v : vectors) {
             if (v == null) {
                 throw new IllegalArgumentException("Cannot get the bounds of a set of vectors containing null.");
@@ -288,7 +325,8 @@ public class Vector {
 
     /**
      * Create a vector of Normal deviates.
-     * @param mu The mean of the Normal distribution to draw from.
+     *
+     * @param mu    The mean of the Normal distribution to draw from.
      * @param sigma The standard deviation of the Normal distribution to draw from.
      * @return A vector of Normal deviates.
      */
@@ -313,11 +351,12 @@ public class Vector {
 
     /**
      * Return whether two vectors are about equal.
-     * @param a A vector.
-     * @param b A vector.
+     *
+     * @param a       A vector.
+     * @param b       A vector.
      * @param epsilon The error that is to be allowed.
      * @return Whether the corresponding components of {@code a} and {@code b} differ by no more than
-     *         {@code epsilon}.
+     * {@code epsilon}.
      */
     public static boolean aboutEquals(final Vector a, final Vector b, final double epsilon) {
         final Vector diff = Vector.subtract(a, b);
@@ -328,6 +367,7 @@ public class Vector {
 
     /**
      * Apply a function to a vector component-wise.
+     *
      * @param v The vector.
      * @param f The function.
      * @return A new vector which is the component-wise application of {@code f} on {@code v}.
@@ -342,6 +382,7 @@ public class Vector {
 
     /**
      * Get the component-wise absolute value of a vector.
+     *
      * @param v The vector.
      * @return A new vector which is the component-wise absolute value of {@code v}.
      */
