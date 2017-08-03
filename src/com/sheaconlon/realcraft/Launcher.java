@@ -32,7 +32,7 @@ public class Launcher {
         for (int i = 0; i < runners.length; i++) {
             runners[i] = new Runner(sharedWorkers);
         }
-        int dedicatedCurrRunner = 1;
+        int dedicatedCurrRunner = 1 % runners.length;
         for (final Worker w : workers) {
             if (w.needsDedicatedThread()) {
                 if (w.needsMainThread()) {
