@@ -6,7 +6,6 @@ import com.sheaconlon.realcraft.entities.Entity;
 import com.sheaconlon.realcraft.utilities.Vector;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Map;
@@ -32,7 +31,7 @@ public class Chunk {
      * Create a chunk.
      * @param anchor Its anchor point.
      */
-    public Chunk(final Vector anchor) {
+    private Chunk(final Vector anchor) {
         this.anchor = anchor;
         this.blocks = new Block[BLOCKS][BLOCKS][BLOCKS];
         this.entities = new HashSet<>();
@@ -182,6 +181,21 @@ public class Chunk {
      */
     public Iterable<Chunk> chunksNearby(final int distance) {
         return new ChunksNearby(distance);
+    }
+
+    // ##### OVERRIDES OF OBJECT #####
+    @Override
+    public int hashCode() {
+        return this.anchor.hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        if (!(object instanceof Chunk)) {
+            return false;
+        }
+        final Chunk otherChunk = (Chunk)object;
+        return this.anchor.equals(otherChunk.anchor);
     }
 
     // ##### PRIVATE STATIC #####
