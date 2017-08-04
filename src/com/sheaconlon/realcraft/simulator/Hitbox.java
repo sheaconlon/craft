@@ -4,35 +4,37 @@ import com.sheaconlon.realcraft.world.WorldObject;
 import com.sheaconlon.realcraft.utilities.Vector;
 
 /**
- * An axis-aligned rectangular prism. It defines the boundaries of an object for the purpose of physical
- * simulation.
+ * An axis-aligned rectangular prism.
+ *
+ * Defines the boundaries of an object for the purpose of physical simulation.
  */
 public class Hitbox {
-    private final WorldObject obj;
-    private final Vector pos;
+    private final WorldObject object;
+    private final Vector position;
     private final Vector dims;
 
     /**
      * Create a hitbox.
-     * @param obj The object that the hitbox is for. The position and orientation of the hitbox will track
-     *            {@code obj}'s position and orientation.
-     * @param pos The position of the small x, small y, small z corner of this hitbox, relative to the anchor
-     *            point of {@code obj}.
-     * @param dims The dimensions of the hitbox. If {@code obj} is at position {@code (x, y, z)}, then one corner
+     * @param object The object that the hitbox is for. The position and orientation of the hitbox will track
+     *            {@code object}'s position and orientation.
+     * @param position The position of the small x, small y, small z corner of this hitbox, relative to the anchor
+     *            point of {@code object}.
+     * @param dims The dimensions of the hitbox. If {@code object} is at position {@code (x, y, z)}, then one corner
      *             of the hitbox will be at (x, y, z) and one corner of the hitbox will be at
      *             {@code (x + dims.getX(), y + dims.getY(), z + dims.getZ())}.
      */
-    public Hitbox(final WorldObject obj, final Vector pos, final Vector dims) {
-        this.obj = obj;
-        this.pos = pos;
+    public Hitbox(final WorldObject object, final Vector position, final Vector dims) {
+        this.object = object;
+        this.position = position;
         this.dims = dims;
     }
 
     /**
+     * Get the bounds of this hitbox.
      * @return The minimal coordinate values over the corners of this hitbox and the maximal coordinate values
      *         over the corners of this hitbox.
      */
-    public Vector[] getBounds() {
+    Vector[] getBounds() {
         // Lacking rotation and translation. Relative to anchor. Does not account for height.
         final Vector[] bottomFaceCorners = new Vector[]{
                 new Vector(0, 0, 0),
@@ -42,17 +44,17 @@ public class Hitbox {
         };
         // Lacking rotation. Relative to anchor. Does not account for height.
         for (int i = 0; i < bottomFaceCorners.length; i++) {
-            bottomFaceCorners[i] = Vector.add(bottomFaceCorners[i], this.pos);
+            bottomFaceCorners[i] = Vector.add(bottomFaceCorners[i], this.position);
         }
         // Relative to anchor. Does not account for height.
         for (int i = 0; i < bottomFaceCorners.length; i++) {
             bottomFaceCorners[i] =
-                    Vector.rotateHorizontal(bottomFaceCorners[i], this.obj.getOrient());
+                    Vector.rotateHorizontal(bottomFaceCorners[i], this.object.getOrient());
         }
         // Does not account for height.
         final Vector[] bounds = Vector.bounds(bottomFaceCorners);
-        bounds[0] = Vector.add(bounds[0], this.obj.getPos());
-        bounds[1] = Vector.add(bounds[1], this.obj.getPos());
+        bounds[0] = Vector.add(bounds[0], this.object.getPos());
+        bounds[1] = Vector.add(bounds[1], this.object.getPos());
         // Correct.
         final Vector verticalDisp = new Vector(0, this.dims.getY(), 0);
         bounds[1] = Vector.add(bounds[1], verticalDisp);
@@ -68,7 +70,7 @@ public class Hitbox {
      * @param other The other hitbox.
      * @return The minimum translation vector for this hitbox and {@code other}.
      */
-    public Vector minTranslation(final Hitbox other) {
+     Vector minTranslation(final Hitbox other) {
         Vector minTrans = new Vector(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
         final boolean[] overlap = new boolean[]{false, false, false};
         final Vector[] thisBounds = this.getBounds();
@@ -102,5 +104,15 @@ public class Hitbox {
         } else {
             return Vector.ZERO;
         }
+    }
+
+    /**
+     * Make a hitbox for some object.
+     * @param hitbox The prototype hitbox.
+     * @param object The object.
+     * @return A new hitbox for {@code object} with {@code hitbox}'s position and dimensions.
+     */
+    public static Hitbox forObject(final Hitbox hitbox, final WorldObject object) {
+        return new Hitbox(object, hitbox.position, hitbox.dims);
     }
 }
