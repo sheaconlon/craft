@@ -206,7 +206,7 @@ public class UserInterface extends Worker {
         if (this.window.spaceKeyIsPressed()) {
             this.world.getPlayer().changeVelocity(new Vector(0, 15 * elapsedTime, 0));
         }
-        if (!displacement.equals(Vector.ZERO_VECTOR)) {
+        if (!displacement.equals(Vector.ZERO)) {
             displacement = Vector.rotateHorizontal(displacement, this.world.getPlayer().getOrient());
             final double distance = UserInterface.SPEED_OF_MOVEMENT * elapsedTime;
             displacement = Vector.scale(displacement, distance / displacement.mag());

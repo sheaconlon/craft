@@ -100,7 +100,7 @@ public class Hitbox {
         if (overlap[0] && overlap[1] && overlap[2]) {
             return minTrans;
         } else {
-            return Vector.ZERO_VECTOR;
+            return Vector.ZERO;
         }
     }
 }

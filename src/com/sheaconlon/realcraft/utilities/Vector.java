@@ -3,6 +3,8 @@ package com.sheaconlon.realcraft.utilities;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * A 3-vector.
@@ -10,24 +12,22 @@ import java.util.function.UnaryOperator;
  * A vector is immutable, provided that its type argument is immutable.
  */
 public class Vector {
-    /**
-     * The vertices of the unit cube.
-     */
-    public static final Vector[] UNIT_CUBE_VERTICES = new Vector[]{
-            new Vector(0, 0, 0),
-            new Vector(1, 0, 0),
-            new Vector(1, 0, 1),
-            new Vector(0, 0, 1),
-            new Vector(0, 1, 0),
-            new Vector(1, 1, 0),
-            new Vector(1, 1, 1),
-            new Vector(0, 1, 1)
-    };
-
-    /**
-     * The vector whose components are all zero.
-     */
-    public static final Vector ZERO_VECTOR = new Vector(0, 0, 0);
+    // ##### PUBLIC STATIC FINAL #####
+    public static final List<Vector> UNIT_CUBE_VERTICES = Collections.unmodifiableList(
+            Stream.of(
+                new Vector(0, 0, 0),
+                new Vector(1, 0, 0),
+                new Vector(1, 0, 1),
+                new Vector(0, 0, 1),
+                new Vector(0, 1, 0),
+                new Vector(1, 1, 0),
+                new Vector(1, 1, 1),
+                new Vector(0, 1, 1)
+            ).collect(
+                    Collectors.toList()
+            )
+    );
+    public static final Vector ZERO = Vector.uniform(0);
 
     /**
      * The x-component of this vector.
@@ -169,7 +169,7 @@ public class Vector {
      * @return Whether this vector equals the zero vector.
      */
     public boolean isZero() {
-        return this.equals(ZERO_VECTOR);
+        return this.equals(ZERO);
     }
 
     /**
