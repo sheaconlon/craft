@@ -173,6 +173,16 @@ public class Vector {
     }
 
     /**
+     * Return whether all of this vector's components are integers.
+     * @return Whether all of this vector's components are integers.
+     */
+    public boolean isInt() {
+        return this.getX() == this.getXInt()
+                && this.getY() == this.getYInt()
+                && this.getZ() == this.getZInt();
+    }
+
+    /**
      * Return the sum of this vector's components.
      *
      * @return The sum of this vector's components.

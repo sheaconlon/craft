@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -84,5 +85,20 @@ public class VectorTester {
             around.add(v);
         }
         assertTrue(AROUND.equals(around));
+    }
+
+    // ##### isInt() #####
+
+    private static final Vector NOT_INT_DECIMAL = new Vector(1, 1.0000001, 1);
+    private static final Vector NOT_INT_INF = new Vector(1, Double.POSITIVE_INFINITY, 1);
+    private static final Vector NOT_INT_NAN = new Vector(1, Double.NaN, 1);
+    private static final Vector INT = new Vector(-1, 0, 1);
+
+    @Test
+    public void testIsInt() {
+        assertFalse(NOT_INT_DECIMAL.isInt());
+        assertFalse(NOT_INT_INF.isInt());
+        assertFalse(NOT_INT_NAN.isInt());
+        assertTrue(INT.isInt());
     }
 }
