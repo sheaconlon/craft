@@ -51,40 +51,40 @@ public abstract class Block extends WorldObject {
     private static final float[] BLACK = new float[]{0, 0, 0};
     private static final List<Quad> FACES = Collections.unmodifiableList(Stream.of(
             new Quad(Stream.of(
-                    new Vertex(new float[]{0, 0, 0}, BLACK, FRONT_NORMAL),
-                    new Vertex(new float[]{1, 0, 0}, BLACK, FRONT_NORMAL),
-                    new Vertex(new float[]{1, 1, 0}, BLACK, FRONT_NORMAL),
-                    new Vertex(new float[]{0, 1, 0}, BLACK, FRONT_NORMAL)
+                    new Vertex(new float[]{0,    0,    0}, BLACK, FRONT_NORMAL),
+                    new Vertex(new float[]{0.5f, 0,    0}, BLACK, FRONT_NORMAL),
+                    new Vertex(new float[]{0.5f, 0.5f, 0}, BLACK, FRONT_NORMAL),
+                    new Vertex(new float[]{0,    0.5f, 0}, BLACK, FRONT_NORMAL)
             ).collect(Collectors.toList())),
             new Quad(Stream.of(
-                    new Vertex(new float[]{0, 0, -1}, BLACK, LEFT_NORMAL),
-                    new Vertex(new float[]{0, 0, 0}, BLACK, LEFT_NORMAL),
-                    new Vertex(new float[]{0, 1, 0}, BLACK, LEFT_NORMAL),
-                    new Vertex(new float[]{0, 1, -1}, BLACK, LEFT_NORMAL)
+                    new Vertex(new float[]{0, 0,    -0.5f}, BLACK, LEFT_NORMAL),
+                    new Vertex(new float[]{0, 0,    0    }, BLACK, LEFT_NORMAL),
+                    new Vertex(new float[]{0, 0.5f, 0    }, BLACK, LEFT_NORMAL),
+                    new Vertex(new float[]{0, 0.5f, -0.5f}, BLACK, LEFT_NORMAL)
             ).collect(Collectors.toList())),
             new Quad(Stream.of(
-                    new Vertex(new float[]{1, 0, -1}, BLACK, BACK_NORMAL),
-                    new Vertex(new float[]{0, 0, -1}, BLACK, BACK_NORMAL),
-                    new Vertex(new float[]{0, 1, -1}, BLACK, BACK_NORMAL),
-                    new Vertex(new float[]{1, 1, -1}, BLACK, BACK_NORMAL)
+                    new Vertex(new float[]{0.5f, 0,    -0.5f}, BLACK, BACK_NORMAL),
+                    new Vertex(new float[]{0,    0,    -0.5f}, BLACK, BACK_NORMAL),
+                    new Vertex(new float[]{0,    0.5f, -0.5f}, BLACK, BACK_NORMAL),
+                    new Vertex(new float[]{0.5f, 0.5f, -0.5f}, BLACK, BACK_NORMAL)
             ).collect(Collectors.toList())),
             new Quad(Stream.of(
-                    new Vertex(new float[]{1, 0, 0}, BLACK, RIGHT_NORMAL),
-                    new Vertex(new float[]{1, 0, -1}, BLACK, RIGHT_NORMAL),
-                    new Vertex(new float[]{1, 1, -1}, BLACK, RIGHT_NORMAL),
-                    new Vertex(new float[]{1, 1, 0}, BLACK, RIGHT_NORMAL)
+                    new Vertex(new float[]{0.5f, 0,    0    }, BLACK, RIGHT_NORMAL),
+                    new Vertex(new float[]{0.5f, 0,    -0.5f}, BLACK, RIGHT_NORMAL),
+                    new Vertex(new float[]{0.5f, 0.5f, -0.5f}, BLACK, RIGHT_NORMAL),
+                    new Vertex(new float[]{0.5f, 0.5f, 0    }, BLACK, RIGHT_NORMAL)
             ).collect(Collectors.toList())),
             new Quad(Stream.of(
-                    new Vertex(new float[]{0, 1, 0}, BLACK, TOP_NORMAL),
-                    new Vertex(new float[]{1, 1, 0}, BLACK, TOP_NORMAL),
-                    new Vertex(new float[]{1, 1, -1}, BLACK, TOP_NORMAL),
-                    new Vertex(new float[]{0, 1, -1}, BLACK, TOP_NORMAL)
+                    new Vertex(new float[]{0,    0.5f, 0    }, BLACK, TOP_NORMAL),
+                    new Vertex(new float[]{0.5f, 0.5f, 0    }, BLACK, TOP_NORMAL),
+                    new Vertex(new float[]{0.5f, 0.5f, -0.5f}, BLACK, TOP_NORMAL),
+                    new Vertex(new float[]{0,    0.5f, -0.5f}, BLACK, TOP_NORMAL)
             ).collect(Collectors.toList())),
             new Quad(Stream.of(
-                    new Vertex(new float[]{0, 0, -1}, BLACK, BOTTOM_NORMAL),
-                    new Vertex(new float[]{1, 0, -1}, BLACK, BOTTOM_NORMAL),
-                    new Vertex(new float[]{1, 0, 0}, BLACK, BOTTOM_NORMAL),
-                    new Vertex(new float[]{0, 0, 0}, BLACK, BOTTOM_NORMAL)
+                    new Vertex(new float[]{0,    0, -0.5f}, BLACK, BOTTOM_NORMAL),
+                    new Vertex(new float[]{0.5f, 0, -0.5f}, BLACK, BOTTOM_NORMAL),
+                    new Vertex(new float[]{0.5f, 0, 0    }, BLACK, BOTTOM_NORMAL),
+                    new Vertex(new float[]{0,    0, 0    }, BLACK, BOTTOM_NORMAL)
             ).collect(Collectors.toList()))
     ).collect(Collectors.toList()));
 
@@ -100,6 +100,10 @@ public abstract class Block extends WorldObject {
 
     private final List<Hitbox> hitboxes;
 
+    public static final int SIZE_NUMERATOR = 1;
+    public static final int SIZE_DENOMINATOR = 2;
+    public static final double SIZE = (double)SIZE_NUMERATOR / (double)SIZE_DENOMINATOR;
+
     /**
      * Create a block.
      * @param pos See {@link WorldObject#getPos()}.
@@ -107,7 +111,7 @@ public abstract class Block extends WorldObject {
     public Block(final Vector pos) {
         super(pos, INIT_ORIENT, INIT_VELOCITY);
         this.hitboxes = new LinkedList<>();
-        this.hitboxes.add(new Hitbox(this, new Vector(-0.5, -0.5, -0.5), new Vector(1, 1, 1)));
+        this.hitboxes.add(new Hitbox(this, new Vector(-0.25, -0.25, -0.25), new Vector(0.5, 0.5, 0.5)));
     }
 
     /**
