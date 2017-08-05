@@ -144,7 +144,7 @@ public class Vector {
 
     @Override
     public int hashCode() {
-        return Double.hashCode(this.x) + Double.hashCode(this.y) + Double.hashCode(this.z);
+        return Double.hashCode(this.x) ^ Double.hashCode(this.y) ^ Double.hashCode(this.z);
     }
 
     @Override
