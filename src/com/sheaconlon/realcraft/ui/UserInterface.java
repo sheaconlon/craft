@@ -1,8 +1,8 @@
 package com.sheaconlon.realcraft.ui;
 
 import com.sheaconlon.realcraft.concurrency.Worker;
+import com.sheaconlon.realcraft.entities.Player;
 import com.sheaconlon.realcraft.utilities.Vector;
-import com.sheaconlon.realcraft.world.World;
 
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWWindowCloseCallbackI;
@@ -83,11 +83,6 @@ public class UserInterface extends Worker {
     private final UserInterface.KeyCallback keyCallback;
 
     /**
-     * The world.
-     */
-    private World world;
-
-    /**
      * The most recently recorded cursor position, as an array with x- and y-coordinates.
      */
     private double[] cursorPosition;
@@ -95,8 +90,7 @@ public class UserInterface extends Worker {
     /**
      * Construct a user interface.
      */
-    public UserInterface(final World world) {
-        this.world = world;
+    public UserInterface() {
         this.window = new Window();
         // Save a strong reference to the callback so that it is not garbage collected.
         this.windowCloseCallback = new UserInterface.WindowCloseCallback();
@@ -204,13 +198,13 @@ public class UserInterface extends Worker {
             displacement = Vector.add(displacement, new Vector(0, 0, 1));
         }
         if (this.window.spaceKeyIsPressed()) {
-            this.world.getPlayer().changeVelocity(new Vector(0, 15 * elapsedTime, 0));
+            Player.PLAYER.changeVelocity(new Vector(0, 15 * elapsedTime, 0));
         }
         if (!displacement.equals(Vector.ZERO)) {
-            displacement = Vector.rotateHorizontal(displacement, this.world.getPlayer().getOrient());
+            displacement = Vector.rotateHorizontal(displacement, Player.PLAYER.getOrient());
             final double distance = UserInterface.SPEED_OF_MOVEMENT * elapsedTime;
             displacement = Vector.scale(displacement, distance / displacement.mag());
-            this.world.getPlayer().changePos(displacement);
+            Player.PLAYER.changePos(displacement);
         }
     }
 
@@ -226,7 +220,7 @@ public class UserInterface extends Worker {
         final double limit = UserInterface.LOOKING_MAX_SPEED * elapsedTime;
         orientDelta = Math.signum(orientDelta) * Math.min(limit, Math.abs(orientDelta));
         vertOrientDelta = Math.signum(vertOrientDelta) * Math.min(limit, Math.abs(vertOrientDelta));
-        this.world.getPlayer().changeOrient(orientDelta);
-        this.world.getPlayer().changeVertOrient(vertOrientDelta);
+        Player.PLAYER.changeOrient(orientDelta);
+        Player.PLAYER.changeVertOrient(vertOrientDelta);
     }
 }

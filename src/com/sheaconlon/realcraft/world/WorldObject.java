@@ -46,7 +46,7 @@ public abstract class WorldObject {
      *
      * The default implementation does nothing.
      */
-    public void tick(final World world) {
+    public void tick() {
         return;
     };
 

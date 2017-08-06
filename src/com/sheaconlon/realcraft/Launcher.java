@@ -6,19 +6,16 @@ import com.sheaconlon.realcraft.generator.Generator;
 import com.sheaconlon.realcraft.renderer.Prerenderer;
 import com.sheaconlon.realcraft.renderer.Renderer;
 import com.sheaconlon.realcraft.ui.UserInterface;
-import com.sheaconlon.realcraft.world.World;
 
 import java.util.Queue;
 import java.util.concurrent.PriorityBlockingQueue;
 
 public class Launcher {
     public static void main(final String[] args) {
-        final World world = new World();
-
-        final UserInterface ui = new UserInterface(world);
-        final Renderer renderer = new Renderer(world, ui);
-        final Generator generator = new Generator(world);
-        final Prerenderer prerenderer = new Prerenderer(world, renderer);
+        final UserInterface ui = new UserInterface();
+        final Renderer renderer = new Renderer(ui);
+        final Generator generator = new Generator();
+        final Prerenderer prerenderer = new Prerenderer(renderer);
         final Worker[] workers = new Worker[]{
                 ui,
                 renderer,
