@@ -3,6 +3,9 @@ package com.sheaconlon.realcraft.simulator;
 import com.sheaconlon.realcraft.world.WorldObject;
 import com.sheaconlon.realcraft.utilities.Vector;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * An axis-aligned rectangular prism.
  *
@@ -104,6 +107,20 @@ public class Hitbox {
         } else {
             return Vector.ZERO;
         }
+    }
+
+    /**
+     * Get the anchor points of the blocks which intersect this hitbox.
+     * @return The anchor points of the blocks which intersect this hitbox.
+     */
+    public Vector[] intersectingBlockAnchors() {
+         final List<Vector> intersectingBlockAnchors = new ArrayList<>();
+         final Vector[] bounds = this.getBounds();
+         bounds[0] = Vector.round(bounds[0]);
+         for (final Vector intersectingBlockAnchor : Vector.between(bounds[0], bounds[1])) {
+             intersectingBlockAnchors.add(intersectingBlockAnchor);
+         }
+         return intersectingBlockAnchors.toArray(new Vector[0]);
     }
 
     /**
