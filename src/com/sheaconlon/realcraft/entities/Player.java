@@ -15,12 +15,6 @@ import java.util.stream.Stream;
  * The player, the avatar of the user.
  */
 public class Player extends Animal {
-    // ##### PUBLIC STATIC FINAL #####
-    /**
-     * The player.
-     */
-    public static final Player PLAYER = new Player();
-
     // ##### PRIVATE STATIC FINAL #####
     private static final Vector INITIAL_POSITION = Vector.ZERO;
     private static final double INITIAL_ORIENTATION = 0;
@@ -38,6 +32,12 @@ public class Player extends Animal {
             )
     );
     private static final List<Vertex> VERTICES = Collections.unmodifiableList(Collections.emptyList());
+
+    // ##### PUBLIC STATIC FINAL #####
+    /**
+     * The player.
+     */
+    public static final Player PLAYER = new Player();
 
     // ##### CONSTRUCTORS #####
     private Player() {
