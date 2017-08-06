@@ -12,7 +12,7 @@ import java.util.Set;
 public class Generator extends Worker {
     // ##### PRIVATE STATIC FINAL #####
     private static final PerlinNoiseGenerator TERRAIN_NOISE_GENERATOR =
-            new PerlinNoiseGenerator(1, 1, x -> x);
+            new PerlinNoiseGenerator(0.25, 5, x -> x);
 
     // ##### PRIVATE FINAL #####
     private final Set<Chunk> generated;
@@ -78,7 +78,7 @@ public class Generator extends Worker {
     private void generate(final Chunk chunk) {
         for (final Vector blockAnchor : chunk.blockAnchors()) {
             final double terrainNoise = TERRAIN_NOISE_GENERATOR.noise(blockAnchor);
-            if (terrainNoise > 0.9) {
+            if (terrainNoise > 0.5) {
                 chunk.putBlock(new DirtBlock(blockAnchor));
             }
         }
