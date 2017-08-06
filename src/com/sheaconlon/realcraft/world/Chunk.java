@@ -16,9 +16,11 @@ import java.util.Collection;
  * A cubical subset of the world.
  */
 public class Chunk {
-    // ##### PRIVATE STATIC #####
-    private static final int BLOCKS = 15;
-    private static final double SIZE = BLOCKS * Block.SIZE;
+    // ##### PUBLIC STATIC FINAL #####
+    public static final int BLOCKS = 15;
+    public static final double SIZE = BLOCKS * Block.SIZE;
+
+    // ##### PRIVATE STATIC FINAL #####
     private static final Map<Vector, Chunk> chunks = new HashMap<>();
 
     // ##### PRIVATE FINAL #####
@@ -125,6 +127,14 @@ public class Chunk {
         return new BlockAnchors();
     }
 
+    /**
+     * Get the anchor point of this chunk.
+     * @return The anchor point of this chunk.
+     */
+    public Vector getAnchor() {
+        return this.anchor;
+    }
+
     // ##### CHUNKS #####
     /**
      * Return the chunk containing some position.
@@ -143,20 +153,20 @@ public class Chunk {
 
     private class ChunksNearby implements Iterable<Chunk> {
         private class ChunksNearbyIterator implements Iterator<Chunk> {
-            private Iterator<Vector> chunkAnchorsNearby;
+            private Iterator<Vector> displacements;
 
             ChunksNearbyIterator() {
-                this.chunkAnchorsNearby = Vector.around(Chunk.this.anchor, ChunksNearby.this.distance).iterator();
+                this.displacements = Vector.around(Vector.ZERO, ChunksNearby.this.distance).iterator();
             }
 
             @Override
             public boolean hasNext() {
-                return this.chunkAnchorsNearby.hasNext();
+                return this.displacements.hasNext();
             }
 
             @Override
             public Chunk next() {
-                return getChunk(this.chunkAnchorsNearby.next());
+                return getChunk(Vector.add(Chunk.this.anchor, Vector.scale(this.displacements.next(), Chunk.SIZE)));
             }
         }
 
