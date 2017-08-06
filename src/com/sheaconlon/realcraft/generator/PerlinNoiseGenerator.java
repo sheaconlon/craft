@@ -79,7 +79,7 @@ public class PerlinNoiseGenerator {
 
     // ##### PRIVATE #####
     private static Vector gradient(final Vector gridPoint) {
-        final int random = (int)(gridPoint.hashCode() / Double.MAX_VALUE * Vector.UNIT_CUBE_VERTICES.size());
+        final int random = (int)(((double)gridPoint.hashCode() - Integer.MIN_VALUE) / (-(double)Integer.MIN_VALUE + Integer.MAX_VALUE) * Vector.UNIT_CUBE_VERTICES.size());
         return Vector.UNIT_CUBE_VERTICES.get(random);
     }
 
