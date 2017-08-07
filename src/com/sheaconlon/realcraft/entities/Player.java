@@ -16,7 +16,7 @@ import java.util.stream.Stream;
  */
 public class Player extends Animal {
     // ##### PRIVATE STATIC FINAL #####
-    private static final Vector INITIAL_POSITION = Vector.ZERO;
+    private static final Vector INITIAL_POSITION = Vector.setY(Vector.ZERO, 50);
     private static final double INITIAL_ORIENTATION = 0;
     private static final Vector INITIAL_VELOCITY = Vector.ZERO;
     private static final double INITIAL_VERTICAL_ORIENTATION = 0;
