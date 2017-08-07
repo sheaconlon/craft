@@ -1,18 +1,25 @@
 package com.sheaconlon.realcraft.generator;
 
+import com.sheaconlon.realcraft.blocks.Block;
 import com.sheaconlon.realcraft.blocks.DirtBlock;
 import com.sheaconlon.realcraft.concurrency.Worker;
 import com.sheaconlon.realcraft.entities.Player;
+import com.sheaconlon.realcraft.renderer.Renderer;
 import com.sheaconlon.realcraft.utilities.Vector;
 import com.sheaconlon.realcraft.world.Chunk;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class Generator extends Worker {
     // ##### PRIVATE STATIC FINAL #####
-    private static final PerlinNoiseGenerator TERRAIN_NOISE_GENERATOR =
-            new PerlinNoiseGenerator(0.25, 5, x -> x);
+    private static final PerlinNoiseGenerator HEIGHT_MAP_GENERATOR =
+            new PerlinNoiseGenerator(0.005, 3, x -> (x + 1) / 2);
+    private static final double HEIGHT_MAP_MINIMUM = 0;
+    private static final double HEIGHT_MAP_MAXIMUM = 100;
+    private static final double HEIGHT_MAP_RANGE = HEIGHT_MAP_MAXIMUM - HEIGHT_MAP_MINIMUM;
 
     // ##### PRIVATE FINAL #####
     private final Set<Chunk> generated;
@@ -23,7 +30,7 @@ public class Generator extends Worker {
     }
 
     // ##### PRIVATE STATIC FINAL #####
-    private static final int RADIUS = 1;
+    private static final int RADIUS = Renderer.RENDER_DISTANCE;
 
     // ##### WORKER OVERRIDES #####
     private static final PRIORITY_LEVEL PRIORITY_LEVEL = Worker.PRIORITY_LEVEL.MEDIUM;
@@ -76,9 +83,16 @@ public class Generator extends Worker {
 
     // ##### GENERATION #####
     private void generate(final Chunk chunk) {
+        final Map<Vector, Integer> heightCache = new HashMap<Vector, Integer>();
         for (final Vector blockAnchor : chunk.blockAnchors()) {
-            final double terrainNoise = TERRAIN_NOISE_GENERATOR.noise(blockAnchor);
-            if (terrainNoise > 0.5) {
+            final Vector horizontalBlockAnchor = Vector.setY(blockAnchor, 0);
+            Integer height = heightCache.get(horizontalBlockAnchor);
+            if (height == null) {
+                final double noise = HEIGHT_MAP_GENERATOR.noise(horizontalBlockAnchor);
+                height = (int)(noise * HEIGHT_MAP_RANGE + HEIGHT_MAP_MINIMUM);
+                heightCache.put(horizontalBlockAnchor, height);
+            }
+            if (blockAnchor.getY() <= height) {
                 chunk.putBlock(new DirtBlock(blockAnchor));
             }
         }
