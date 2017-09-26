@@ -18,7 +18,7 @@ public class LRUCache<K, V> {
     }
 
     private final int capacity;
-    private final Map<K, DoublyLinkedNode<LRUCache<K, V>.Entry>> keyNodeMap;
+    private final Map<K, LinkNode<LRUCache<K, V>.Entry>> keyNodeMap;
     private final ExposedLinkedList<LRUCache<K, V>.Entry> nodeList;
 
     /**
@@ -37,7 +37,7 @@ public class LRUCache<K, V> {
      * @return The value.
      */
     public V get(final K key) {
-        final DoublyLinkedNode<LRUCache<K, V>.Entry> node = this.keyNodeMap.get(key);
+        final LinkNode<LRUCache<K, V>.Entry> node = this.keyNodeMap.get(key);
         if (node == null) {
             return null;
         }
@@ -52,7 +52,7 @@ public class LRUCache<K, V> {
      * @param value The new value.
      */
     public void put(final K key, final V value) {
-        final DoublyLinkedNode<LRUCache<K, V>.Entry> node = this.keyNodeMap.get(key);
+        final LinkNode<LRUCache<K, V>.Entry> node = this.keyNodeMap.get(key);
         if (node != null) {
             this.remove(node);
         }
@@ -61,16 +61,16 @@ public class LRUCache<K, V> {
 
     private void add(final K key, final V value) {
         if (this.keyNodeMap.size() >= this.capacity) {
-            final DoublyLinkedNode<LRUCache<K, V>.Entry> nodeToRemove = this.nodeList.removeFront();
+            final LinkNode<LRUCache<K, V>.Entry> nodeToRemove = this.nodeList.removeFront();
             this.remove(nodeToRemove);
         }
         final LRUCache<K, V>.Entry entry = new LRUCache<K, V>.Entry(key, value);
-        DoublyLinkedNode<LRUCache<K, V>.Entry> node = new DoublyLinkedNode<>(entry);
+        LinkNode<LRUCache<K, V>.Entry> node = new LinkNode<>(entry);
         this.keyNodeMap.put(key, node);
         this.nodeList.addBack(node);
     }
 
-    private void remove(final DoublyLinkedNode<LRUCache<K, V>.Entry> node) {
+    private void remove(final LinkNode<LRUCache<K, V>.Entry> node) {
         node.remove();
         this.keyNodeMap.remove(node.contents().key);
     }
