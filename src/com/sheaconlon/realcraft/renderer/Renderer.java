@@ -3,7 +3,6 @@ package com.sheaconlon.realcraft.renderer;
 import com.sheaconlon.realcraft.concurrency.Worker;
 import com.sheaconlon.realcraft.entities.Player;
 import com.sheaconlon.realcraft.world.Chunk;
-import com.sheaconlon.realcraft.world.World;
 import com.sheaconlon.realcraft.utilities.Vector;
 import com.sheaconlon.realcraft.ui.UserInterface;
 import org.joml.Matrix4d;
@@ -42,11 +41,6 @@ public class Renderer extends Worker {
     private static final int TARGET_NUM_EMPTY_VBOS = 100;
 
     /**
-     * The world.
-     */
-    private final World world;
-
-    /**
      * The vertical field of view of player in radians.
      */
     private static final float VERTICAL_FIELD_OF_VIEW = (float)(Math.PI / 2);
@@ -80,7 +74,7 @@ public class Renderer extends Worker {
     /**
      * The number of extra chunks to render in each direction from the player's chunk.
      */
-    public static final int RENDER_DISTANCE = 3;
+    public static final int RENDER_DISTANCE = 4;
 
     /**
      * The color of the sky, in RGBA format.
@@ -145,12 +139,12 @@ public class Renderer extends Worker {
     /**
      * The written VBOs that this renderer has.
      */
-    private final Map<Vector, VBO> writtenVBOs;
+    private final Map<Chunk, VBO> writtenVBOs;
 
     /**
      * The sent VBOs that this renderer has.
      */
-    private final Map<Vector, VBO> sentVBOs;
+    private final Map<Chunk, VBO> sentVBOs;
 
     /**
      * The number of frames that have been shown since the last VBO was sent.
@@ -161,8 +155,7 @@ public class Renderer extends Worker {
      * Create a renderer.
      * @param ui The user interface to render into.
      */
-    public Renderer(final World world, final UserInterface ui) {
-        this.world = world;
+    public Renderer(final UserInterface ui) {
         this.ui = ui;
         this.emptyVBOs = new ConcurrentLinkedDeque<>();
         this.writtenVBOs = new ConcurrentHashMap<>();
@@ -205,20 +198,20 @@ public class Renderer extends Worker {
 
     /**
      * Receive a written VBO for some chunk.
-     * @param pos The position of the anchor point of the chunk.
+     * @param chunk The chunk.
      * @param vbo The VBO.
      */
-    public void receiveWrittenVBO(final Vector pos, final VBO vbo) {
-        this.writtenVBOs.put(pos, vbo);
+    public void receiveWrittenVBO(final Chunk chunk, final VBO vbo) {
+        this.writtenVBOs.put(chunk, vbo);
     }
 
     /**
      * Return whether this renderer has a written VBO for some chunk.
-     * @param pos The position of the anchor point of the chunk.
+     * @param chunk The chunk.
      * @return Whether this renderer has a written VBO for the chunk.
      */
-    public boolean hasWrittenVBO(final Vector pos) {
-        return this.sentVBOs.containsKey(pos) || this.writtenVBOs.containsKey(pos);
+    public boolean hasWrittenVBO(final Chunk chunk) {
+        return this.sentVBOs.containsKey(chunk) || this.writtenVBOs.containsKey(chunk);
     }
 
     @Override
@@ -238,12 +231,12 @@ public class Renderer extends Worker {
         Renderer.setLighting();
         Renderer.clear();
         this.sendVBO();
-        final Vector playerPos = this.world.getPlayer().getPos();
-        final Vector playerChunkPos = Chunk.toChunkPos(playerPos);
-        for (final Vector renderChunkPos : Chunk.getChunkPosNearby(playerChunkPos, Renderer.RENDER_DISTANCE)) {
-            if (this.sentVBOs.containsKey(renderChunkPos)) {
-                if (this.chunkIsWithinFrustum(renderChunkPos)) {
-                    final VBO vbo = this.sentVBOs.get(renderChunkPos);
+        final Vector playerPos = Player.PLAYER.getPos();
+        final Chunk playerChunk = Chunk.containingChunk(playerPos);
+        for (final Chunk renderChunk : playerChunk.chunksNearby(Renderer.RENDER_DISTANCE)) {
+            if (this.sentVBOs.containsKey(renderChunk)) {
+                if (this.chunkIsWithinFrustum(renderChunk)) {
+                    final VBO vbo = this.sentVBOs.get(renderChunk);
                     vbo.render();
                 }
             }
@@ -256,26 +249,25 @@ public class Renderer extends Worker {
      * Set the camera to match the player's perspective.
      */
     private void setPerspective() {
-        final Player player = this.world.getPlayer();
-        final Vector position = player.getPos();
-        final double xzCrossOrientation = player.getVertOrient();
+        final Vector position = Player.PLAYER.getPos();
+        final double xzCrossOrientation = Player.PLAYER.getVertOrient();
         final Vector eyePosition = Vector.add(position, Renderer.PLAYER_EYE_POSITION);
         final Vector lookDisplacement =
                 Vector.rotateHorizontal(
                     Vector.rotateVertical(
                         new Vector(1, 0, 0),
-                        player.getVertOrient()
+                        Player.PLAYER.getVertOrient()
                     ),
-                    player.getOrient()
+                    Player.PLAYER.getOrient()
                 );
         final Vector lookPosition = Vector.add(eyePosition, lookDisplacement);
         final Vector upDirection =
                 Vector.rotateHorizontal(
                         Vector.rotateVertical(
                                 new Vector(0, 1, 0),
-                                player.getVertOrient()
+                                Player.PLAYER.getVertOrient()
                         ),
-                        player.getOrient()
+                        Player.PLAYER.getOrient()
                 );
         final DoubleBuffer buffer = BufferUtils.createDoubleBuffer(16);
         final Matrix4d matrix = new Matrix4d();
@@ -292,7 +284,7 @@ public class Renderer extends Worker {
     private void refillEmptyVBOs() {
         while (this.emptyVBOs.size() < Renderer.TARGET_NUM_EMPTY_VBOS) {
             // TODO: Possibly different capacity + splitting over multiple VBOs
-            final VBO vbo = new VBO(Chunk.SIZE * Chunk.SIZE * Chunk.SIZE * 6 * 4);
+            final VBO vbo = new VBO(Chunk.BLOCKS * Chunk.BLOCKS * Chunk.BLOCKS * 6 * 4);
             vbo.link();
             this.emptyVBOs.addLast(vbo);
         }
@@ -305,14 +297,14 @@ public class Renderer extends Worker {
         if (this.framesSinceVBOSend < Renderer.SEND_INTERVAL) {
             return;
         }
-        final Vector playerPos = this.world.getPlayer().getPos();
-        final Vector playerChunkPos = Chunk.toChunkPos(playerPos);
-        for (final Vector chunkPos : Chunk.getChunkPosNearby(playerChunkPos, Renderer.RENDER_DISTANCE)) {
-            if (this.writtenVBOs.containsKey(chunkPos)) {
-                final VBO vbo = this.writtenVBOs.remove(chunkPos);
+        final Vector playerPos = Player.PLAYER.getPos();
+        final Chunk playerChunk = Chunk.containingChunk(playerPos);
+        for (final Chunk chunk : playerChunk.chunksNearby(Renderer.RENDER_DISTANCE)) {
+            if (this.writtenVBOs.containsKey(chunk)) {
+                final VBO vbo = this.writtenVBOs.remove(chunk);
                 final boolean success = vbo.send();
                 if (success) {
-                    this.sentVBOs.put(chunkPos, vbo);
+                    this.sentVBOs.put(chunk, vbo);
                 }
                 this.framesSinceVBOSend = 0;
                 return;
@@ -320,9 +312,9 @@ public class Renderer extends Worker {
         }
     }
 
-    private boolean chunkIsWithinFrustum(final Vector chunkPos) {
+    private boolean chunkIsWithinFrustum(final Chunk chunk) {
         for (final Vector unitCubeVertex : Vector.UNIT_CUBE_VERTICES) {
-            final Vector corner = Vector.add(chunkPos, Vector.scale(unitCubeVertex, Chunk.SIZE));
+            final Vector corner = Vector.add(chunk.getAnchor(), Vector.scale(unitCubeVertex, Chunk.SIZE));
             if (posIsWithinFrustum(corner)) {
                 return true;
             }
@@ -331,12 +323,12 @@ public class Renderer extends Worker {
     }
 
     private boolean posIsWithinFrustum(final Vector p) {
-        final Vector camera = Vector.add(this.world.getPlayer().getPos(), PLAYER_EYE_POSITION);
+        final Vector camera = Vector.add(Player.PLAYER.getPos(), PLAYER_EYE_POSITION);
         final Vector dispToP = Vector.subtract(p, camera);
         final Vector orientedDispToP =
                 Vector.rotateVertical(
-                    Vector.rotateHorizontal(dispToP, -this.world.getPlayer().getOrient()),
-                    -this.world.getPlayer().getVertOrient()
+                    Vector.rotateHorizontal(dispToP, -Player.PLAYER.getOrient()),
+                    -Player.PLAYER.getVertOrient()
                 );
         // If p is too near to (or is behind) the camera, then it can be immediately rejected.
         if (orientedDispToP.getX() < NEAR_CUTOFF) {

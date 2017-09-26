@@ -3,6 +3,8 @@ package com.sheaconlon.realcraft.utilities;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * A 3-vector.
@@ -10,24 +12,22 @@ import java.util.function.UnaryOperator;
  * A vector is immutable, provided that its type argument is immutable.
  */
 public class Vector {
-    /**
-     * The vertices of the unit cube.
-     */
-    public static final Vector[] UNIT_CUBE_VERTICES = new Vector[]{
-            new Vector(0, 0, 0),
-            new Vector(1, 0, 0),
-            new Vector(1, 0, 1),
-            new Vector(0, 0, 1),
-            new Vector(0, 1, 0),
-            new Vector(1, 1, 0),
-            new Vector(1, 1, 1),
-            new Vector(0, 1, 1)
-    };
-
-    /**
-     * The vector whose components are all zero.
-     */
-    public static final Vector ZERO_VECTOR = new Vector(0, 0, 0);
+    // ##### PUBLIC STATIC FINAL #####
+    public static final List<Vector> UNIT_CUBE_VERTICES = Collections.unmodifiableList(
+            Stream.of(
+                new Vector(0, 0, 0),
+                new Vector(1, 0, 0),
+                new Vector(0, 1, 0),
+                new Vector(1, 1, 0),
+                new Vector(0, 0, 1),
+                new Vector(1, 0, 1),
+                new Vector(0, 1, 1),
+                new Vector(1, 1, 1)
+            ).collect(
+                    Collectors.toList()
+            )
+    );
+    public static final Vector ZERO = Vector.uniform(0);
 
     /**
      * The x-component of this vector.
@@ -144,7 +144,7 @@ public class Vector {
 
     @Override
     public int hashCode() {
-        return Double.hashCode(this.x) + Double.hashCode(this.y) + Double.hashCode(this.z);
+        return Double.hashCode(this.x) ^ Double.hashCode(this.y) ^ Double.hashCode(this.z);
     }
 
     @Override
@@ -169,7 +169,17 @@ public class Vector {
      * @return Whether this vector equals the zero vector.
      */
     public boolean isZero() {
-        return this.equals(ZERO_VECTOR);
+        return this.equals(ZERO);
+    }
+
+    /**
+     * Return whether all of this vector's components are integers.
+     * @return Whether all of this vector's components are integers.
+     */
+    public boolean isInt() {
+        return this.getX() == this.getXInt()
+                && this.getY() == this.getYInt()
+                && this.getZ() == this.getZInt();
     }
 
     /**
@@ -388,5 +398,213 @@ public class Vector {
      */
     public static Vector abs(final Vector v) {
         return apply(v, Math::abs);
+    }
+
+    private static class VectorsBetween implements Iterable<Vector> {
+        private final Vector lo;
+        private final Vector hi;
+
+        VectorsBetween(final Vector lo, final Vector hi) {
+            this.lo = lo;
+            this.hi = hi;
+        }
+
+        private class VectorsBetweenIterator implements Iterator<Vector> {
+            private Vector next;
+
+            VectorsBetweenIterator() {
+                this.next = VectorsBetween.this.lo;
+            }
+
+            @Override
+            public boolean hasNext() {
+                return this.next != null;
+            }
+
+            @Override
+            public Vector next() {
+                if (!this.hasNext()) {
+                    throw new NoSuchElementException();
+                }
+                final Vector result = this.next;
+                this.next = Vector.changeX(this.next, 1);
+                if (this.next.getX() > VectorsBetween.this.hi.getX()) {
+                    this.next = new Vector(
+                            VectorsBetween.this.lo.getX(),
+                            this.next.getY() + 1,
+                            this.next.getZ()
+                    );
+                }
+                if (this.next.getY() > VectorsBetween.this.hi.getY()) {
+                    this.next = new Vector(
+                            VectorsBetween.this.lo.getX(),
+                            VectorsBetween.this.lo.getY(),
+                            this.next.getZ() + 1
+                    );
+                }
+                if (this.next.getZ() > VectorsBetween.this.hi.getZ()) {
+                    this.next = null;
+                }
+                return result;
+            }
+        }
+
+        @Override
+        public Iterator<Vector> iterator() {
+            return new VectorsBetweenIterator();
+        }
+    }
+
+    /**
+     * Return the integer vectors in the rectangular prism between some vectors.
+     *
+     * Includes the corners.
+     * @param lo The low-x, low-y, low-z corner of the prism.
+     * @param hi The high-x, high-y, high-z corner of the prism.
+     * @return The integer vectors in the rectangular prism with corners {@code lo} and {@code hi}.
+     */
+    public static Iterable<Vector> between(final Vector lo, final Vector hi) {
+        return new VectorsBetween(Vector.ceil(lo), Vector.round(hi));
+    }
+
+    /**
+     * Return a vector with some x-coordinate.
+     * @param v The original vector.
+     * @param x The x-coordinate.
+     * @return A copy of {@code v} with its x-coordinate changed to {@code x}.
+     */
+    public static Vector setX(final Vector v, final double x) {
+        return new Vector(x, v.getY(), v.getZ());
+    }
+
+    /**
+     * Return a vector with a changed x-coordinate.
+     * @param v The original vector.
+     * @param deltaX The amount to change the x-coordinate by.
+     * @return A copy of {@code v} with its x-coordinate changed by {@code deltaX}.
+     */
+    public static Vector changeX(final Vector v, final double deltaX) {
+        return setX(v, v.getX() + deltaX);
+    }
+
+    /**
+     * Return a vector with some y-coordinate.
+     * @param v The original vector.
+     * @param y The y-coordinate.
+     * @return A copy of {@code v} with its y-coordinate changed to {@code y}.
+     */
+    public static Vector setY(final Vector v, final double y) {
+        return new Vector(v.getX(), y, v.getZ());
+    }
+
+    /**
+     * Return a vector with a changed y-coordinate.
+     * @param v The original vector.
+     * @param deltaY The amount to change the y-coordinate by.
+     * @return A copy of {@code v} with its y-coordinate changed by {@code deltaY}.
+     */
+    public static Vector changeY(final Vector v, final double deltaY) {
+        return setY(v, v.getY() + deltaY);
+    }
+
+    /**
+     * Return a vector with components all equal to some value.
+     * @param val The value.
+     * @return A vector with components all equal to {@code val}.
+     */
+    public static Vector uniform(final double val) {
+        return new Vector(val, val, val);
+    }
+
+    /**
+     * Return the element-wise ceiling of a vector.
+     *
+     * The ceiling is performed as in {@link Math#ceil(double)}.
+     * @param v The vector.
+     * @return The element-wise ceiling of {@code v}.
+     */
+    public static Vector ceil(final Vector v) {
+        return Vector.apply(v, Math::ceil);
+    }
+
+    private static class VectorsAround implements Iterable<Vector> {
+        private class VectorsAroundIterator implements Iterator<Vector> {
+            private final Iterator<Vector> candidates;
+            private boolean mayHaveNext;
+            private Vector next;
+
+            VectorsAroundIterator() {
+                final Vector disp = Vector.uniform(VectorsAround.this.radius);
+                final Vector lo = Vector.ceil(Vector.subtract(VectorsAround.this.center, disp));
+                final Vector hi = Vector.round(Vector.add(VectorsAround.this.center, disp));
+                this.candidates = new VectorsBetween(lo, hi).iterator();
+                this.mayHaveNext= true;
+                this.next = null;
+            }
+
+            @Override
+            public boolean hasNext() {
+                if (this.next == null) {
+                    if (this.mayHaveNext) {
+                        this.refill();
+                        return this.hasNext();
+                    } else {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            @Override
+            public Vector next() {
+                if (!this.hasNext()) {
+                    throw new NoSuchElementException();
+                }
+                final Vector result = this.next;
+                this.next = null;
+                return result;
+            }
+
+            private void refill() {
+                while (this.candidates.hasNext()) {
+                    final Vector candidate = this.candidates.next();
+                    if (this.shouldInclude(candidate)) {
+                        this.next = candidate;
+                        return;
+                    }
+                }
+                this.next = null;
+                this.mayHaveNext = false;
+            }
+
+            private boolean shouldInclude(final Vector candidate) {
+                return Vector.subtract(candidate, VectorsAround.this.center).sqMag() <= Math.pow(VectorsAround.this.radius, 2);
+            }
+        }
+
+        private final Vector center;
+        private final double radius;
+
+        VectorsAround(final Vector center, final double radius) {
+            this.center = center;
+            this.radius = radius;
+        }
+
+        @Override
+        public Iterator<Vector> iterator() {
+            return new VectorsAroundIterator();
+        }
+    }
+
+    /**
+     * Return the integer vectors in the sphere around some vector.
+     *
+     * Includes vectors on the surface of the sphere.
+     * @param center The center of the sphere.
+     * @param radius The radius of the sphere.
+     * @return The integer vectors within the sphere with center {@code center} and radius {@code radius}.
+     */
+    public static Iterable<Vector> around(final Vector center, final double radius) {
+        return new VectorsAround(center, radius);
     }
 }

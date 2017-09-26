@@ -2,10 +2,7 @@ package com.sheaconlon.realcraft.renderer;
 
 import com.sheaconlon.realcraft.utilities.Vector;
 
-import java.util.List;
-import java.util.LinkedList;
-import java.util.Collections;
-import java.util.Collection;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -20,6 +17,14 @@ public class Quad {
      */
     public Quad(final Collection<? extends Vertex> vertices) {
         this.vertices = new LinkedList<>(vertices);
+    }
+
+    /**
+     * Create a quad.
+     * @param vertices The vertices of the quad.
+     */
+    public Quad(final Vertex... vertices) {
+        this(Arrays.asList(vertices));
     }
 
     /**

@@ -2,10 +2,10 @@ package com.sheaconlon.realcraft.renderer;
 
 import com.sheaconlon.realcraft.blocks.Block;
 import com.sheaconlon.realcraft.concurrency.Worker;
+import com.sheaconlon.realcraft.entities.Player;
 import com.sheaconlon.realcraft.utilities.ArrayUtilities;
 import com.sheaconlon.realcraft.utilities.Vector;
 import com.sheaconlon.realcraft.world.Chunk;
-import com.sheaconlon.realcraft.world.World;
 import com.sheaconlon.realcraft.world.WorldObject;
 
 import java.util.ArrayList;
@@ -27,21 +27,14 @@ public class Prerenderer extends Worker {
     private static final int PRERENDER_DISTANCE = Renderer.RENDER_DISTANCE;
 
     /**
-     * The world this pre-renderer should pre-render.
-     */
-    private final World world;
-
-    /**
      * The renderer this pre-renderer should load with VBOs.
      */
     private final Renderer renderer;
 
     /**
      * Create a pre-renderer.
-     * @param world See {@link #world}.
      */
-    public Prerenderer(final World world, final Renderer renderer) {
-        this.world = world;
+    public Prerenderer(final Renderer renderer) {
         this.renderer = renderer;
     }
 
@@ -75,15 +68,15 @@ public class Prerenderer extends Worker {
      */
     @Override
     public void tick(final double elapsedTime) {
-        final Vector playerPos = this.world.getPlayer().getPos();
-        final Vector playerChunkPos = Chunk.toChunkPos(playerPos);
+        final Vector playerPos = Player.PLAYER.getPos();
+        final Chunk playerChunk = Chunk.containingChunk(playerPos);
         int numberDone = 0;
-        for (final Vector renderChunkPos : Chunk.getChunkPosNearby(playerChunkPos, Prerenderer.PRERENDER_DISTANCE)) {
-            if (world.chunkLoaded(renderChunkPos) && !renderer.hasWrittenVBO(renderChunkPos)) {
+        for (final Chunk chunk : playerChunk.chunksNearby(Prerenderer.PRERENDER_DISTANCE)) {
+            if (!renderer.hasWrittenVBO(chunk)) {
                 final VBO vbo = this.renderer.getEmptyVBO();
                 if (vbo != null) {
-                    this.prerenderChunk(renderChunkPos, vbo);
-                    this.renderer.receiveWrittenVBO(renderChunkPos, vbo);
+                    this.prerenderChunk(chunk, vbo);
+                    this.renderer.receiveWrittenVBO(chunk, vbo);
                 }
                 numberDone++;
                 if (numberDone == 3) {
@@ -95,19 +88,14 @@ public class Prerenderer extends Worker {
 
     /**
      * Pre-render a chunk into a VBO.
-     * @param chunkPos The position of the anchor point of the chunk.
+     * @param chunk The chunk.
      * @param vbo The VBO.
      */
-    private void prerenderChunk(final Vector chunkPos, final VBO vbo) {
-        final Chunk chunk = this.world.getChunk(chunkPos);
-        prerenderObjects(chunk.getBlocks(), vbo);
-        prerenderObjects(chunk.getEntities(), vbo);
-    }
-
-    private static <T extends WorldObject> void prerenderObjects(final Iterable<T> objects, final VBO vbo) {
-        for (final WorldObject object : objects) {
-            for (Vertex vertex : object.getVertices()) {
-                vertex = vertex.translate(object.getPos());
+    private void prerenderChunk(final Chunk chunk, final VBO vbo) {
+        for (final Vector blockAnchor : chunk.blockAnchors()) {
+            final Block block = chunk.getBlock(blockAnchor);
+            for (Vertex vertex : block.getVertices()) {
+                vertex = vertex.translate(block.getPos());
                 vbo.write(vertex);
             }
         }

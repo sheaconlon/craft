@@ -6,98 +6,63 @@ import com.sheaconlon.realcraft.entities.Entity;
 import com.sheaconlon.realcraft.utilities.Vector;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.List;
-import java.util.LinkedList;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Collection;
 
 /**
  * A cubical subset of the world.
  */
 public class Chunk {
-    private class BlockIterator implements Iterator<Block> {
-        private Vector curr;
+    // ##### PUBLIC STATIC FINAL #####
+    public static final int BLOCKS = 15;
+    public static final double SIZE = BLOCKS * Block.SIZE;
 
-        private BlockIterator() {
-            this.curr = Vector.ZERO_VECTOR;
-        }
+    // ##### PRIVATE STATIC FINAL #####
+    private static final Map<Vector, Chunk> chunks = new HashMap<>();
 
-        @Override
-        public boolean hasNext() {
-            return this.curr.getX() < Chunk.SIZE && this.curr.getY() < Chunk.SIZE && this.curr.getZ() < Chunk.SIZE;
-        }
-
-        @Override
-        public Block next() {
-            final Block next = Chunk.this.blocks[(int)this.curr.getX()][(int)this.curr.getY()][(int)this.curr.getZ()];
-            this.curr = new Vector(this.curr.getX() + 1, this.curr.getY(), this.curr.getZ());
-            if (this.curr.getX() >= Chunk.SIZE) {
-                this.curr = new Vector(0, this.curr.getY() + 1, this.curr.getZ());
-            }
-            if (this.curr.getY() >= Chunk.SIZE) {
-                this.curr = new Vector(0, 0, this.curr.getZ() + 1);
-            }
-            return next;
-        }
-    }
-
-    private class Blocks implements Iterable<Block> {
-        @Override
-        public Iterator<Block> iterator() {
-            return new BlockIterator();
-        }
-    }
-
-    /**
-     * The side length of a chunk, in blocks.
-     */
-    public static final int SIZE = 15;
-
-    /**
-     * The blocks in this chunk.
-     */
+    // ##### PRIVATE FINAL #####
+    private final Vector anchor;
     private final Block[][][] blocks;
+    private final Set<Entity> entities;
 
-    /**
-     * The entities in this chunk.
-     */
-    private final List<Entity> entities;
-
-    /**
-     * The position of the anchor point of this chunk.
-     */
-    private final Vector position;
-
+    // ##### CONSTRUCTORS #####
     /**
      * Create a chunk.
-     * @param position The anchor point of the chunk.
+     * @param anchor Its anchor point.
      */
-    public Chunk(final Vector position) {
-        this.blocks = new Block[Chunk.SIZE][Chunk.SIZE][Chunk.SIZE];
-        this.entities = new LinkedList<>();
-        this.position = position;
-        final int[] blockPosition = new int[]{0, 0, 0};
-        for (blockPosition[0] = 0; blockPosition[0] < Chunk.SIZE; blockPosition[0]++) {
-            for (blockPosition[1] = 0; blockPosition[1] < Chunk.SIZE; blockPosition[1]++) {
-                for (blockPosition[2] = 0; blockPosition[2] < Chunk.SIZE; blockPosition[2]++) {
-                    final Vector pos = Vector.add(this.position, new Vector(blockPosition[0], blockPosition[1], blockPosition[2]));
-                    this.blocks[blockPosition[0]][blockPosition[1]][blockPosition[2]] =
-                            new AirBlock(pos);
-                }
-            }
+    private Chunk(final Vector anchor) {
+        this.anchor = anchor;
+        this.blocks = new Block[BLOCKS][BLOCKS][BLOCKS];
+        this.entities = new HashSet<>();
+        for (final Vector position : this.blockAnchors()) {
+            this.putBlock(new AirBlock(position));
         }
     }
 
+    // ##### BLOCKS #####
     /**
-     * Put a block in a particular position.
-     * @param blockPosition The position.
-     * @param block The block.
+     * Get the block with some anchor point.
+     * @param anchor The anchor point.
+     * @return The block with anchor point {@code anchor}.
      */
-    public void putBlock(final Vector blockPosition, final Block block) {
-        final Vector relativeBlockPosition = Vector.subtract(blockPosition, this.position);
-        this.blocks[(int)relativeBlockPosition.getX()][(int)relativeBlockPosition.getY()]
-                [(int)relativeBlockPosition.getZ()] = block;
+    public Block getBlock(final Vector anchor) {
+        final Vector relativePosition = Vector.subtract(anchor, this.anchor);
+        return this.blocks[relativePosition.getXInt()][relativePosition.getYInt()][relativePosition.getZInt()];
     }
 
+    /**
+     * Put a block.
+     * @param block The block.
+     */
+    public void putBlock(final Block block) {
+        final Vector relativePosition = Vector.subtract(block.getPos(), this.anchor);
+        this.blocks[relativePosition.getXInt()][relativePosition.getYInt()][relativePosition.getZInt()] = block;
+    }
+
+    // ##### ENTITIES #####
     /**
      * Add an entity to this chunk.
      * @param entity The entity.
@@ -118,50 +83,141 @@ public class Chunk {
      * Get the entities in this chunk.
      * @return The entities in this chunk.
      */
-    public Iterable<Entity> getEntities() {
+    public Collection<Entity> getEntities() {
         return this.entities;
     }
 
-    /**
-     * Get a block at some position.
-     * @param pos The position.
-     * @return The block at {@code pos}.
-     */
-    public Block getBlock(final Vector pos) {
-        final Vector relativePosition = Vector.subtract(pos, this.position);
-        return this.blocks[(int)relativePosition.getX()][(int)relativePosition.getY()][(int)relativePosition.getZ()];
-    }
+    // ##### ANCHORS #####
+    private class BlockAnchors implements Iterable<Vector> {
+        private class BlockAnchorsIterator implements Iterator<Vector> {
+            private Iterator<Vector> integerLattice;
 
-    /**
-     * Get the blocks in this chunk.
-     * @return The blocks in this chunk.
-     */
-    public Iterable<Block> getBlocks() {
-        return new Blocks();
-    }
+            BlockAnchorsIterator() {
+                this.integerLattice = Vector.between(Vector.ZERO, Vector.uniform(BLOCKS - 1)).iterator();
+            }
 
-    /**
-     * Return the position of the anchor point of the chunk containing some position.
-     * @param pos The position.
-     * @return The position of the anchor point of the chunk containing {@code pos}.
-     */
-    public static Vector toChunkPos(final Vector pos) {
-        return Vector.scale(Vector.round(Vector.scale(pos, 1.0 / Chunk.SIZE)), Chunk.SIZE);
-    }
+            @Override
+            public boolean hasNext() {
+                return this.integerLattice.hasNext();
+            }
 
-    /**
-     * Get the chunk positions which are "nearby" some chunk position.
-     * @param pos The chunk position.
-     * @param distance The maximum number of chunks away at which a chunk position will be considered nearby
-     * {@code pos}.
-     * @return The chunk positions which are "nearby" {@code pos}.
-     */
-    public static List<Vector> getChunkPosNearby(final Vector pos, final int distance) {
-        final Iterable<Vector> nearbyDisplacements = Vector.getNearby(Vector.ZERO_VECTOR, distance);
-        final List<Vector> nearbyChunkPos = new LinkedList<>();
-        for (final Vector disp : nearbyDisplacements) {
-            nearbyChunkPos.add(Vector.add(Vector.scale(disp, Chunk.SIZE), pos));
+            @Override
+            public Vector next() {
+                return Vector.add(
+                        Chunk.this.anchor,
+                        Vector.scale(
+                                this.integerLattice.next(),
+                                Block.SIZE
+                        )
+                );
+            }
         }
-        return nearbyChunkPos;
+
+        @Override
+        public Iterator<Vector> iterator() {
+            return new BlockAnchorsIterator();
+        }
+    }
+
+    /**
+     * Get the anchor points of the blocks in this chunk.
+     * @return The anchor points of the blocks in this chunk.
+     */
+    public Iterable<Vector> blockAnchors() {
+        return new BlockAnchors();
+    }
+
+    /**
+     * Get the anchor point of this chunk.
+     * @return The anchor point of this chunk.
+     */
+    public Vector getAnchor() {
+        return this.anchor;
+    }
+
+    // ##### CHUNKS #####
+    /**
+     * Return the chunk containing some position.
+     * @param position The position.
+     * @return The chunk containing {@code pos}.
+     */
+    public static Chunk containingChunk(final Vector position) {
+        final Vector anchor = Vector.scale(
+            Vector.round(
+                Vector.scale(position, 1 / SIZE)
+            ),
+            SIZE
+        );
+        return getChunk(anchor);
+    }
+
+    private class ChunksNearby implements Iterable<Chunk> {
+        private class ChunksNearbyIterator implements Iterator<Chunk> {
+            private Iterator<Vector> displacements;
+
+            ChunksNearbyIterator() {
+                this.displacements = Vector.around(Vector.ZERO, ChunksNearby.this.distance).iterator();
+            }
+
+            @Override
+            public boolean hasNext() {
+                return this.displacements.hasNext();
+            }
+
+            @Override
+            public Chunk next() {
+                return getChunk(Vector.add(Chunk.this.anchor, Vector.scale(this.displacements.next(), Chunk.SIZE)));
+            }
+        }
+
+        private final int distance;
+
+        ChunksNearby(final int distance) {
+            this.distance = distance;
+        }
+
+        @Override
+        public Iterator<Chunk> iterator() {
+            return new ChunksNearbyIterator();
+        }
+    }
+
+    /**
+     * Get the chunks nearby this chunk.
+     *
+     * The distance between chunks is measured between their anchor points.
+     * @param distance The maximum distance at which a chunk should be included.
+     * @return The chunks nearby this chunk.
+     */
+    public Iterable<Chunk> chunksNearby(final int distance) {
+        return new ChunksNearby(distance);
+    }
+
+    // ##### OVERRIDES OF OBJECT #####
+    @Override
+    public int hashCode() {
+        return this.anchor.hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        if (!(object instanceof Chunk)) {
+            return false;
+        }
+        final Chunk otherChunk = (Chunk)object;
+        return this.anchor.equals(otherChunk.anchor);
+    }
+
+    // ##### PRIVATE STATIC #####
+    private static Chunk getChunk(final Vector anchor) {
+        if (!Vector.scale(anchor, 1 / SIZE).isInt()) {
+            throw new IllegalArgumentException("Anchor point given is not the anchor point of any chunk.");
+        }
+        Chunk chunk = chunks.get(anchor);
+        if (chunk == null) {
+            chunk = new Chunk(anchor);
+            chunks.put(anchor, chunk);
+        }
+        return chunk;
     }
 }
